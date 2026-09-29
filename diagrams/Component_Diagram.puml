@@ -1,0 +1,151 @@
+@startuml Component_Diagram_CMH_ePortal
+title Component Diagram - e-Portal for Case Management Hearing (Order XV-A CPC)
+skinparam componentStyle uml2
+skinparam packageStyle rectangle
+skinparam roundcorner 6
+skinparam shadowing false
+skinparam defaultFontName "Helvetica"
+
+skinparam component {
+    BackgroundColor #FFFFFF
+    BorderColor #1A5276
+    ArrowColor #2C3E50
+}
+skinparam interface {
+    BackgroundColor #EAECEE
+    BorderColor #1A5276
+}
+
+' ==========================================
+' 1. CLIENT / PRESENTATION TIER
+' ==========================================
+package "Client Presentation Tier (React.js + Tailwind CSS)" #F4F6F7 {
+    component [Judge Judicial Dashboard] as Comp_JudgeUI
+    component [Advocate Collaborative Portal] as Comp_AdvocateUI
+    component [Court Registry Console] as Comp_ClerkUI
+    component [Litigant Tracking Portal] as Comp_LitigantUI
+
+    component [Interactive Admissions Matrix UI] as Comp_MatrixUI
+    component [FullCalendar Clash Viewer] as Comp_CalendarUI
+    component [WebRTC Split-Screen Room] as Comp_VideoUI
+}
+
+' ==========================================
+' 2. API GATEWAY & SECURITY TIER
+' ==========================================
+package "API Gateway & Security Tier (FastAPI Asynchronous ASGI)" #EBF5FB {
+    component [FastAPI Reverse Proxy & Router] as Comp_Gateway
+    component [RBAC & JWT Auth Middleware] as Comp_Auth
+
+    interface "HTTP / REST API" as Int_REST
+    interface "WebSocket Connection" as Int_WS
+    interface "Auth Guard Interface" as Int_AuthGuard
+}
+
+' Client to Gateway Connections
+Comp_JudgeUI ..> Int_REST : <<uses>>
+Comp_AdvocateUI ..> Int_REST : <<uses>>
+Comp_ClerkUI ..> Int_REST : <<uses>>
+Comp_LitigantUI ..> Int_REST : <<uses>>
+
+Comp_MatrixUI ..> Int_WS : <<real-time sync>>
+Comp_CalendarUI ..> Int_REST : <<queries slots>>
+Comp_VideoUI ..> Int_WS : <<signaling>>
+
+Int_REST - [Comp_Gateway]
+Int_WS - [Comp_Gateway]
+[Comp_Gateway] ..> Int_AuthGuard : <<validates token>>
+Int_AuthGuard - [Comp_Auth]
+
+' ==========================================
+' 3. CORE BUSINESS LOGIC & ENGINE TIER (9 DECOUPLED MODULES)
+' ==========================================
+package "Core Judicial Business Logic Tier (Micro-Services / Engines)" #E8F8F5 {
+    component [1. Case & Docket Ingestion Engine] as Comp_DocketEngine
+    component [2. Admissions & Denials Matrix Service] as Comp_AdmissionsService
+    component [3. Smart Scheduling & Clash Detection Engine] as Comp_ClashEngine
+    component [4. In-Browser WebRTC Virtual Hearing Manager] as Comp_WebRTCManager
+    component [5. Automated CMO Generation Engine] as Comp_CMOEngine
+    component [6. Discovery Deadline & Countdown Daemon] as Comp_DeadlineDaemon
+    component [7. Document Integrity & Vault Service] as Comp_DocVault
+    component [8. Multi-Channel Notification Gateway] as Comp_NotifGateway
+    component [9. Immutable Audit Trail & Ledger] as Comp_AuditTrail
+
+    interface "IDocketIngest" as Int_Docket
+    interface "IAdmissionsMatrix" as Int_Matrix
+    interface "IScheduleClash" as Int_Clash
+    interface "IWebRTCSignaling" as Int_WebRTC
+    interface "ICMOGenerator" as Int_CMO
+    interface "IDocVault" as Int_Vault
+    interface "INotification" as Int_Notif
+    interface "IAuditLog" as Int_Audit
+}
+
+' Exposing Core Engine Interfaces
+Int_Docket - [Comp_DocketEngine]
+Int_Matrix - [Comp_AdmissionsService]
+Int_Clash - [Comp_ClashEngine]
+Int_WebRTC - [Comp_WebRTCManager]
+Int_CMO - [Comp_CMOEngine]
+Int_Vault - [Comp_DocVault]
+Int_Notif - [Comp_NotifGateway]
+Int_Audit - [Comp_AuditTrail]
+
+' Gateway Routing to Engines
+[Comp_Gateway] ..> Int_Docket
+[Comp_Gateway] ..> Int_Matrix
+[Comp_Gateway] ..> Int_Clash
+[Comp_Gateway] ..> Int_WebRTC
+[Comp_Gateway] ..> Int_CMO
+
+' Inter-Module Engine Dependencies
+[Comp_DocketEngine] ..> Int_Vault : <<computes SHA-256>>
+[Comp_DocketEngine] ..> Int_Audit : <<logs filing>>
+[Comp_AdmissionsService] ..> Int_Vault : <<validates exhibits>>
+[Comp_AdmissionsService] ..> Int_Audit : <<records lock>>
+[Comp_CMOEngine] ..> Int_Matrix : <<extracts admitted facts>>
+[Comp_CMOEngine] ..> Int_Vault : <<archives signed PDF/A>>
+[Comp_CMOEngine] ..> Int_Notif : <<triggers delivery>>
+[Comp_DeadlineDaemon] ..> Int_Notif : <<dispatches alerts>>
+[Comp_WebRTCManager] ..> Int_Audit : <<logs attendance>>
+
+' ==========================================
+' 4. DATA PERSISTENCE & STORAGE TIER
+' ==========================================
+package "Data Persistence & Storage Tier" #FEF9E7 {
+    component [SQLAlchemy 2.0 ORM Engine] as Comp_ORM
+    database "MySQL 8.0 Relational Database\n(Users, Dockets, Admissions, Schedules, Orders)" as DB_MySQL
+    folder "Encrypted Judicial Document Vault\n(Local Storage / AWS S3)" as Storage_Docs
+
+    interface "SQL / ACID Connection Pool" as Int_SQL
+    interface "Blob Storage API" as Int_Blob
+}
+
+Int_SQL - [Comp_ORM]
+[Comp_ORM] --> DB_MySQL : <<reads/writes>>
+Int_Blob - Storage_Docs
+
+[Comp_DocketEngine] ..> Int_SQL
+[Comp_AdmissionsService] ..> Int_SQL
+[Comp_ClashEngine] ..> Int_SQL
+[Comp_CMOEngine] ..> Int_SQL
+[Comp_DeadlineDaemon] ..> Int_SQL
+[Comp_AuditTrail] ..> Int_SQL
+[Comp_DocVault] ..> Int_Blob : <<stores PDF/A>>
+
+' ==========================================
+' 5. EXTERNAL SYSTEMS & STATUTORY INFRASTRUCTURE
+' ==========================================
+package "External Boundary & Statutory Infrastructure" #FDEDEC {
+    component [National Judicial Data Grid (NJDG) / High Court CIS 3.2] as Ext_NJDG
+    component [Telecom SMS / Email Gateway (NIC / Twilio / MSG91)] as Ext_Telecom
+    component [Aadhaar eSign / Digital Signature Provider (e-Mudhra / CDAC)] as Ext_eSign
+    component [Jitsi Meet Media Bridge (SFU)] as Ext_Jitsi
+}
+
+[Comp_DocketEngine] ..> Ext_NJDG : <<CNR sync>>
+[Comp_NotifGateway] ..> Ext_Telecom : <<dispatches SMS/Email>>
+[Comp_CMOEngine] ..> Ext_eSign : <<validates DSC token>>
+[Comp_WebRTCManager] ..> Ext_Jitsi : <<WebRTC media streams>>
+
+@enduml

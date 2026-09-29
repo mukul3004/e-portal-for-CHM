@@ -1,0 +1,300 @@
+@startuml Class_Diagram_CMH_ePortal
+title Domain Class Diagram - Case Management Hearing (CMH) e-Portal (Order XV-A CPC)
+skinparam classAttributeIconSize 0
+skinparam packageStyle rectangle
+skinparam roundcorner 6
+skinparam shadowing false
+skinparam class {
+    BackgroundColor White
+    ArrowColor #2C3E50
+    BorderColor #2C3E50
+}
+
+' ==========================================
+' PACKAGE 1: USER & ROLE-BASED ACCESS CONTROL (RBAC)
+' ==========================================
+package "1. Authentication & User Management" #F8F9FA {
+    abstract class User {
+        +UUID id
+        +String fullName
+        +String email
+        +String passwordHash
+        +String phoneNumber
+        +RoleType role
+        +Boolean is2FAEnabled
+        +DateTime createdAt
+        +login(credentials): AuthToken
+        +verify2FA(otpCode): Boolean
+    }
+
+    class JudicialOfficer {
+        +String benchId
+        +String courtroomNumber
+        +String dscTokenSerial
+        +reviewAdmissions(caseId): AdmissionsSummary
+        +frameTriableIssues(caseId): List<Issue>
+        +conductVirtualHearing(sessionId): WebRTCRoom
+        +signCaseManagementOrder(orderId): DigitalSignature
+        +referToMediation(caseId): ADRReferral
+    }
+
+    class Advocate {
+        +String barCouncilId
+        +String chamberAddress
+        +List<String> practiceCourts
+        +filePleading(caseId, doc): PleadingReceipt
+        +submitAdmissions(checklistId, items): Boolean
+        +requestHearingSlot(dateRange): SlotProposal
+        +joinVirtualHearing(sessionId): StreamConnection
+    }
+
+    class CourtRegistryClerk {
+        +String employeeCode
+        +String courtHallId
+        +scrutinizeDocket(caseId): VerificationStatus
+        +allocateHearingSlot(caseId, slot): BookingConfirmation
+        +publishDailyCauseList(hallId, date): CauseListPDF
+    }
+
+    class Litigant {
+        +String aadhaarHash
+        +String residentialAddress
+        +trackCaseProgression(cnrNumber): CaseTimeline
+        +viewSignedOrder(orderId): PDFDocument
+        +receiveComplianceAlerts(): List<Notification>
+    }
+
+    User <|-- JudicialOfficer
+    User <|-- Advocate
+    User <|-- CourtRegistryClerk
+    User <|-- Litigant
+}
+
+' ==========================================
+' PACKAGE 2: CASE & EVIDENTIARY DOCKET
+' ==========================================
+package "2. Case Docket & Evidence Management" #F8F9FA {
+    class Case {
+        +String cnrNumber
+        +String caseTitle
+        +CaseType caseType
+        +DateTime filingDate
+        +Decimal claimValuation
+        +CaseStatus status
+        +String courtHallId
+        +assignCNR(): String
+        +updateStatus(newStatus): Void
+        +getDocketSummary(): DocketDTO
+    }
+
+    class Pleading {
+        +UUID pleadingId
+        +String cnrNumber
+        +PleadingType pleadingType
+        +String filedByAdvocateId
+        +DateTime submissionDate
+        +String fileStorageUrl
+        +String sha256Checksum
+        +Boolean isScrutinized
+        +computeSHA256Hash(): String
+        +validatePDFFormat(): Boolean
+    }
+
+    class Exhibit {
+        +UUID exhibitId
+        +UUID pleadingId
+        +String exhibitNumber
+        +String documentTitle
+        +Boolean isRelianceDocument
+        +String fileStorageUrl
+        +String sha256Checksum
+        +DateTime uploadedAt
+        +verifyTamperIntegrity(): Boolean
+    }
+
+    Case "1" *-- "1..*" Pleading : contains >
+    Pleading "1" *-- "0..*" Exhibit : annexes >
+    Advocate "1..*" -- "0..*" Case : represents in >
+    JudicialOfficer "1" -- "0..*" Case : presides over >
+}
+
+' ==========================================
+' PACKAGE 3: ADMISSIONS & DENIALS MATRIX (ORDER XV-A)
+' ==========================================
+package "3. Pre-Trial Fact Crystallization" #F8F9FA {
+    class AdmissionsChecklist {
+        +UUID checklistId
+        +String cnrNumber
+        +Integer versionId
+        +Float readinessScore
+        +Boolean isLocked
+        +DateTime plaintiffSubmittedAt
+        +DateTime defendantSubmittedAt
+        +lockUndisputedFacts(): Integer
+        +generateTriableIssuesDraft(): List<String>
+        +calculateReadinessScore(): Float
+    }
+
+    class AdmissionItem {
+        +UUID itemId
+        +UUID checklistId
+        +Integer statementIndex
+        +String factualStatement
+        +UUID exhibitRefId
+        +StanceType plaintiffStance
+        +StanceType defendantStance
+        +String statutoryDenialReason
+        +ItemResolutionStatus resolutionStatus
+        +evaluateStanceMatch(): ItemResolutionStatus
+        +recordDenialReason(reason): Void
+    }
+
+    Case "1" *-- "1" AdmissionsChecklist : undergoes >
+    AdmissionsChecklist "1" *-- "1..*" AdmissionItem : comprises >
+    AdmissionItem "0..*" --> "0..1" Exhibit : references >
+}
+
+' ==========================================
+' PACKAGE 4: SCHEDULING & CONFLICT DETECTION (STRATEGY PATTERN)
+' ==========================================
+package "4. Smart Scheduling & Conflict Detection" #F8F9FA {
+    class CMHSession {
+        +UUID sessionId
+        +String cnrNumber
+        +String judgeId
+        +List<String> advocateBarIds
+        +DateTime scheduledDate
+        +Time startTime
+        +Time endTime
+        +String courtHallId
+        +String webrtcRoomId
+        +SessionStatus status
+        +startSession(): WebRTCContext
+        +concludeSession(): Void
+        +adjournSession(reason): Void
+    }
+
+    class CourtRoom {
+        +String hallId
+        +String courtroomNumber
+        +String district
+        +Integer maxDailySessions
+        +checkHallAvailability(date, slot): Boolean
+    }
+
+    class AdvocateAvailabilityManager {
+        +ClashStrategy activeStrategy
+        +verifyAdvocateSchedules(barIds, date, slot): ClashResult
+        +getOpenIntervals(advocateId, date): List<TimeSlot>
+        +lockAdvocateCalendar(barId, slot): Void
+    }
+
+    interface IClashDetectionStrategy <<interface, Strategy>> {
+        +detectConflict(barIds, date, timeSlot, rosterData): ClashResult
+    }
+
+    class DiscreteSlotClashStrategy {
+        +detectConflict(barIds, date, timeSlot, rosterData): ClashResult
+    }
+
+    class ContinuousIntervalClashStrategy {
+        +detectConflict(barIds, date, timeSlot, rosterData): ClashResult
+    }
+
+    IClashDetectionStrategy <|.. DiscreteSlotClashStrategy
+    IClashDetectionStrategy <|.. ContinuousIntervalClashStrategy
+    AdvocateAvailabilityManager o-- IClashDetectionStrategy : delegates to >
+    CMHSession "0..*" -- "1" CourtRoom : allocated in >
+    Case "1" -- "0..*" CMHSession : scheduled for >
+    AdvocateAvailabilityManager ..> CMHSession : validates >
+}
+
+' ==========================================
+' PACKAGE 5: ORDER GENERATION (FACTORY PATTERN)
+' ==========================================
+package "5. Order Generation & Legal Documents" #F8F9FA {
+    class CaseManagementOrder {
+        +UUID orderId
+        +String cnrNumber
+        +String judgeId
+        +DateTime orderDate
+        +List<String> undisputedFacts
+        +List<String> framedTriableIssues
+        +Integer witnessLimitPlaintiff
+        +Integer witnessLimitDefendant
+        +String pdfStorageUrl
+        +String sha256Digest
+        +String qrVerificationCode
+        +Boolean isDigitallySigned
+        +generateVerificationQRCode(): String
+        +verifyTamperProofHash(): Boolean
+    }
+
+    abstract class DocumentGenerator <<Factory Method>> {
+        +generateDocument(caseData): LegalDocument
+        #compileTemplate(data): String
+        #renderPDF(html): ByteArray
+        #applyDigitalSignature(pdfBytes): SignedPDF
+    }
+
+    class CMOGeneratorOrderXVA {
+        +generateDocument(caseData): LegalDocument
+    }
+
+    class SummonsNoticeGenerator {
+        +generateDocument(caseData): LegalDocument
+    }
+
+    class AdjournmentMemoGenerator {
+        +generateDocument(caseData): LegalDocument
+    }
+
+    DocumentGenerator <|-- CMOGeneratorOrderXVA
+    DocumentGenerator <|-- SummonsNoticeGenerator
+    DocumentGenerator <|-- AdjournmentMemoGenerator
+    CMHSession "1" -- "0..1" CaseManagementOrder : results in >
+    CMOGeneratorOrderXVA ..> CaseManagementOrder : produces >
+}
+
+' ==========================================
+' PACKAGE 6: COMPLIANCE DEADLINES & NOTIFICATIONS
+' ==========================================
+package "6. Deadline Tracking & Notifications" #F8F9FA {
+    class DiscoveryDeadline {
+        +UUID deadlineId
+        +UUID orderId
+        +String cnrNumber
+        +String taskDescription
+        +DateTime dueDate
+        +DeadlineStatus status
+        +Integer countdownDaysRemaining
+        +calculateDaysRemaining(): Integer
+        +markCompleted(): Void
+        +flagDefault(): Void
+    }
+
+    interface INotificationService <<interface, Abstraction>> {
+        +dispatchAlert(recipient, messagePayload): DeliveryReceipt
+    }
+
+    class SMSNotificationService {
+        +dispatchAlert(recipient, messagePayload): DeliveryReceipt
+    }
+
+    class EmailNotificationService {
+        +dispatchAlert(recipient, messagePayload): DeliveryReceipt
+    }
+
+    class WebSocketPushService {
+        +dispatchAlert(recipient, messagePayload): DeliveryReceipt
+    }
+
+    INotificationService <|.. SMSNotificationService
+    INotificationService <|.. EmailNotificationService
+    INotificationService <|.. WebSocketPushService
+
+    CaseManagementOrder "1" *-- "1..*" DiscoveryDeadline : mandates >
+    DiscoveryDeadline ..> INotificationService : triggers reminders >
+}
+
+@enduml

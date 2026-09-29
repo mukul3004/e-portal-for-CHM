@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Weekly Progress Report Template</title>
+<style>
+  @page {
+    size: A4;
+    margin: 1in;
+  }
+  body {
+    font-family: "Times New Roman", Times, serif;
+    font-size: 11pt;
+    line-height: 1.35;
+    color: #000;
+    background: #fff;
+    margin: 0;
+    padding: 0;
+  }
+  .title {
+    text-align: center;
+    font-weight: bold;
+    font-size: 13.5pt;
+    margin-bottom: 22px;
+  }
+  .meta-group {
+    margin-bottom: 16px;
+    line-height: 1.35;
+  }
+  .meta-line {
+    margin-bottom: 3px;
+  }
+  .meta-label {
+    font-weight: bold;
+  }
+  .section-header {
+    font-weight: bold;
+    font-size: 11pt;
+    margin-top: 15px;
+    margin-bottom: 5px;
+  }
+  ul.bullet-list {
+    margin: 0 0 6px 0;
+    padding-left: 24px;
+    list-style-type: disc;
+  }
+  ul.bullet-list > li {
+    margin-bottom: 4px;
+    page-break-inside: avoid;
+  }
+  .section-header {
+    page-break-after: avoid;
+  }
+  .item-label {
+    font-weight: bold;
+  }
+  ul.sub-list {
+    list-style-type: circle;
+    margin-top: 3px;
+    margin-bottom: 3px;
+    padding-left: 20px;
+  }
+  ul.sub-list > li {
+    margin-bottom: 3px;
+  }
+  .signatures {
+    margin-top: 120px;
+    display: flex;
+    justify-content: space-between;
+    page-break-inside: avoid;
+    font-size: 11pt;
+  }
+</style>
+</head>
+<body>
+
+<div class="title">Weekly Progress Report Template</div>
+
+<div class="meta-group">
+  <div class="meta-line"><span class="meta-label">Project Title:</span> Development of e-Portal for Facilitating Case Management Hearing of Various Types of Cases (Order XV-A CPC)</div>
+  <div class="meta-line"><span class="meta-label">Team ID:</span> SVVV-CSE-2026-MP-14</div>
+  <div class="meta-line"><span class="meta-label">Date:</span> September 11, 2026 – September 18, 2026</div>
+</div>
+
+<div class="section-header">1. Executive Summary</div>
+<ul class="bullet-list">
+  <li><span class="item-label">Current Sprint:</span> Sprint 2 of 6 (Phase 1: Functional Modeling & Requirement Engineering)</li>
+  <li><span class="item-label">Sprint Goal:</span> Complete Functional Modeling under Order XV-A CPC by identifying human & system actors, constructing the Use Case Diagram to establish rigid system boundaries, authoring formal Cockburn Use Case Descriptions (UC-01 to UC-06), and mapping Use Cases to Jira User Stories with Gherkin acceptance criteria.</li>
+  <li><span class="item-label">Status:</span> On Track</li>
+</ul>
+
+<div class="section-header">2. UML & OOAD Progress</div>
+<ul class="bullet-list">
+  <li><span class="item-label">Diagrams Completed this week:</span> Use Case Diagram (System Boundary Definition enclosing 6 primary use cases UC-01 to UC-06 interacting with 4 human actors and 3 system actors), Subsystem Use Case Diagrams (incorporating &lt;&lt;include&gt;&gt; for RBAC authentication, SHA-256 document hashing, and schedule clash verification; and &lt;&lt;extend&gt;&gt; for ADR Lok Adalat mediation and multichannel deadline alerts), and Detailed IEEE/Cockburn Use Case Specifications.</li>
+  <li><span class="item-label">Diagrams Revised:</span> System Boundary Refinement (Decoupled legacy CIS 3.2 / NJDG and SMS/Email telecommunication gateways as external API boundary actors rather than internal services), and Actor Hierarchy Refinement (Subdivided generic user roles to distinguish Advocate with filing/scheduling rights from Litigant with read-only tracking and alert rights).</li>
+  <li><span class="item-label">OO Concept Applied:</span> Actor Generalization & Specialization (Base User actor specialized into JudicialOfficer, Advocate, CourtRegistryClerk, and Litigant with distinct RBAC boundaries); Functional Decomposition using &lt;&lt;include&gt;&gt; (enforcing SHA-256 cryptographic hashing) and &lt;&lt;extend&gt;&gt; (conditional Section 89 CPC mediation referrals).</li>
+</ul>
+
+<div class="section-header">3. Technical Execution (DevOps & Git)</div>
+<ul class="bullet-list">
+  <li><span class="item-label">Jira Tasks Completed:</span> [CMH-201] Clerk & Judge 2FA Authentication with JWT RBAC middleware; [CMH-202] Cryptographic SHA-256 docket file hashing & PDF/A validation service; [CMH-203] Interactive Admissions & Denials data model and state machine; [CMH-204] Judge Pre-Trial Summary View separating admitted facts from triable issues; [CMH-205] Multi-courtroom advocate schedule conflict-detection algorithm; [CMH-206] ICS calendar sync and booking confirmation generator.</li>
+  <li><span class="item-label">Git Activity:</span>
+    <ul class="sub-list">
+      <li><span class="item-label">Active Branches:</span> feature/use-case-boundary-mapping, feature/jira-story-cmh-201-auth-rbac, feature/jira-story-cmh-203-admissions-matrix, feature/clash-detection-algorithm-spike</li>
+      <li><span class="item-label">Merged Pull Requests:</span> PR #18 (Use Case models & RBAC policies), PR #21 (Admissions matrix schema & locking), PR #23 (SHA-256 verification & digital docket receipts)</li>
+    </ul>
+  </li>
+  <li><span class="item-label">CI/CD Status:</span> Build Passing / 92% Code Coverage (GitHub Actions pipeline running flake8 linting, black formatting, pytest test suites, and schema validation).</li>
+</ul>
+
+<div class="section-header">4. Testing Summary</div>
+<ul class="bullet-list">
+  <li><span class="item-label">Total Unit Tests:</span> 34 Tests (Authentication, Docket File Validation, Admissions Locking, Conflict Detection)</li>
+  <li><span class="item-label">Pass Rate:</span> 100%</li>
+  <li><span class="item-label">Key Bug Identified:</span> Concurrency race condition during simultaneous submissions of the Admissions Matrix by opposing counsels resolved via database-level row versioning and atomic transaction locks in SQLAlchemy.</li>
+</ul>
+
+<div class="section-header">5. Goals for Next Week</div>
+<ul class="bullet-list">
+  <li>Phase 2: Object-Oriented Analysis (Weeks 3–4) — Focus: Understanding the "What" of the system without focusing on implementation. Identify domain entities and conceptual relationships for the CMH e-Portal (Judges, Advocates, Court Clerks, Litigants, Cases, Pleadings, Exhibits, Admissions Checklists, CMH Sessions, and Case Management Orders).</li>
+  <li>UML Deliverables: Construct Object Diagram for active dispute runtime snapshot and Initial Class Diagram (Domain Model) with multiplicity relationships (1:1, 1:N, M:N) without methods.</li>
+</ul>
+
+<div class="signatures">
+  <div>Project Guide Signature</div>
+  <div>Project In-charge Signature</div>
+</div>
+
+</body>
+</html>
