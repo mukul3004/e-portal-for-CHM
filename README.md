@@ -1,42 +1,165 @@
-# e-Portal for Facilitating Case Management Hearing of Various Types of Cases (Order XV-A CPC)
+# e-Portal for Facilitating Case Management Hearing (CMH) of Various Types of Cases
+
+> **Specialized Judicial Workflow Platform under Order XV-A of the Code of Civil Procedure (CPC) & Commercial Courts Act, 2015**
 
 **Department of Computer Science & Engineering, SVIIT, SVVV, Indore**  
+**Course:** Major Project (2025–2026) | **Team ID:** `SVVV-CSE-2026-MP-14`  
 **Project Guide:** Prof. Shweta Pandey  
+
 **Team Members:**
-1. Mukul Bhamgare (`23100BTCSAII14297`)
-2. Rashi Kashiv (`23100BTCSAII14314`)
-3. Sakshi Singh (`23100BTCSAII14317`)
-4. Kanishk (`23100BTCSAII14293`)
+1. **Mukul Bhamgare** (`23100BTCSAII14297`) - *Team Lead & Full-Stack Architect*
+2. **Rashi Kashiv** (`23100BTCSAII14314`) - *Frontend & UI/UX Specialist*
+3. **Sakshi Singh** (`23100BTCSAII14317`) - *Backend & Database Engineer*
+4. **Kanishk** (`23100BTCSAII14293`) - *QA & Compliance Analyst*
 
 ---
 
-## 📁 Workspace Structure
+## 🏛️ Executive Summary
+
+The **Case Management Hearing (CMH) e-Portal** modernizes judicial administration for Indian commercial and civil court proceedings under **Order XV-A of the Code of Civil Procedure (CPC)** (inserted by the Commercial Courts Act, 2015).
+
+Traditional commercial litigation in India is often plagued by procedural delays, trial date clashes for advocates across multiple benches, and unfocused trials. The CMH e-Portal addresses these bottlenecks by:
+1. **Accelerating Admissions & Denials (Rule 1)**: Automated digital matrix to isolate admitted facts from contentious issues prior to trial.
+2. **Clash-Free Multi-Bench Scheduling (Rule 2)**: Real-time advocate and courtroom conflict resolution engine.
+3. **Structured Case Management Orders (Rule 3)**: Formats binding discovery timetables, witness quotas, and trial timelines with cryptographic SHA-256 integrity.
+4. **Real Indian Case Intelligence**: Sourced exclusively from genuine Indian judicial databases (Indian Kanoon, eCourts India, NJDG, High Court of MP - Indore Bench).
+
+---
+
+## 🚀 Key Implemented Features
+
+### 1. Admissions & Denials Matrix
+* Structured table of factual averments categorized by Plaint Paragraph, Averment Text, Plaintiff Initial Position, and Defendant Response.
+* Interactive verification controls: `ADMITTED`, `DENIED`, `NOT_ADMITTED_WANT_OF_KNOWLEDGE`.
+* Live Readiness Score calculation and state-locking mechanism before judicial hearing.
+
+### 2. Conflict-Free Hearing Scheduler
+* Real-time slot conflict detection preventing double-booking of advocates across different courtrooms/benches.
+* Integrated WebRTC judicial room identifiers.
+
+### 3. Enforceable Case Management Order (CMO) Sheet
+* Summary of undisputed facts, framed judicial issues, and strict witness quotas (Plaintiff & Defendant).
+* Binding discovery and cross-examination deadlines.
+* SHA-256 cryptographic seal and verifiable QR digital verification stub.
+
+### 4. Comprehensive Case Dossier & 16-Digit CNR Search
+* Real-time search by Case Title or 16-character eCourts CNR number (e.g., `MPHC010045212024`).
+* Step-by-step judicial timeline milestone tracker (Filing $\to$ Pleadings $\to$ Admissions $\to$ CMH Hearing $\to$ CMO Sealed).
+
+### 5. Multi-Role Judicial Persona Switcher
+* **Hon\'ble Commercial Court Judge**: Issue CMOs, frame issues, adjudicate admissions.
+* **Plaintiff Counsel**: Submit averments, upload Plaint with SHA-256 integrity, propose dates.
+* **Defendant Counsel**: Respond to admissions, submit Written Statement of Defence.
+* **Court Master / Clerk**: Schedule hearings and verify bench availability.
+* **Public / Litigant View**: Docket status, court orders, and case feed.
+
+---
+
+## 📋 8-Point Enhancement Roadmap (Sprint 2 & 3)
+
+1. **AI Document Feature Extraction**: Automated extraction of Dates, What Happened, and Legal Reasoning ("Why") from uploaded commercial plaints and orders.
+2. **16-Digit CNR & Case Search**: Fast lookup with validation matching Indian eCourts alphanumeric format.
+3. **Multi-Role RBAC**: Granular permissions for Judges, Advocates, Registry Clerks, and Citizens.
+4. **Multiple Case Categories**:
+   * Commercial Disputes (Commercial Courts Act, 2015)
+   * Civil Suits (Order XV-A CPC)
+   * Cheque Bounce (Sec 138, Negotiable Instruments Act, 1881)
+   * Arbitration & Conciliation Petitions (1996 Act)
+   * High-Value Commercial Contract Suits
+5. **Headline-Driven Case Newsfeed**: Real-time judicial updates and case summaries presented in high-readability cards.
+6. **Citizen/Client Sorting**: Browse cases filtered by "Trending" (public interest / high valuation) and "Dates" (recent filing / next hearing).
+7. **100+ Real Indian Court Cases Dataset**: Verified corpus sourced strictly from Indian Kanoon, eCourts Services, and MP High Court records.
+8. **Structured e-Filing Workflow**: Guided multi-step docket lodgment with fee validation and exhibit checksums.
+
+---
+
+## 🛠️ Technology Stack
+
+| Layer | Technology |
+|---|---|
+| **Frontend** | React 19, Vite, Lucide Icons, Custom Judicial Dark/Light Theme |
+| **Backend** | FastAPI (Python 3.13), Uvicorn, Pydantic v2 |
+| **Database** | SQLite 3 with SQLAlchemy 2.0 ORM |
+| **Security** | JWT (HS256) Role-Based Access Control, SHA-256 Evidence Hashing |
+| **Testing** | Pytest, FastAPI TestClient, Starlette |
+
+---
+
+## 💻 Local Setup & Quickstart
+
+### Prerequisites
+* Python 3.11+
+* Node.js 18+ & npm
+
+### 1. Clone Repository
+```bash
+git clone https://github.com/mukul3004/e-portal-for-CHM.git
+cd e-portal-for-CHM
+```
+
+### 2. Backend Setup
+```bash
+# Create and activate virtual environment
+python3 -m venv .venv
+source .venv/bin/activate
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Run backend server (FastAPI + Uvicorn)
+python run.py
+```
+* Backend API runs on: `http://localhost:8000`
+* Swagger Interactive Docs: `http://localhost:8000/docs`
+
+### 3. Frontend Setup
+```bash
+cd frontend
+npm install
+npm run dev
+```
+* Frontend runs on: `http://localhost:5173`
+
+### 4. Running Backend Automated Tests
+```bash
+source .venv/bin/activate
+PYTHONPATH=. pytest backend/tests/test_api.py -v
+```
+
+---
+
+## 📁 Repository Directory Layout
 
 ```
 case-management-eportal/
-├── README.md                                  <- Project Overview & Workspace Map
-├── docs/
-│   ├── Week_2_Weekly_Progress_Report.md       <- Week 2 Template-Compliant Weekly Report
-│   ├── Week_2_Functional_Modeling_Report.md   <- Week 2 Actors, Use Cases & Jira Stories
-│   ├── Weekly_Progress_Report.md              <- Sprint 1 / Initial Weekly Progress Report
-│   ├── Presentation_Script_and_Viva_QA.md     <- 3-Member 17-Slide Script & Viva Q&A
-│   ├── Major_Project_Synopsis.md              <- Official SVVV Format Synopsis
-│   ├── Manuscript_I_Review_Paper.md           <- Academic Review Paper (IEEE format)
-│   └── slides.md                              <- Slide Outline & Architecture Specs
-├── backend/                                   <- (FastAPI Service - Coming in Sprint 3)
-├── frontend/                                  <- (React.js Service - Coming in Sprint 3)
-└── diagrams/                                  <- UML Artifacts (Use Case, Sequence, Class)
+├── README.md                                  <- Project Overview & Setup Instructions
+├── requirements.txt                           <- Python dependencies
+├── run.py                                     <- Backend entrypoint script
+├── cmh_portal.db                              <- Local development SQLite database
+├── backend/
+│   ├── app/
+│   │   ├── main.py                            <- FastAPI application instance & routing
+│   │   ├── core/                              <- Config & database engine
+│   │   ├── models/                            <- SQLAlchemy ORM models (Case, User, CMO, etc.)
+│   │   ├── schemas/                           <- Pydantic validation schemas
+│   │   ├── routers/                           <- API endpoints (cases, admissions, cmh, cmo, auth)
+│   │   ├── security/                          <- JWT authentication & password hashing
+│   │   └── services/                          <- Clash detection & admissions engine
+│   └── tests/                                 <- Pytest test suite
+├── frontend/
+│   ├── src/
+│   │   ├── App.jsx                            <- Interactive Judicial Single-Page App
+│   │   ├── App.css                            <- Judicial component styling
+│   │   ├── index.css                          <- Typography & base tokens
+│   │   └── main.jsx                           <- React DOM entry point
+│   └── package.json                           <- Node.js dependencies & scripts
+├── docs/                                      <- Project reports, synopsis, review paper
+└── diagrams/                                  <- UML Class and Component diagrams
 ```
 
 ---
 
-## 📥 Downloadable Artifacts in `~/Downloads/`
-
-* 📄 [**Week_2_Weekly_Progress_Report.pdf**](file:///Users/mukulbhamgare/Downloads/Week_2_Weekly_Progress_Report.pdf) *(Printable PDF)*
-* 📝 [**Week_2_Weekly_Progress_Report.docx**](file:///Users/mukulbhamgare/Downloads/Week_2_Weekly_Progress_Report.docx) *(Editable Word doc)*
-* 📄 [**Week_2_Functional_Modeling_Report.pdf**](file:///Users/mukulbhamgare/Downloads/Week_2_Functional_Modeling_Report.pdf) *(Detailed Modeling PDF)*
-* 📝 [**Week_2_Functional_Modeling_Report.docx**](file:///Users/mukulbhamgare/Downloads/Week_2_Functional_Modeling_Report.docx) *(Detailed Modeling Word doc)*
-* 📊 [**Case_Management_Hearing_ePortal_Presentation.pptx**](file:///Users/mukulbhamgare/Downloads/Case_Management_Hearing_ePortal_Presentation.pptx) *(17-Slide SVVV Widescreen Deck)*
-* 📄 [**Major_Project_Synopsis.pdf**](file:///Users/mukulbhamgare/Downloads/Major_Project_Synopsis.pdf) & [**.docx**](file:///Users/mukulbhamgare/Downloads/Major_Project_Synopsis.docx)
-* 📄 [**Manuscript_I_Review_Paper.pdf**](file:///Users/mukulbhamgare/Downloads/Manuscript_I_Review_Paper.pdf) & [**.docx**](file:///Users/mukulbhamgare/Downloads/Manuscript_I_Review_Paper.docx)
-* 📝 [**Presentation_Script_and_Viva_QA.docx**](file:///Users/mukulbhamgare/Downloads/Presentation_Script_and_Viva_QA.docx)
+## ⚖️ Legal & Statutory Framework
+* **Code of Civil Procedure, 1908 (CPC)**: Order XV-A (Case Management Hearing).
+* **Commercial Courts Act, 2015**: Sections 2(1)(c), 15, and 16.
+* **Information Technology Act, 2000**: Section 65B (Admissibility of electronic records and digital certificates).

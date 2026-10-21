@@ -40,6 +40,11 @@ class Case(Base):
     # Relationships
     pleadings = relationship("Pleading", back_populates="case", cascade="all, delete-orphan")
     checklist = relationship("AdmissionsChecklist", back_populates="case", uselist=False, cascade="all, delete-orphan")
+    sessions = relationship("CMHSession", cascade="all, delete-orphan")
+    cmo = relationship("CaseManagementOrder", uselist=False, cascade="all, delete-orphan")
+    judge = relationship("User", foreign_keys=[judge_id])
+    plaintiff_counsel = relationship("User", foreign_keys=[plaintiff_counsel_id])
+    defendant_counsel = relationship("User", foreign_keys=[defendant_counsel_id])
 
 class PleadingType(str, enum.Enum):
     PLAINT = "PLAINT"
