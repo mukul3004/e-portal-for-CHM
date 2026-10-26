@@ -10,6 +10,7 @@ class CaseType(str, enum.Enum):
     CIVIL_RECOVERY = "CIVIL_RECOVERY"
     ARBITRATION = "ARBITRATION_PETITION"
     CONTRACT = "CONTRACT_DISPUTE"
+    CHEQUE_BOUNCE = "CHEQUE_BOUNCE_SEC138"
 
 class CaseStatus(str, enum.Enum):
     FILED = "FILED"
