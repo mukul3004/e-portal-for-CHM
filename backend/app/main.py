@@ -23,9 +23,9 @@ def seed_initial_users():
                     court_hall_id="HALL_04"
                 ),
                 User(
-                    email="adv.mukul@barcouncil.org",
+                    email="adv.himanshu@barcouncil.org",
                     password_hash=hash_password("Advocate@2026"),
-                    full_name="Adv. Mukul Bhamgare",
+                    full_name="Adv. Himanshu Bawaniya",
                     role=RoleType.ADVOCATE,
                     bar_council_id="MP/14297/2026"
                 ),

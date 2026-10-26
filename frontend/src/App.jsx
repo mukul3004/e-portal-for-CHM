@@ -92,11 +92,13 @@ export default function App() {
   };
 
   // Fetch Complete Case Dossier
-  const loadCaseDossier = async (identifier) => {
+  const loadCaseDossier = async (identifier, switchTab = true) => {
     if (!identifier) return;
     setLoadingDossier(true);
     setDossierError(null);
-    setActiveTab('search');
+    if (switchTab) {
+      setActiveTab('search');
+    }
     try {
       const res = await fetch(`${API_BASE}/cases/dossier/${encodeURIComponent(identifier.trim())}`);
       if (res.ok) {
@@ -126,34 +128,13 @@ export default function App() {
     setTimeout(() => setCopiedCnr(false), 2000);
   };
 
-  // Check Backend Health & Fetch initial data
-  const checkHealthAndLoad = async () => {
-    try {
-      const res = await fetch('http://localhost:8000/');
-      if (res.ok) {
-        setBackendOnline(true);
-        loadCases();
-      } else {
-        setBackendOnline(false);
-      }
-    } catch (e) {
-      setBackendOnline(false);
-    }
-  };
-
-  useEffect(() => {
-    checkHealthAndLoad();
-    const interval = setInterval(checkHealthAndLoad, 10000);
-    return () => clearInterval(interval);
-  }, []);
-
   // Fetch Cases from API
   const loadCases = async () => {
     try {
       const authRes = await fetch(`${API_BASE}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: 'adv.mukul@barcouncil.org', password: 'Advocate@2026' })
+        body: JSON.stringify({ email: 'adv.himanshu@barcouncil.org', password: 'Advocate@2026' })
       });
       const authData = await authRes.json();
       const token = authData.access_token;
@@ -167,13 +148,30 @@ export default function App() {
         if (data.length > 0 && !activeCase) {
           setActiveCase(data[0]);
           loadMatrix(data[0].id, token);
-          loadCaseDossier(data[0].cnr_number);
+          loadCaseDossier(data[0].cnr_number, false);
         }
       }
     } catch (err) {
       console.error('Error loading cases:', err);
     }
   };
+
+  // Check Backend Health
+  const checkHealthAndLoad = async () => {
+    try {
+      const res = await fetch('http://localhost:8000/');
+      setBackendOnline(res.ok);
+    } catch (e) {
+      setBackendOnline(false);
+    }
+  };
+
+  useEffect(() => {
+    checkHealthAndLoad();
+    loadCases();
+    const interval = setInterval(checkHealthAndLoad, 15000);
+    return () => clearInterval(interval);
+  }, []);
 
   // Fetch Admissions Matrix for active case
   const loadMatrix = async (caseId, passedToken = null) => {
@@ -184,7 +182,7 @@ export default function App() {
         const authRes = await fetch(`${API_BASE}/auth/login`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email: 'adv.mukul@barcouncil.org', password: 'Advocate@2026' })
+          body: JSON.stringify({ email: 'adv.himanshu@barcouncil.org', password: 'Advocate@2026' })
         });
         const authData = await authRes.json();
         token = authData.access_token;
@@ -209,7 +207,7 @@ export default function App() {
     try {
       const email = currentRole === 'ADVOCATE_DEFENDANT' 
         ? 'adv.verma@barcouncil.org' 
-        : (currentRole === 'JUDGE' ? 'judge.sharma@svvv-courts.gov.in' : 'adv.mukul@barcouncil.org');
+        : (currentRole === 'JUDGE' ? 'judge.sharma@svvv-courts.gov.in' : 'adv.himanshu@barcouncil.org');
       const password = currentRole === 'JUDGE' ? 'Judge@2026' : 'Advocate@2026';
 
       const authRes = await fetch(`${API_BASE}/auth/login`, {
@@ -281,7 +279,7 @@ export default function App() {
       const authRes = await fetch(`${API_BASE}/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: 'adv.mukul@barcouncil.org', password: 'Advocate@2026' })
+        body: JSON.stringify({ email: 'adv.himanshu@barcouncil.org', password: 'Advocate@2026' })
       });
       const authData = await authRes.json();
       const token = authData.access_token;
@@ -460,7 +458,7 @@ export default function App() {
             onClick={() => setCurrentRole('ADVOCATE_PLAINTIFF')}
           >
             <UserCheck size={16} />
-            <span>Advocate Mukul (Plaintiff)</span>
+            <span>Adv. Himanshu Bawaniya (Plaintiff)</span>
           </button>
           <button 
             className={`role-pill ${currentRole === 'ADVOCATE_DEFENDANT' ? 'active' : ''}`}
@@ -649,14 +647,14 @@ export default function App() {
 
               {/* Quick Case Selection Chips */}
               <div className="quick-search-chips">
-                <span style={{ fontWeight: 600, color: '#cbd5e1' }}>Quick Selection:</span>
-                {cases.map((c) => (
+                <span style={{ fontWeight: 600, color: '#cbd5e1' }}>Quick Selection (Sample Dockets):</span>
+                {cases.slice(0, 8).map((c) => (
                   <button 
                     key={c.id} 
                     type="button"
                     onClick={() => {
                       setSearchQuery(c.cnr_number);
-                      loadCaseDossier(c.cnr_number);
+                      loadCaseDossier(c.cnr_number, true);
                     }}
                     className="quick-search-chip"
                     style={{
@@ -664,7 +662,7 @@ export default function App() {
                       background: dossier?.cnr_number === c.cnr_number ? 'rgba(56, 189, 248, 0.25)' : 'rgba(255,255,255,0.1)'
                     }}
                   >
-                    <span style={{ fontFamily: 'monospace', fontWeight: 700 }}>{c.cnr_number}</span> - {c.case_title.split(' vs.')[0]}
+                    <span style={{ fontFamily: 'monospace', fontWeight: 700 }}>{c.cnr_number}</span> - {(c.case_title || '').split(' vs.')[0]}
                   </button>
                 ))}
               </div>
@@ -893,13 +891,13 @@ export default function App() {
                             Plaintiff Legal Counsel
                           </div>
                           <div style={{ fontSize: '0.95rem', fontWeight: 700, color: '#0f172a' }}>
-                            {dossier.plaintiff_counsel?.full_name || "Adv. Mukul Bhamgare"}
+                            {dossier.plaintiff_counsel?.full_name || "Adv. Himanshu Bawaniya"}
                           </div>
                         </div>
                       </div>
                       <div style={{ fontSize: '0.8rem', color: '#64748b', display: 'flex', flexDirection: 'column', gap: '0.2rem' }}>
                         <div>Bar Registration: <strong style={{ color: '#334155' }}>{dossier.plaintiff_counsel?.bar_council_id || "MP/14297/2026"}</strong></div>
-                        <div>Email: <span className="mono">{dossier.plaintiff_counsel?.email || "adv.mukul@barcouncil.org"}</span></div>
+                        <div>Email: <span className="mono">{dossier.plaintiff_counsel?.email || "adv.himanshu@barcouncil.org"}</span></div>
                         <div>Client: Apex Infotech Ltd.</div>
                       </div>
                     </div>
@@ -1324,7 +1322,11 @@ export default function App() {
                           <div style={{ fontSize: '0.85rem', color: '#334155', background: '#eff6ff', padding: '0.75rem 1rem', borderRadius: '6px', borderLeft: '4px solid #2563eb' }}>
                             {(() => {
                               try {
-                                const issues = JSON.parse(dossier.cmo.framed_issues_json);
+                                let raw = dossier.cmo.framed_issues_json;
+                                if (raw && typeof raw === "string" && raw.startsWith("[") && raw.includes("'")) {
+                                  raw = raw.replace(/'/g, "\"");
+                                }
+                                const issues = JSON.parse(raw);
                                 if (Array.isArray(issues)) {
                                   return (
                                     <ul style={{ margin: 0, paddingLeft: '1.2rem', lineHeight: 1.6 }}>
@@ -1479,10 +1481,10 @@ export default function App() {
                 <div style={{ flex: 1 }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', color: '#64748b', fontWeight: 600, marginBottom: '0.25rem' }}>
                     <span>Pre-Trial Readiness</span>
-                    <span style={{ color: '#2563eb' }}>{matrix?.readiness_score || 0}%</span>
+                    <span style={{ color: '#2563eb' }}>{Math.round((matrix?.readiness_score != null && matrix.readiness_score <= 1) ? matrix.readiness_score * 100 : (matrix?.readiness_score || 0))}%</span>
                   </div>
                   <div className="progress-track">
-                    <div className="progress-fill" style={{ width: `${matrix?.readiness_score || 0}%` }}></div>
+                    <div className="progress-fill" style={{ width: `${Math.round((matrix?.readiness_score != null && matrix.readiness_score <= 1) ? matrix.readiness_score * 100 : (matrix?.readiness_score || 0))}%` }}></div>
                   </div>
                 </div>
               </div>
@@ -1903,7 +1905,7 @@ export default function App() {
                   <p style={{ fontSize: '0.85rem', marginTop: '0.2rem' }}>
                     {clashResult.has_conflict 
                       ? clashResult.conflict_message 
-                      : `Both counsels (Adv. Mukul MP/14297 and Adv. Priya MP/11054) are completely free across all district court benches during ${schedStartTime} - ${schedEndTime}.`}
+                      : `Both counsels (Adv. Himanshu MP/14297 and Adv. Priya MP/11054) are completely free across all district court benches during ${schedStartTime} - ${schedEndTime}.`}
                   </p>
                 </div>
               </div>

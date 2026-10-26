@@ -16,7 +16,7 @@ def test_login_judge(client):
 def test_login_advocate(client):
     response = client.post(
         "/api/v1/auth/login",
-        json={"email": "adv.mukul@barcouncil.org", "password": "Advocate@2026"}
+        json={"email": "adv.himanshu@barcouncil.org", "password": "Advocate@2026"}
     )
     assert response.status_code == 200
     data = response.json()
@@ -27,7 +27,7 @@ def test_file_case_and_admissions(client):
     # Login advocate
     auth_resp = client.post(
         "/api/v1/auth/login",
-        json={"email": "adv.mukul@barcouncil.org", "password": "Advocate@2026"}
+        json={"email": "adv.himanshu@barcouncil.org", "password": "Advocate@2026"}
     )
     token = auth_resp.json()["access_token"]
     headers = {"Authorization": f"Bearer {token}"}

@@ -93,7 +93,7 @@ def seed_cases():
 
     # Fetch users
     judge = db.query(User).filter(User.role == RoleType.JUDGE).first()
-    plaintiff_counsel = db.query(User).filter(User.email == "adv.mukul@barcouncil.org").first()
+    plaintiff_counsel = db.query(User).filter(User.email == "adv.himanshu@barcouncil.org").first()
     defendant_counsel = db.query(User).filter(User.email == "adv.verma@barcouncil.org").first()
 
     print("Reading rows and populating database...")
