@@ -647,24 +647,43 @@ export default function App() {
 
               {/* Quick Case Selection Chips */}
               <div className="quick-search-chips">
-                <span style={{ fontWeight: 600, color: '#cbd5e1' }}>Quick Selection (Sample Dockets):</span>
-                {cases.slice(0, 8).map((c) => (
-                  <button 
-                    key={c.id} 
-                    type="button"
-                    onClick={() => {
-                      setSearchQuery(c.cnr_number);
-                      loadCaseDossier(c.cnr_number, true);
-                    }}
-                    className="quick-search-chip"
-                    style={{
-                      borderColor: dossier?.cnr_number === c.cnr_number ? '#38bdf8' : 'rgba(255,255,255,0.15)',
-                      background: dossier?.cnr_number === c.cnr_number ? 'rgba(56, 189, 248, 0.25)' : 'rgba(255,255,255,0.1)'
-                    }}
-                  >
-                    <span style={{ fontFamily: 'monospace', fontWeight: 700 }}>{c.cnr_number}</span> - {(c.case_title || '').split(' vs.')[0]}
-                  </button>
-                ))}
+                <span style={{ fontWeight: 600, color: '#cbd5e1' }}>Quick Selection (Diverse Categories):</span>
+                {(() => {
+                  const seen = new Set();
+                  const sampleCases = [];
+                  for (const item of cases) {
+                    if (!seen.has(item.case_type)) {
+                      seen.add(item.case_type);
+                      sampleCases.push(item);
+                    }
+                    if (sampleCases.length >= 6) break;
+                  }
+                  if (sampleCases.length < 6) {
+                    for (const item of cases) {
+                      if (!sampleCases.some(s => s.id === item.id)) {
+                        sampleCases.push(item);
+                        if (sampleCases.length >= 6) break;
+                      }
+                    }
+                  }
+                  return sampleCases.map((c) => (
+                    <button 
+                      key={c.id} 
+                      type="button"
+                      onClick={() => {
+                        setSearchQuery(c.cnr_number);
+                        loadCaseDossier(c.cnr_number, true);
+                      }}
+                      className="quick-search-chip"
+                      style={{
+                        borderColor: dossier?.cnr_number === c.cnr_number ? '#38bdf8' : 'rgba(255,255,255,0.15)',
+                        background: dossier?.cnr_number === c.cnr_number ? 'rgba(56, 189, 248, 0.25)' : 'rgba(255,255,255,0.1)'
+                      }}
+                    >
+                      <span style={{ fontFamily: 'monospace', fontWeight: 700 }}>{c.cnr_number}</span> - {(c.case_title || '').split(' vs.')[0]}
+                    </button>
+                  ));
+                })()}
               </div>
             </div>
 
@@ -898,7 +917,7 @@ export default function App() {
                       <div style={{ fontSize: '0.8rem', color: '#64748b', display: 'flex', flexDirection: 'column', gap: '0.2rem' }}>
                         <div>Bar Registration: <strong style={{ color: '#334155' }}>{dossier.plaintiff_counsel?.bar_council_id || "MP/14297/2026"}</strong></div>
                         <div>Email: <span className="mono">{dossier.plaintiff_counsel?.email || "adv.himanshu@barcouncil.org"}</span></div>
-                        <div>Client: Apex Infotech Ltd.</div>
+                        <div>Client: <strong style={{ color: "#1e293b" }}>{dossier.case_title ? dossier.case_title.split(" vs.")[0] : "Plaintiff"}</strong></div>
                       </div>
                     </div>
 
@@ -920,7 +939,7 @@ export default function App() {
                       <div style={{ fontSize: '0.8rem', color: '#64748b', display: 'flex', flexDirection: 'column', gap: '0.2rem' }}>
                         <div>Bar Registration: <strong style={{ color: '#334155' }}>{dossier.defendant_counsel?.bar_council_id || "MP/11054/2026"}</strong></div>
                         <div>Email: <span className="mono">{dossier.defendant_counsel?.email || "adv.verma@barcouncil.org"}</span></div>
-                        <div>Client: Horizon Logistics Pvt. Ltd.</div>
+                        <div>Client: <strong style={{ color: "#1e293b" }}>{dossier.case_title && dossier.case_title.includes(" vs.") ? dossier.case_title.split(" vs.")[1].trim() : "Defendant"}</strong></div>
                       </div>
                     </div>
                   </div>
