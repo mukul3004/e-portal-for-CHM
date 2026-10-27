@@ -1,5 +1,6 @@
 import random
 from typing import List, Optional
+from datetime import datetime, date, timedelta
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy import or_
 from sqlalchemy.orm import Session
@@ -7,7 +8,7 @@ from backend.app.database import get_db
 from backend.app.models.user import User, RoleType
 from backend.app.models.case import Case, CaseStatus, Pleading, Exhibit
 from backend.app.models.admissions import AdmissionsChecklist, AdmissionItem
-from backend.app.models.schedule import CMHSession
+from backend.app.models.schedule import CMHSession, SessionStatus
 from backend.app.models.order import CaseManagementOrder, DiscoveryDeadline
 from backend.app.schemas.case import (
     CaseCreate,
@@ -85,11 +86,116 @@ def file_case(
     db.refresh(new_case)
     return new_case
 
+def get_next_hearing_info(case: Case, db: Session, ref_date: Optional[date] = None):
+    """Calculates live next hearing date, formatted string, relative badge, and purpose."""
+    if ref_date is None:
+        ref_date = date.today()
+
+    session = (
+        db.query(CMHSession)
+        .filter(CMHSession.case_id == case.id)
+        .filter(CMHSession.status == SessionStatus.SCHEDULED)
+        .order_by(CMHSession.hearing_date.asc(), CMHSession.start_time.asc())
+        .first()
+    )
+    if not session:
+        session = (
+            db.query(CMHSession)
+            .filter(CMHSession.case_id == case.id)
+            .filter(CMHSession.hearing_date >= ref_date)
+            .order_by(CMHSession.hearing_date.asc(), CMHSession.start_time.asc())
+            .first()
+        )
+
+    if session:
+        h_date = session.hearing_date
+        diff = (h_date - ref_date).days if hasattr(h_date, 'strftime') else 0
+        date_iso = h_date.isoformat() if hasattr(h_date, 'isoformat') else str(h_date)
+        date_formatted = h_date.strftime("%d %b %Y") if hasattr(h_date, 'strftime') else str(h_date)
+
+        if diff < 0:
+            rel = f"Past ({abs(diff)}d ago)"
+        elif diff == 0:
+            rel = "Today (Live Session)"
+        elif diff == 1:
+            rel = "Tomorrow"
+        elif 2 <= diff <= 7:
+            rel = f"Next Week ({h_date.strftime('%a')}, in {diff}d)"
+        elif 8 <= diff <= 14:
+            rel = f"In 2 Weeks (in {diff}d)"
+        elif 15 <= diff <= 35:
+            rel = f"Next Month ({h_date.strftime('%b %d')})"
+        elif 36 <= diff <= 65:
+            rel = f"In 2 Months ({h_date.strftime('%b %Y')})"
+        else:
+            rel = f"Scheduled ({date_formatted})"
+
+        if case.status == CaseStatus.CMH_SCHEDULED:
+            purpose = "Order XV-A Case Management Hearing"
+        elif case.status == CaseStatus.PRE_CMH:
+            purpose = "Pleadings Scrutiny & Admission Matrix Review"
+        elif case.status == CaseStatus.CMO_ISSUED:
+            purpose = "Discovery Compliance & Witness Quota Review"
+        elif case.status == CaseStatus.FILED:
+            purpose = "Summons Returnable & Preliminary Appearance"
+        else:
+            purpose = "Pre-Trial Case Management Conference"
+
+        start_str = session.start_time.strftime("%H:%M") if hasattr(session.start_time, 'strftime') else str(session.start_time)
+        end_str = session.end_time.strftime("%H:%M") if hasattr(session.end_time, 'strftime') else str(session.end_time)
+        time_slot = f"{start_str} - {end_str}"
+        hall = session.court_hall_id or case.court_hall_id or "Court Hall 04"
+
+        return {
+            "next_hearing_date": date_iso,
+            "next_hearing_formatted": date_formatted,
+            "next_hearing_purpose": purpose,
+            "next_hearing_relative": rel,
+            "next_hearing_time": time_slot,
+            "next_hearing_hall": hall
+        }
+    else:
+        if case.status == CaseStatus.DISPOSED:
+            return {
+                "next_hearing_date": None,
+                "next_hearing_formatted": "Disposed / Concluded",
+                "next_hearing_purpose": "Proceedings Concluded (Decree Sealed)",
+                "next_hearing_relative": "No Further Hearings",
+                "next_hearing_time": None,
+                "next_hearing_hall": None
+            }
+        elif case.status == CaseStatus.CMO_ISSUED:
+            target_date = ref_date + timedelta(days=21)
+            return {
+                "next_hearing_date": target_date.isoformat(),
+                "next_hearing_formatted": target_date.strftime("%d %b %Y"),
+                "next_hearing_purpose": "Discovery Compliance & Trial Timetable",
+                "next_hearing_relative": f"Next Month ({target_date.strftime('%b %d')})",
+                "next_hearing_time": "11:30 - 12:15",
+                "next_hearing_hall": case.court_hall_id or "Court Hall 04"
+            }
+        else:
+            target_date = ref_date + timedelta(days=7)
+            return {
+                "next_hearing_date": target_date.isoformat(),
+                "next_hearing_formatted": target_date.strftime("%d %b %Y"),
+                "next_hearing_purpose": "Order XV-A CMH Allocation & Scrutiny",
+                "next_hearing_relative": f"Next Week ({target_date.strftime('%a')})",
+                "next_hearing_time": "10:30 - 11:15",
+                "next_hearing_hall": case.court_hall_id or "Court Hall 04"
+            }
+
 @router.get("/", response_model=List[CaseResponse])
 def list_cases(db: Session = Depends(get_db)):
-    """List all registered case dockets."""
+    """List all registered case dockets enriched with live next hearing dates and purpose."""
     cases = db.query(Case).order_by(Case.filing_date.desc()).all()
-    return cases
+    results = []
+    for c in cases:
+        next_info = get_next_hearing_info(c, db)
+        c_dict = CaseResponse.model_validate(c).model_dump()
+        c_dict.update(next_info)
+        results.append(CaseResponse(**c_dict))
+    return results
 
 @router.get("/search", response_model=List[CaseSearchResult])
 def search_cases(
@@ -98,7 +204,7 @@ def search_cases(
     status_filter: Optional[str] = Query(None, alias="status", description="Filter by case status"),
     db: Session = Depends(get_db)
 ):
-    """Search registered court dockets across CNR number, case title, and court hall."""
+    """Search registered court dockets across CNR number, case title, and court hall with live next hearing details."""
     query = db.query(Case)
     if q and q.strip():
         term = f"%{q.strip()}%"
@@ -115,7 +221,13 @@ def search_cases(
     if status_filter and status_filter.strip():
         query = query.filter(Case.status == status_filter.strip())
 
-    results = query.order_by(Case.filing_date.desc()).limit(30).all()
+    cases = query.order_by(Case.filing_date.desc()).limit(30).all()
+    results = []
+    for c in cases:
+        next_info = get_next_hearing_info(c, db)
+        c_dict = CaseSearchResult.model_validate(c).model_dump()
+        c_dict.update(next_info)
+        results.append(CaseSearchResult(**c_dict))
     return results
 
 @router.get("/dossier/{identifier}", response_model=CaseDetailResponse)
@@ -222,7 +334,38 @@ def get_case_dossier(identifier: str, db: Session = Depends(get_db)):
     # 4. Hearings & CMH Sessions
     hearing_records = []
     sessions = db.query(CMHSession).filter(CMHSession.case_id == case.id).order_by(CMHSession.hearing_date.asc(), CMHSession.start_time.asc()).all()
+    ref_d = date.today()
     for s in sessions:
+        h_d = s.hearing_date
+        diff = (h_d - ref_d).days if hasattr(h_d, 'strftime') else 0
+        if s.status == SessionStatus.CONCLUDED:
+            rel_badge = "Concluded"
+            is_up = False
+        elif diff < 0:
+            rel_badge = f"{abs(diff)}d ago"
+            is_up = False
+        elif diff == 0:
+            rel_badge = "Today"
+            is_up = True
+        elif 1 <= diff <= 7:
+            rel_badge = f"Next Week ({h_d.strftime('%a')})"
+            is_up = True
+        elif 8 <= diff <= 14:
+            rel_badge = f"In 2 Weeks (in {diff}d)"
+            is_up = True
+        elif 15 <= diff <= 45:
+            rel_badge = f"Next Month ({h_d.strftime('%b %d')})"
+            is_up = True
+        else:
+            rel_badge = "Scheduled"
+            is_up = True
+
+        purpose = "Order XV-A Pre-Trial Case Management Hearing"
+        if case.status == CaseStatus.CMO_ISSUED:
+            purpose = "Discovery Compliance & Witness Quota Review"
+        elif case.status == CaseStatus.PRE_CMH:
+            purpose = "Admissions Matrix Scrutiny & Pre-Trial Filtering"
+
         hearing_records.append(HearingRecord(
             id=s.id,
             hearing_date=s.hearing_date.isoformat() if hasattr(s.hearing_date, 'isoformat') else str(s.hearing_date),
@@ -231,7 +374,10 @@ def get_case_dossier(identifier: str, db: Session = Depends(get_db)):
             court_hall_id=s.court_hall_id,
             status=s.status.value if hasattr(s.status, 'value') else str(s.status),
             webrtc_room_id=s.webrtc_room_id,
-            created_at=s.created_at
+            created_at=s.created_at,
+            purpose=purpose,
+            relative_badge=rel_badge,
+            is_upcoming=is_up
         ))
 
     # 5. Case Management Order (CMO)
@@ -342,6 +488,7 @@ def get_case_dossier(identifier: str, db: Session = Depends(get_db)):
             status="PENDING"
         ))
 
+    next_info = get_next_hearing_info(case, db)
     return CaseDetailResponse(
         id=case.id,
         cnr_number=case.cnr_number,
@@ -358,16 +505,20 @@ def get_case_dossier(identifier: str, db: Session = Depends(get_db)):
         checklist=checklist_data,
         hearings=hearing_records,
         cmo=cmo_record,
-        timeline=timeline
+        timeline=timeline,
+        **next_info
     )
 
 @router.get("/{cnr_number}", response_model=CaseResponse)
 def get_case_by_cnr(cnr_number: str, db: Session = Depends(get_db)):
-    """Fetch electronic docket by 16-digit CNR number."""
+    """Fetch electronic docket by 16-digit CNR number with next hearing info."""
     case = db.query(Case).filter(Case.cnr_number == cnr_number).first()
     if not case:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Case with CNR '{cnr_number}' not found.")
-    return case
+    next_info = get_next_hearing_info(case, db)
+    c_dict = CaseResponse.model_validate(case).model_dump()
+    c_dict.update(next_info)
+    return CaseResponse(**c_dict)
 
 @router.post("/{case_id}/pleadings", response_model=PleadingResponse, status_code=status.HTTP_201_CREATED)
 def record_pleading(

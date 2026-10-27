@@ -4,6 +4,8 @@ from backend.app.models.case import Case, CaseType, CaseStatus, Pleading, Pleadi
 from backend.app.models.admissions import AdmissionsChecklist, AdmissionItem, StanceType, ItemResolutionStatus
 from backend.app.models.schedule import CMHSession, CourtRoom, SessionStatus
 from backend.app.models.order import CaseManagementOrder, DiscoveryDeadline, DeadlineStatus
+from backend.app.models.echallan import EChallan, ChallanStatus, HeadOfAccount
+from backend.app.models.notification import Notification, NotificationChannel, NotificationType
 
 __all__ = [
     "Base",
@@ -25,4 +27,10 @@ __all__ = [
     "CaseManagementOrder",
     "DiscoveryDeadline",
     "DeadlineStatus",
+    "EChallan",
+    "ChallanStatus",
+    "HeadOfAccount",
+    "Notification",
+    "NotificationChannel",
+    "NotificationType",
 ]

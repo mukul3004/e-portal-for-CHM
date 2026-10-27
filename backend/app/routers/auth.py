@@ -83,3 +83,9 @@ def login_for_swagger(form_data: OAuth2PasswordRequestForm = Depends(), db: Sess
 def get_current_user_profile(current_user: User = Depends(get_current_user)):
     """Return currently authenticated user profile."""
     return current_user
+
+@router.get("/officers", response_model=list[UserResponse])
+def get_judicial_officers(db: Session = Depends(get_db)):
+    """Return all active judicial officers, advocates, and registry clerks for the e-portal."""
+    return db.query(User).filter(User.is_active == True).order_by(User.role.asc(), User.full_name.asc()).all()
+

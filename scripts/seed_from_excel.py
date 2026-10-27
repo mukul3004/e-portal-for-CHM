@@ -122,35 +122,33 @@ def seed_cases():
         priority_track = sheet.cell(row=row_idx, column=19).value or "Normal Track"
         case_status_raw = sheet.cell(row=row_idx, column=20).value or "Pending"
 
-        # Date handling
-        if isinstance(filing_date_val, datetime):
-            filing_date = filing_date_val
-        elif isinstance(filing_date_val, date):
-            filing_date = datetime.combine(filing_date_val, time(10, 0))
+        # Date handling - Live 2026 e-Courts Calendar
+        base_today = date(2026, 10, 26)
+        if case_status_raw in ["Disposed", "Settled via ADR"]:
+            status = CaseStatus.DISPOSED
+            filing_date = datetime.combine(base_today - timedelta(days=90 + (seeded_count % 60)), time(10, 0))
+        elif current_stage in ["Judgment reserved", "Arguments", "Issues framed", "Evidence stage"]:
+            status = CaseStatus.CMO_ISSUED
+            filing_date = datetime.combine(base_today - timedelta(days=50 + (seeded_count % 30)), time(10, 0))
+        elif current_stage in ["Case Management Hearing"]:
+            status = CaseStatus.CMH_SCHEDULED
+            filing_date = datetime.combine(base_today - timedelta(days=25 + (seeded_count % 20)), time(10, 0))
+        elif current_stage in ["Written statement filed", "Reply filed", "Accused appeared"]:
+            status = CaseStatus.PRE_CMH
+            filing_date = datetime.combine(base_today - timedelta(days=12 + (seeded_count % 15)), time(10, 0))
         else:
-            filing_date = datetime(2024, 1, 15, 10, 0)
+            status = CaseStatus.FILED
+            filing_date = datetime.combine(base_today - timedelta(days=3 + (seeded_count % 10)), time(10, 0))
 
-        # 16-Digit CNR generation
+        # 16-Digit CNR generation (2026)
         prefix = COURT_CNR_PREFIX.get(court_str, "MPIN01")
         seq_num = f"{seeded_count + 101:06d}"
-        year_str = str(filing_date.year)
+        year_str = "2026"
         cnr_number = f"{prefix}{seq_num}{year_str}"[:16]
 
         case_type = CATEGORY_MAP.get(category_str, CaseType.COMMERCIAL)
         case_title = f"{plaintiff_str} vs. {defendant_str}"
         claim_valuation = Decimal(str(claim_val_val))
-
-        # Map CaseStatus
-        if case_status_raw in ["Disposed", "Settled via ADR"]:
-            status = CaseStatus.DISPOSED
-        elif current_stage in ["Judgment reserved", "Arguments", "Issues framed", "Evidence stage"]:
-            status = CaseStatus.CMO_ISSUED
-        elif current_stage in ["Case Management Hearing"]:
-            status = CaseStatus.CMH_SCHEDULED
-        elif current_stage in ["Written statement filed", "Reply filed", "Accused appeared"]:
-            status = CaseStatus.PRE_CMH
-        else:
-            status = CaseStatus.FILED
 
         # Check if already exists by CNR
         existing = db.query(Case).filter(Case.cnr_number == cnr_number).first()
@@ -252,15 +250,26 @@ def seed_cases():
             db.add(item)
 
         # 3. CMH Session
-        if cmh_date_val:
-            if isinstance(cmh_date_val, datetime):
-                cmh_date = cmh_date_val.date()
-            elif isinstance(cmh_date_val, date):
-                cmh_date = cmh_date_val
+        if cmh_date_val or status in [CaseStatus.CMH_SCHEDULED, CaseStatus.PRE_CMH, CaseStatus.FILED]:
+            if status == CaseStatus.CMH_SCHEDULED:
+                if seeded_count % 2 == 0:
+                    cmh_date = base_today + timedelta(days=2 + (seeded_count % 6))
+                else:
+                    cmh_date = base_today + timedelta(days=14 + (seeded_count % 20))
+                session_status = SessionStatus.SCHEDULED
+            elif status == CaseStatus.PRE_CMH:
+                cmh_date = base_today + timedelta(days=5 + (seeded_count % 10))
+                session_status = SessionStatus.SCHEDULED
+            elif status == CaseStatus.FILED:
+                cmh_date = base_today + timedelta(days=18 + (seeded_count % 20))
+                session_status = SessionStatus.SCHEDULED
+            elif status in [CaseStatus.CMO_ISSUED, CaseStatus.DISPOSED]:
+                cmh_date = filing_date.date() + timedelta(days=40)
+                session_status = SessionStatus.CONCLUDED
             else:
-                cmh_date = filing_date.date() + timedelta(days=60)
+                cmh_date = base_today + timedelta(days=7)
+                session_status = SessionStatus.SCHEDULED
 
-            session_status = SessionStatus.CONCLUDED if status in [CaseStatus.CMO_ISSUED, CaseStatus.DISPOSED] else (SessionStatus.REFERRED_ADR if adr_referred == "Yes" else SessionStatus.SCHEDULED)
             cmh_session = CMHSession(
                 id=str(uuid.uuid4()),
                 case_id=case_obj.id,
@@ -295,19 +304,19 @@ def seed_cases():
             db.add(cmo)
             db.flush()
 
-            # Deadlines
+            # Deadlines (Next Week and Next Month)
             deadline1 = DiscoveryDeadline(
                 id=str(uuid.uuid4()),
                 order_id=cmo.id,
                 task_description="Submission of Evidence Affidavits & Witness List",
-                due_date=(cmo_date + timedelta(days=15)).date(),
+                due_date=base_today + timedelta(days=7 + (seeded_count % 5)),
                 status=DeadlineStatus.COMPLETED if status == CaseStatus.DISPOSED else DeadlineStatus.PENDING
             )
             deadline2 = DiscoveryDeadline(
                 id=str(uuid.uuid4()),
                 order_id=cmo.id,
                 task_description="Completion of Document Inspection & Cross-Examination",
-                due_date=(cmo_date + timedelta(days=45)).date(),
+                due_date=base_today + timedelta(days=25 + (seeded_count % 15)),
                 status=DeadlineStatus.COMPLETED if status == CaseStatus.DISPOSED else DeadlineStatus.PENDING
             )
             db.add(deadline1)

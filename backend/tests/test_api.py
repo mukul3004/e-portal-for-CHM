@@ -65,3 +65,76 @@ def test_file_case_and_admissions(client):
     assert put_resp.status_code == 200
     updated_item = put_resp.json()
     assert updated_item["plaintiff_stance"] == "ADMIT_CONTENTS"
+
+def test_daily_cause_list(client):
+    response = client.get("/api/v1/schedule/cause-list")
+    assert response.status_code == 200
+    data = response.json()
+    assert "total_items" in data
+    assert "items" in data
+
+def test_echallan_lifecycle(client):
+    # 1. Calculate court fee
+    calc_resp = client.get("/api/v1/echallan/calculate-fee?claim_valuation=4500000")
+    assert calc_resp.status_code == 200
+    fee_data = calc_resp.json()
+    assert "total_payable_fee" in fee_data
+    assert fee_data["total_payable_fee"] > 0
+
+    # 2. Generate e-Challan
+    gen_resp = client.post(
+        "/api/v1/echallan/generate",
+        json={
+            "payer_name": "Adv. Himanshu Bawaniya",
+            "payer_email": "adv.himanshu@barcouncil.org",
+            "payer_role": "ADVOCATE",
+            "amount": fee_data["total_payable_fee"],
+            "head_of_account": "0030-02-103-01: Commercial Court Ad-Valorem Fee",
+            "bench_id": "BENCH_INDORE_COMM_01",
+            "court_hall_id": "HALL_04"
+        }
+    )
+    assert gen_resp.status_code == 201
+    challan = gen_resp.json()
+    assert challan["status"] == "PENDING"
+    assert challan["challan_number"].startswith("MP-CH-2026-")
+    challan_id = challan["id"]
+
+    # 3. Pay e-Challan
+    pay_resp = client.post(
+        f"/api/v1/echallan/{challan_id}/pay",
+        json={"payment_mode": "SBI_EPAY", "bank_name": "State Bank of India"}
+    )
+    assert pay_resp.status_code == 200
+    paid_challan = pay_resp.json()
+    assert paid_challan["status"] == "PAID"
+    assert paid_challan["receipt_sha256"] is not None
+    assert len(paid_challan["receipt_sha256"]) == 64
+
+    # 4. Verify e-Challan via SHA-256 receipt hash
+    verify_resp = client.get(f"/api/v1/echallan/verify/{paid_challan['receipt_sha256']}")
+    assert verify_resp.status_code == 200
+    verified = verify_resp.json()
+    assert verified["challan_number"] == challan["challan_number"]
+
+def test_notifications_dispatch(client):
+    # 1. Trigger notification dispatch
+    resp = client.post("/api/v1/notifications/dispatch-hearing-alerts")
+    assert resp.status_code == 200
+    data = resp.json()
+    assert data["status"] == "SUCCESS"
+    assert data["dispatched_count"] >= 0
+
+    # 2. Get notifications
+    get_resp = client.get("/api/v1/notifications/")
+    assert get_resp.status_code == 200
+    notifs = get_resp.json()
+    assert isinstance(notifs, list)
+
+    # 3. Check summary
+    sum_resp = client.get("/api/v1/notifications/summary")
+    assert sum_resp.status_code == 200
+    summary = sum_resp.json()
+    assert "unread_count" in summary
+    assert "channel_breakdown" in summary
+

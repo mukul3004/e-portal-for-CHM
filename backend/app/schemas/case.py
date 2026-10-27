@@ -53,6 +53,12 @@ class CaseResponse(BaseModel):
     defendant_counsel_id: Optional[str]
     filing_date: datetime
     pleadings: List[PleadingResponse] = []
+    next_hearing_date: Optional[str] = None
+    next_hearing_formatted: Optional[str] = None
+    next_hearing_purpose: Optional[str] = None
+    next_hearing_relative: Optional[str] = None
+    next_hearing_time: Optional[str] = None
+    next_hearing_hall: Optional[str] = None
 
 class StakeholderSummary(BaseModel):
     model_config = ConfigDict(from_attributes=True)
@@ -76,6 +82,9 @@ class HearingRecord(BaseModel):
     status: str
     webrtc_room_id: str
     created_at: Optional[datetime] = None
+    purpose: Optional[str] = "Order XV-A Case Management Hearing"
+    relative_badge: Optional[str] = None
+    is_upcoming: bool = False
 
 class DiscoveryDeadlineRecord(BaseModel):
     model_config = ConfigDict(from_attributes=True)
@@ -128,6 +137,13 @@ class CaseDetailResponse(BaseModel):
     cmo: Optional[CMORecord] = None
     timeline: List[TimelineMilestone] = []
 
+    next_hearing_date: Optional[str] = None
+    next_hearing_formatted: Optional[str] = None
+    next_hearing_purpose: Optional[str] = None
+    next_hearing_relative: Optional[str] = None
+    next_hearing_time: Optional[str] = None
+    next_hearing_hall: Optional[str] = None
+
 class CaseSearchResult(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
@@ -139,3 +155,9 @@ class CaseSearchResult(BaseModel):
     status: CaseStatus
     court_hall_id: Optional[str]
     filing_date: datetime
+    next_hearing_date: Optional[str] = None
+    next_hearing_formatted: Optional[str] = None
+    next_hearing_purpose: Optional[str] = None
+    next_hearing_relative: Optional[str] = None
+    next_hearing_time: Optional[str] = None
+    next_hearing_hall: Optional[str] = None

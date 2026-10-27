@@ -1,36 +1,41 @@
-/* Judicial Header & Masthead */
+/* =========================================================
+   COMMERCIAL COURT CASE MANAGEMENT e-PORTAL (ORDER XV-A CPC)
+   THEME: WHITE, ORANGE, AND BLACK
+   ========================================================= */
+
+/* 1. Judicial Header & Masthead */
 .court-header {
-  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-  color: white;
+  background: linear-gradient(135deg, #09090b 0%, #18181b 100%);
+  color: #ffffff;
   padding: 1.25rem 2rem;
-  border-bottom: 3px solid #d97706;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border-bottom: 3px solid #f97316;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.45), 0 2px 8px rgba(249, 115, 22, 0.2);
 }
 
 .court-badge {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  background: rgba(217, 119, 6, 0.15);
-  border: 1px solid rgba(217, 119, 6, 0.4);
-  color: #fcd34d;
+  background: rgba(249, 115, 22, 0.15);
+  border: 1px solid rgba(249, 115, 22, 0.45);
+  color: #fb923c;
   padding: 0.25rem 0.75rem;
   border-radius: 9999px;
   font-size: 0.75rem;
-  font-weight: 600;
+  font-weight: 700;
   letter-spacing: 0.05em;
   text-transform: uppercase;
 }
 
-/* Role Switcher Bar */
+/* 2. Role Switcher Bar */
 .role-bar {
   background: #ffffff;
-  border-bottom: 1px solid #e2e8f0;
+  border-bottom: 1px solid #e4e4e7;
   padding: 0.75rem 2rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
 }
 
 .role-pill {
@@ -42,37 +47,41 @@
   font-size: 0.85rem;
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.2s ease;
-  border: 1px solid #e2e8f0;
-  background: #f8fafc;
-  color: #475569;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid #e4e4e7;
+  background: #ffffff;
+  color: #3f3f46;
 }
 
 .role-pill:hover {
-  background: #f1f5f9;
-  border-color: #cbd5e1;
+  background: #fff7ed;
+  border-color: #fdba74;
+  color: #ea580c;
+  transform: translateY(-1px);
 }
 
 .role-pill.active {
-  background: #0f172a;
+  background: #09090b;
   color: #ffffff;
-  border-color: #0f172a;
-  box-shadow: 0 2px 4px rgba(15, 23, 42, 0.2);
+  border-color: #f97316;
+  box-shadow: 0 2px 8px rgba(249, 115, 22, 0.35);
+  font-weight: 600;
 }
 
-/* Main Container */
+/* 3. Main Container */
 .main-wrapper {
   max-width: 1400px;
   margin: 1.5rem auto;
   padding: 0 1.5rem 3rem;
 }
 
-/* Tabs */
+/* 4. Navigation Tabs */
 .tabs-nav {
   display: flex;
   gap: 0.5rem;
-  border-bottom: 2px solid #e2e8f0;
+  border-bottom: 2px solid #e4e4e7;
   margin-bottom: 1.5rem;
+  overflow-x: auto;
 }
 
 .tab-btn {
@@ -82,35 +91,40 @@
   padding: 0.75rem 1.25rem;
   font-size: 0.9rem;
   font-weight: 600;
-  color: #64748b;
+  color: #71717a;
   border: none;
   background: none;
   cursor: pointer;
   border-bottom: 3px solid transparent;
   margin-bottom: -2px;
   transition: all 0.2s ease;
+  white-space: nowrap;
 }
 
 .tab-btn:hover {
-  color: #0f172a;
+  color: #ea580c;
+  background: #fff7ed;
+  border-radius: 6px 6px 0 0;
 }
 
 .tab-btn.active {
-  color: #2563eb;
-  border-bottom-color: #2563eb;
+  color: #ea580c;
+  border-bottom-color: #f97316;
+  font-weight: 700;
 }
 
-/* Cards */
+/* 5. Judicial Cards */
 .court-card {
   background: #ffffff;
-  border: 1px solid #e2e8f0;
+  border: 1px solid #e4e4e7;
   border-radius: 12px;
   padding: 1.5rem;
   box-shadow: var(--shadow-sm);
   margin-bottom: 1.5rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-/* Metrics Grid */
+/* 6. Metrics Grid */
 .metrics-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -120,12 +134,19 @@
 
 .metric-card {
   background: #ffffff;
-  border: 1px solid #e2e8f0;
+  border: 1px solid #e4e4e7;
   border-radius: 10px;
   padding: 1.25rem;
   display: flex;
   align-items: center;
   gap: 1rem;
+  transition: all 0.2s ease;
+}
+
+.metric-card:hover {
+  border-color: #fed7aa;
+  box-shadow: 0 4px 12px rgba(249, 115, 22, 0.08);
+  transform: translateY(-2px);
 }
 
 .metric-icon-box {
@@ -137,7 +158,7 @@
   justify-content: center;
 }
 
-/* Table Styles */
+/* 7. Court Table Styles */
 .court-table {
   width: 100%;
   border-collapse: separate;
@@ -146,12 +167,12 @@
 }
 
 .court-table th {
-  background: #f8fafc;
-  color: #475569;
-  font-weight: 600;
+  background: #f4f4f5;
+  color: #18181b;
+  font-weight: 700;
   text-align: left;
   padding: 0.85rem 1rem;
-  border-bottom: 1px solid #e2e8f0;
+  border-bottom: 2px solid #e4e4e7;
   text-transform: uppercase;
   font-size: 0.75rem;
   letter-spacing: 0.05em;
@@ -159,15 +180,15 @@
 
 .court-table td {
   padding: 1rem;
-  border-bottom: 1px solid #f1f5f9;
+  border-bottom: 1px solid #f4f4f5;
   vertical-align: middle;
 }
 
 .court-table tr:hover td {
-  background: #fafafa;
+  background: #fff7ed;
 }
 
-/* Badges */
+/* 8. Status Badges */
 .badge {
   display: inline-flex;
   align-items: center;
@@ -175,7 +196,7 @@
   padding: 0.25rem 0.65rem;
   border-radius: 6px;
   font-size: 0.75rem;
-  font-weight: 600;
+  font-weight: 700;
   letter-spacing: 0.02em;
 }
 
@@ -186,18 +207,18 @@
 }
 
 .badge-contested {
-  background: #fffbeb;
-  color: #92400e;
-  border: 1px solid #fde68a;
+  background: #fff7ed;
+  color: #c2410c;
+  border: 1px solid #fed7aa;
 }
 
 .badge-pending {
-  background: #f1f5f9;
-  color: #475569;
-  border: 1px solid #cbd5e1;
+  background: #f4f4f5;
+  color: #52525b;
+  border: 1px solid #e4e4e7;
 }
 
-/* Action Stance Buttons */
+/* 9. Action Stance Buttons */
 .stance-btn-group {
   display: flex;
   gap: 0.35rem;
@@ -209,29 +230,30 @@
   font-size: 0.75rem;
   font-weight: 600;
   cursor: pointer;
-  border: 1px solid #cbd5e1;
+  border: 1px solid #d4d4d8;
   background: #ffffff;
-  color: #334155;
+  color: #18181b;
   transition: all 0.15s ease;
 }
 
 .stance-btn:hover {
-  background: #f8fafc;
+  background: #fff7ed;
+  border-color: #fed7aa;
 }
 
 .stance-btn.active-admit {
-  background: #059669;
+  background: #10b981;
   color: white;
-  border-color: #059669;
+  border-color: #10b981;
 }
 
 .stance-btn.active-deny {
-  background: #dc2626;
+  background: #ef4444;
   color: white;
-  border-color: #dc2626;
+  border-color: #ef4444;
 }
 
-/* Clash Alert Box */
+/* 10. Clash Alert Box */
 .clash-alert {
   padding: 1rem 1.25rem;
   border-radius: 8px;
@@ -253,30 +275,30 @@
   color: #065f46;
 }
 
-/* Progress bar */
+/* 11. Progress bar */
 .progress-track {
   width: 100%;
   height: 8px;
-  background: #e2e8f0;
+  background: #e4e4e7;
   border-radius: 9999px;
   overflow: hidden;
 }
 
 .progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, #2563eb, #059669);
+  background: linear-gradient(90deg, #f97316, #ea580c);
   transition: width 0.4s ease;
 }
 
-/* Universal Case Search & Dossier Styles */
+/* 12. Universal Case Search & Dossier Styles */
 .search-hero {
-  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  background: linear-gradient(135deg, #09090b 0%, #18181b 100%);
   border-radius: 14px;
   padding: 1.75rem 2rem;
-  color: white;
+  color: #ffffff;
   margin-bottom: 2rem;
-  box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.25);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.45), 0 0 25px rgba(249, 115, 22, 0.12);
+  border: 1px solid rgba(249, 115, 22, 0.3);
 }
 
 .search-input-group {
@@ -297,45 +319,47 @@
   padding: 0.85rem 1rem 0.85rem 2.75rem;
   font-size: 1rem;
   border-radius: 8px;
-  border: 1px solid #475569;
-  background: #1e293b;
-  color: #f8fafc;
+  border: 1px solid #27272a;
+  background: #121214;
+  color: #ffffff;
   outline: none;
   transition: all 0.2s ease;
   font-family: inherit;
 }
 
 .search-input-box input:focus {
-  border-color: #38bdf8;
-  background: #0f172a;
-  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.2);
+  border-color: #f97316;
+  background: #09090b;
+  box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.3);
 }
 
 .search-input-box .search-icon {
   position: absolute;
   left: 0.9rem;
-  color: #94a3b8;
+  color: #a1a1aa;
   pointer-events: none;
 }
 
 .search-action-btn {
-  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
   color: white;
   border: none;
   border-radius: 8px;
   padding: 0 1.5rem;
-  font-weight: 600;
+  font-weight: 700;
   font-size: 0.95rem;
   cursor: pointer;
   display: flex;
   align-items: center;
   gap: 0.5rem;
   transition: all 0.2s ease;
+  box-shadow: 0 4px 14px rgba(249, 115, 22, 0.35);
 }
 
 .search-action-btn:hover {
-  background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+  background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%);
   transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(249, 115, 22, 0.45);
 }
 
 .quick-search-chips {
@@ -345,13 +369,13 @@
   gap: 0.5rem;
   margin-top: 1rem;
   font-size: 0.8rem;
-  color: #94a3b8;
+  color: #a1a1aa;
 }
 
 .quick-search-chip {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.15);
-  color: #e2e8f0;
+  color: #e4e4e7;
   padding: 0.25rem 0.65rem;
   border-radius: 9999px;
   font-size: 0.75rem;
@@ -360,51 +384,52 @@
 }
 
 .quick-search-chip:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(249, 115, 22, 0.2);
   color: #ffffff;
-  border-color: rgba(255, 255, 255, 0.3);
+  border-color: #f97316;
 }
 
-/* Dossier Header Card */
+/* 13. Dossier Header Card */
 .dossier-masthead {
   background: #ffffff;
-  border: 1px solid #e2e8f0;
-  border-top: 4px solid #2563eb;
+  border: 1px solid #e4e4e7;
+  border-top: 4px solid #f97316;
   border-radius: 12px;
   padding: 1.75rem;
   margin-bottom: 1.5rem;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 }
 
 .dossier-cnr-badge {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  background: #f1f5f9;
-  border: 1px solid #cbd5e1;
+  background: #fff7ed;
+  border: 1px solid #fed7aa;
   padding: 0.3rem 0.65rem;
   border-radius: 6px;
-  font-family: monospace;
+  font-family: 'JetBrains Mono', monospace;
   font-weight: 700;
   font-size: 0.9rem;
-  color: #0f172a;
+  color: #09090b;
 }
 
 .copy-btn {
   background: transparent;
   border: none;
   cursor: pointer;
-  color: #64748b;
+  color: #71717a;
   display: flex;
   align-items: center;
   padding: 2px;
+  transition: color 0.15s ease;
 }
 
 .copy-btn:hover {
-  color: #0f172a;
+  color: #ea580c;
 }
 
-/* Stakeholders Grid */
+/* 14. Stakeholders Grid */
 .stakeholders-row {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -414,10 +439,15 @@
 
 .stakeholder-card {
   background: #ffffff;
-  border: 1px solid #e2e8f0;
+  border: 1px solid #e4e4e7;
   border-radius: 10px;
   padding: 1.25rem;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+  transition: border-color 0.2s ease;
+}
+
+.stakeholder-card:hover {
+  border-color: #fed7aa;
 }
 
 .stakeholder-header {
@@ -438,12 +468,12 @@
   font-size: 1rem;
 }
 
-/* Timeline Components */
+/* 15. Timeline Components */
 .timeline-track {
   position: relative;
   padding-left: 2rem;
   margin-left: 0.5rem;
-  border-left: 2px solid #e2e8f0;
+  border-left: 2px solid #e4e4e7;
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
@@ -461,60 +491,60 @@
   height: 1.25rem;
   border-radius: 50%;
   background: #ffffff;
-  border: 3px solid #cbd5e1;
+  border: 3px solid #d4d4d8;
   box-shadow: 0 0 0 3px #ffffff;
 }
 
 .timeline-bullet.completed {
-  border-color: #059669;
+  border-color: #10b981;
   background: #ecfdf5;
 }
 
 .timeline-bullet.active {
-  border-color: #2563eb;
-  background: #eff6ff;
+  border-color: #f97316;
+  background: #fff7ed;
   animation: pulse-ring 2s infinite;
 }
 
 .timeline-bullet.pending {
-  border-color: #94a3b8;
-  background: #f8fafc;
+  border-color: #a1a1aa;
+  background: #f4f4f5;
 }
 
 @keyframes pulse-ring {
-  0% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.4); }
-  70% { box-shadow: 0 0 0 6px rgba(37, 99, 235, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0); }
+  0% { box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.45); }
+  70% { box-shadow: 0 0 0 6px rgba(249, 115, 22, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(249, 115, 22, 0); }
 }
 
 .timeline-content-card {
   background: #ffffff;
-  border: 1px solid #e2e8f0;
+  border: 1px solid #e4e4e7;
   border-radius: 8px;
   padding: 1rem 1.25rem;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
 }
 
-/* Dossier Filter Sub-Navigation */
+/* 16. Dossier Filter Sub-Navigation */
 .dossier-subnav {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
   margin-bottom: 1.5rem;
-  background: #f8fafc;
+  background: #f4f4f5;
   padding: 0.5rem;
   border-radius: 8px;
-  border: 1px solid #e2e8f0;
+  border: 1px solid #e4e4e7;
 }
 
 .dossier-subnav-btn {
-  padding: 0.4rem 0.9rem;
+  padding: 0.45rem 0.9rem;
   font-size: 0.85rem;
   font-weight: 600;
   border-radius: 6px;
   border: none;
   background: transparent;
-  color: #64748b;
+  color: #71717a;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -523,13 +553,2367 @@
 }
 
 .dossier-subnav-btn:hover {
-  color: #0f172a;
-  background: #f1f5f9;
+  color: #ea580c;
+  background: #fff7ed;
 }
 
 .dossier-subnav-btn.active {
-  background: #ffffff;
-  color: #2563eb;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  background: #09090b;
+  color: #ffffff;
+  border-bottom: 2px solid #f97316;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
 }
+
+/* 17. Live Judicial Roster Ticker */
+.live-roster-ticker {
+  background: linear-gradient(90deg, #09090b 0%, #18181b 50%, #09090b 100%);
+  color: #f4f4f5;
+  padding: 0.65rem 1.5rem;
+  border-radius: 10px;
+  margin-bottom: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  border: 1px solid rgba(249, 115, 22, 0.35);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+}
+
+.live-ticker-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background-color: #f97316;
+  box-shadow: 0 0 10px #f97316;
+  animation: pulse-dot 1.5s infinite;
+}
+
+@keyframes pulse-dot {
+  0% { transform: scale(0.95); opacity: 0.8; box-shadow: 0 0 4px #f97316; }
+  50% { transform: scale(1.3); opacity: 1; box-shadow: 0 0 12px #f97316; }
+  100% { transform: scale(0.95); opacity: 0.8; box-shadow: 0 0 4px #f97316; }
+}
+
+.roster-filter-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #d4d4d8;
+  padding: 0.3rem 0.7rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.roster-filter-btn:hover, .roster-filter-btn.active {
+  background: #f97316;
+  color: #ffffff;
+  border-color: #f97316;
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(249, 115, 22, 0.4);
+}
+
+/* 18. Prominent Dossier Next Hearing Banner */
+.dossier-next-hearing-banner {
+  margin-top: 1.25rem;
+  background: linear-gradient(135deg, #fff7ed 0%, #ffffff 100%);
+  border: 1.5px solid #fed7aa;
+  border-left: 5px solid #f97316;
+  border-radius: 10px;
+  padding: 1.1rem 1.35rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  box-shadow: 0 2px 10px rgba(249, 115, 22, 0.1);
+}
+
+.next-hearing-icon-box {
+  background: #ffedd5;
+  color: #ea580c;
+  padding: 0.65rem;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #fed7aa;
+}
+
+.hearing-action-btn {
+  background: #f97316;
+  color: white;
+  border: none;
+  padding: 0.55rem 1rem;
+  border-radius: 7px;
+  font-size: 0.825rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  transition: all 0.15s ease;
+  box-shadow: 0 2px 6px rgba(249, 115, 22, 0.3);
+}
+
+.hearing-action-btn:hover {
+  background: #ea580c;
+  transform: translateY(-1px);
+}
+
+/* 19. Hearing Countdown & Relative Badges */
+.hearing-pill-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.2rem 0.6rem;
+  border-radius: 9999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.pill-next-week {
+  background: #ffedd5;
+  color: #c2410c;
+  border: 1px solid #fed7aa;
+  animation: gentle-glow 2s infinite alternate;
+}
+
+.pill-next-month {
+  background: #f4f4f5;
+  color: #18181b;
+  border: 1px solid #d4d4d8;
+  font-weight: 700;
+}
+
+.pill-today {
+  background: #fee2e2;
+  color: #991b1b;
+  border: 1px solid #fca5a5;
+  font-weight: 800;
+}
+
+.pill-standard {
+  background: #f4f4f5;
+  color: #3f3f46;
+  border: 1px solid #e4e4e7;
+}
+
+@keyframes gentle-glow {
+  0% { box-shadow: 0 0 0 rgba(249, 115, 22, 0); }
+  100% { box-shadow: 0 0 8px rgba(249, 115, 22, 0.45); }
+}
+
+/* 20. Quick Scheduler Presets */
+.quick-preset-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.quick-preset-btn {
+  background: #ffffff;
+  border: 1px solid #d4d4d8;
+  color: #3f3f46;
+  padding: 0.35rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.quick-preset-btn:hover {
+  background: #fff7ed;
+  color: #ea580c;
+  border-color: #fed7aa;
+}
+
+.quick-preset-btn.active {
+  background: #09090b;
+  color: #ffffff;
+  border-color: #f97316;
+  box-shadow: 0 2px 6px rgba(249, 115, 22, 0.25);
+}
+
+/* 21. Hearing Highlight in Session List */
+.hearing-upcoming-card {
+  border-left: 5px solid #f97316 !important;
+  background: #fff7ed !important;
+  box-shadow: 0 4px 14px rgba(249, 115, 22, 0.12) !important;
+}
+
+/* 22. Form Controls Polish */
+input[type="text"],
+input[type="number"],
+input[type="date"],
+input[type="time"],
+select {
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus,
+input[type="date"]:focus,
+input[type="time"]:focus,
+input[type="text"]:focus,
+input[type="number"]:focus,
+input[type="date"]:focus,
+input[type="time"]:focus,
+select:focus {
+  border-color: #f97316 !important;
+  box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.2) !important;
+}
+
+/* =========================================================
+   MADHYA PRADESH HIGH COURT (MPHC) PORTAL EXTENSIONS
+   ========================================================= */
+
+/* Top Utility Accessibility Bar */
+.mphc-top-bar {
+  background: #09090b;
+  border-bottom: 1px solid #27272a;
+  color: #a1a1aa;
+  font-size: 0.72rem;
+  padding: 0.35rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: nowrap;
+  gap: 0.75rem;
+  width: 100%;
+}
+
+.mphc-top-left {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  white-space: nowrap;
+  flex-shrink: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mphc-top-left .emblem-flag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-weight: 700;
+  color: #e4e4e7;
+}
+
+.mphc-top-left .sep, .mphc-top-right .sep {
+  color: #3f3f46;
+}
+
+.mphc-top-right {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  white-space: nowrap;
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+.mphc-skip-link {
+  color: #d4d4d8;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.15s ease;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.72rem;
+}
+
+.mphc-skip-link:hover {
+  color: #f97316;
+}
+
+.font-size-ctrls {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  background: #18181b;
+  border: 1px solid #27272a;
+  border-radius: 4px;
+  padding: 1px;
+}
+
+.font-btn {
+  background: transparent;
+  border: none;
+  color: #a1a1aa;
+  padding: 0.15rem 0.45rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  cursor: pointer;
+  border-radius: 3px;
+  transition: all 0.15s ease;
+}
+
+.font-btn:hover {
+  color: #f97316;
+}
+
+.font-btn.active {
+  background: #f97316;
+  color: #ffffff;
+}
+
+.lang-toggle-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  background: #18181b;
+  border: 1px solid #27272a;
+  border-radius: 4px;
+  padding: 1px;
+}
+
+.lang-btn {
+  background: transparent;
+  border: none;
+  color: #a1a1aa;
+  padding: 0.15rem 0.55rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  cursor: pointer;
+  border-radius: 3px;
+  transition: all 0.15s ease;
+}
+
+.lang-btn:hover {
+  color: #f97316;
+}
+
+.lang-btn.active {
+  background: #f97316;
+  color: #ffffff;
+}
+
+/* Theme Toggle Button Group */
+.theme-toggle-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  background: #18181b;
+  border: 1px solid #27272a;
+  border-radius: 4px;
+  padding: 1px;
+}
+
+.theme-btn {
+  background: transparent;
+  border: none;
+  color: #a1a1aa;
+  padding: 0.15rem 0.5rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  cursor: pointer;
+  border-radius: 3px;
+  transition: all 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.theme-btn:hover {
+  color: #f97316;
+}
+
+.theme-btn.active {
+  background: #f97316;
+  color: #ffffff;
+}
+
+/* MPHC Institutional Masthead */
+.mphc-header {
+  background: linear-gradient(135deg, #09090b 0%, #121214 60%, #18181b 100%);
+  border-bottom: 4px solid #f97316;
+  color: #ffffff;
+  padding: 1rem 1.5rem;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.5), 0 2px 10px rgba(249, 115, 22, 0.25);
+}
+
+.mphc-masthead-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: nowrap;
+  gap: 1.25rem;
+  width: 100%;
+}
+
+.mphc-identity-col {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-shrink: 1;
+  min-width: 0;
+}
+
+.mphc-emblem-box {
+  width: 66px;
+  height: 66px;
+  min-width: 66px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.45));
+}
+
+.mphc-text-titles {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.mphc-hindi-headline {
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: #fb923c;
+  letter-spacing: 0.02em;
+  line-height: 1.25;
+}
+
+.mphc-english-headline {
+  font-family: 'Cinzel', serif;
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: 0.03em;
+  margin: 0.1rem 0;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.mphc-sub-division {
+  font-size: 0.78rem;
+  color: #d4d4d8;
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+  margin-top: 0.15rem;
+}
+
+.mphc-meta-col {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.45rem;
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
+.mphc-benches-ribbon {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 8px;
+  padding: 0.25rem 0.4rem;
+}
+
+.bench-pill {
+  background: transparent;
+  border: none;
+  color: #d4d4d8;
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 0.25rem 0.6rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.bench-pill:hover {
+  background: rgba(249, 115, 22, 0.2);
+  color: #ffffff;
+}
+
+.bench-pill.active {
+  background: #f97316;
+  color: #ffffff;
+  font-weight: 700;
+  box-shadow: 0 2px 6px rgba(249, 115, 22, 0.4);
+}
+
+/* MPHC Notice Ticker Strip */
+.mphc-notice-strip {
+  background: #fff7ed;
+  border-bottom: 1px solid #fed7aa;
+  padding: 0.45rem 2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.8rem;
+}
+
+.notice-tag {
+  background: #ea580c;
+  color: #ffffff;
+  font-weight: 800;
+  font-size: 0.7rem;
+  padding: 0.2rem 0.55rem;
+  border-radius: 4px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.notice-text {
+  color: #18181b;
+  font-weight: 600;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* High Court e-Display Board Bar */
+.mphc-display-board {
+  background: linear-gradient(90deg, #09090b 0%, #18181b 50%, #09090b 100%);
+  color: #ffffff;
+  border-radius: 10px;
+  padding: 0.75rem 1.25rem;
+  margin-bottom: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  border: 1px solid rgba(249, 115, 22, 0.35);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+}
+
+.display-board-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.825rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #fb923c;
+}
+
+.display-board-text {
+  font-size: 0.825rem;
+  color: #e4e4e7;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+/* Institutional MP High Court Footer */
+.mphc-footer {
+  background: #09090b;
+  border-top: 3px solid #f97316;
+  color: #d4d4d8;
+  margin-top: 4rem;
+  padding-top: 2.5rem;
+}
+
+.mphc-footer-grid {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 2rem 2rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+.footer-col h4 {
+  color: #ffffff;
+  font-size: 0.95rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  margin-bottom: 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-bottom: 1px solid #27272a;
+  padding-bottom: 0.5rem;
+}
+
+.footer-col p, .footer-col ul {
+  font-size: 0.8rem;
+  color: #a1a1aa;
+  line-height: 1.6;
+}
+
+.footer-col ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer-col li {
+  margin-bottom: 0.4rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.4rem;
+}
+
+.footer-col a {
+  color: #fb923c;
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.footer-col a:hover {
+  color: #f97316;
+  text-decoration: underline;
+}
+
+.mphc-bottom-bar {
+  background: #000000;
+  border-top: 1px solid #18181b;
+  padding: 1rem 2rem;
+  text-align: center;
+  font-size: 0.75rem;
+  color: #71717a;
+}
+
+/* =========================================================
+   HIGH COURT DARK THEME SPECIFICATION
+   ========================================================= */
+
+/* Portal Root & Body Theming */
+body.light-theme,
+.mphc-portal-app.light-theme,
+[data-theme="light"] .mphc-portal-app {
+  background-color: #f8fafc !important;
+  color: #09090b !important;
+}
+
+body.dark-theme,
+.mphc-portal-app.dark-theme,
+[data-theme="dark"] .mphc-portal-app {
+  background-color: #09090b !important;
+  color: #f4f4f5 !important;
+}
+
+/* Automatic Dark Mode High Contrast for Inline Colors */
+.dark-theme [style*="color: #09090b"],
+.dark-theme [style*="color: rgb(9, 9, 11)"],
+.dark-theme [style*="color: #18181b"],
+.dark-theme [style*="color: #27272a"],
+[data-theme="dark"] [style*="color: #09090b"],
+[data-theme="dark"] [style*="color: rgb(9, 9, 11)"],
+[data-theme="dark"] [style*="color: #18181b"],
+[data-theme="dark"] [style*="color: #27272a"] {
+  color: #f4f4f5 !important;
+}
+
+.dark-theme [style*="color: #334155"],
+.dark-theme [style*="color: #475569"],
+.dark-theme [style*="color: #64748b"],
+[data-theme="dark"] [style*="color: #334155"],
+[data-theme="dark"] [style*="color: #475569"],
+[data-theme="dark"] [style*="color: #64748b"] {
+  color: #a1a1aa !important;
+}
+
+.dark-theme [style*="background: #ffffff"],
+.dark-theme [style*="background: rgb(255, 255, 255)"],
+.dark-theme [style*="background: #f8fafc"],
+.dark-theme [style*="background: rgb(248, 250, 252)"],
+[data-theme="dark"] [style*="background: #ffffff"],
+[data-theme="dark"] [style*="background: #f8fafc"] {
+  background: #18181b !important;
+  border-color: #27272a !important;
+  color: #f4f4f5 !important;
+}
+
+.dark-theme [style*="border: 2px solid #09090b"],
+.dark-theme [style*="border-top: 1px dashed #d4d4d8"],
+.dark-theme [style*="border-bottom: 2px solid #e4e4e7"],
+[data-theme="dark"] [style*="border: 2px solid #09090b"],
+[data-theme="dark"] [style*="border-top: 1px dashed #d4d4d8"] {
+  border-color: #27272a !important;
+}
+
+/* Role Bar Dark Mode */
+.dark-theme .role-bar,
+[data-theme="dark"] .role-bar {
+  background: #121214 !important;
+  border-bottom: 1px solid #27272a !important;
+}
+
+.dark-theme .role-bar span[style*="color: #475569"],
+.dark-theme .role-bar span[style*="color: rgb(71, 85, 105)"],
+[data-theme="dark"] .role-bar span[style*="color: #475569"] {
+  color: #a1a1aa !important;
+}
+
+.dark-theme .role-pill,
+[data-theme="dark"] .role-pill {
+  background: #18181b !important;
+  border-color: #27272a !important;
+  color: #d4d4d8 !important;
+}
+
+.dark-theme .role-pill:hover,
+[data-theme="dark"] .role-pill:hover {
+  background: #27272a !important;
+  border-color: #f97316 !important;
+  color: #fb923c !important;
+}
+
+.dark-theme .role-pill.active,
+[data-theme="dark"] .role-pill.active {
+  background: #f97316 !important;
+  color: #ffffff !important;
+  border-color: #f97316 !important;
+  box-shadow: 0 2px 8px rgba(249, 115, 22, 0.45) !important;
+}
+
+.dark-theme .role-bar form,
+[data-theme="dark"] .role-bar form {
+  background: #18181b !important;
+  border-color: #27272a !important;
+}
+
+.dark-theme .role-bar input,
+[data-theme="dark"] .role-bar input {
+  color: #f4f4f5 !important;
+}
+
+/* Court Cards & Container Dark Mode */
+.dark-theme .court-card,
+[data-theme="dark"] .court-card {
+  background: #121214 !important;
+  border-color: #27272a !important;
+  color: #f4f4f5 !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6) !important;
+}
+
+.dark-theme .court-card h2,
+.dark-theme .court-card h3,
+.dark-theme .court-card h4,
+.dark-theme .court-card strong,
+[data-theme="dark"] .court-card h2,
+[data-theme="dark"] .court-card h3,
+[data-theme="dark"] .court-card h4,
+[data-theme="dark"] .court-card strong {
+  color: #ffffff !important;
+}
+
+.dark-theme .court-card p,
+.dark-theme .court-card label,
+.dark-theme .court-card li,
+.dark-theme .court-card ul,
+[data-theme="dark"] .court-card p,
+[data-theme="dark"] .court-card label,
+[data-theme="dark"] .court-card li,
+[data-theme="dark"] .court-card ul {
+  color: #d4d4d8 !important;
+}
+
+/* Metric Cards Dark Mode */
+.dark-theme .metric-card {
+  background: #18181b !important;
+  border-color: #27272a !important;
+  color: #f4f4f5 !important;
+}
+
+.dark-theme .metric-card:hover {
+  border-color: rgba(249, 115, 22, 0.45) !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* Table Dark Mode */
+.dark-theme .court-table th {
+  background: #18181b !important;
+  color: #f4f4f5 !important;
+  border-bottom: 2px solid #27272a !important;
+}
+
+.dark-theme .court-table td {
+  border-bottom: 1px solid #27272a !important;
+  color: #d4d4d8 !important;
+}
+
+.dark-theme .court-table tr:hover td {
+  background: rgba(249, 115, 22, 0.12) !important;
+}
+
+/* Stance Buttons Dark Mode */
+.dark-theme .stance-btn {
+  background: #18181b !important;
+  border-color: #27272a !important;
+  color: #f4f4f5 !important;
+}
+
+.dark-theme .stance-btn:hover {
+  background: #27272a !important;
+  border-color: #fed7aa !important;
+}
+
+/* Navigation Tabs Dark Mode */
+.dark-theme .tabs-nav {
+  border-bottom-color: #27272a !important;
+}
+
+.dark-theme .tab-btn {
+  color: #a1a1aa !important;
+}
+
+.dark-theme .tab-btn:hover {
+  background: #18181b !important;
+  color: #fb923c !important;
+}
+
+.dark-theme .tab-btn.active {
+  color: #f97316 !important;
+  border-bottom-color: #f97316 !important;
+}
+
+/* Dossier Components Dark Mode */
+.dark-theme .dossier-masthead {
+  background: #121214 !important;
+  border-color: #27272a !important;
+  border-top-color: #f97316 !important;
+  color: #f4f4f5 !important;
+}
+
+.dark-theme .dossier-masthead h2,
+.dark-theme .dossier-masthead h3,
+.dark-theme .dossier-masthead h4 {
+  color: #ffffff !important;
+}
+
+.dark-theme .dossier-cnr-badge {
+  background: #18181b !important;
+  border-color: rgba(249, 115, 22, 0.4) !important;
+  color: #fb923c !important;
+}
+
+.dark-theme .stakeholder-card {
+  background: #18181b !important;
+  border-color: #27272a !important;
+  color: #f4f4f5 !important;
+}
+
+.dark-theme .stakeholder-card:hover {
+  border-color: rgba(249, 115, 22, 0.45) !important;
+}
+
+.dark-theme .dossier-subnav {
+  background: #18181b !important;
+  border-color: #27272a !important;
+}
+
+.dark-theme .dossier-subnav-btn {
+  color: #a1a1aa !important;
+}
+
+.dark-theme .dossier-subnav-btn:hover {
+  background: #27272a !important;
+  color: #fb923c !important;
+}
+
+.dark-theme .dossier-subnav-btn.active {
+  background: #09090b !important;
+  color: #ffffff !important;
+  border-bottom: 2px solid #f97316 !important;
+}
+
+.dark-theme .dossier-next-hearing-banner {
+  background: linear-gradient(135deg, #18181b 0%, #121214 100%) !important;
+  border-color: rgba(249, 115, 22, 0.4) !important;
+  border-left: 5px solid #f97316 !important;
+}
+
+.dark-theme .next-hearing-icon-box {
+  background: rgba(249, 115, 22, 0.2) !important;
+  border-color: rgba(249, 115, 22, 0.4) !important;
+  color: #fb923c !important;
+}
+
+.dark-theme .timeline-content-card {
+  background: #18181b !important;
+  border-color: #27272a !important;
+  color: #f4f4f5 !important;
+}
+
+.dark-theme .timeline-track {
+  border-left-color: #27272a !important;
+}
+
+.dark-theme .timeline-bullet {
+  background: #18181b !important;
+  border-color: #3f3f46 !important;
+  box-shadow: 0 0 0 3px #121214 !important;
+}
+
+.dark-theme .quick-preset-btn {
+  background: #18181b !important;
+  border-color: #27272a !important;
+  color: #d4d4d8 !important;
+}
+
+.dark-theme .quick-preset-btn:hover {
+  background: #27272a !important;
+  color: #fb923c !important;
+  border-color: #f97316 !important;
+}
+
+.dark-theme .quick-preset-btn.active {
+  background: #f97316 !important;
+  color: #ffffff !important;
+  border-color: #f97316 !important;
+}
+
+.dark-theme .mphc-notice-strip {
+  background: #121214 !important;
+  border-bottom: 1px solid #27272a !important;
+}
+
+.dark-theme .mphc-notice-strip .notice-text {
+  color: #e4e4e7 !important;
+}
+
+/* Dark Mode Inputs and Forms */
+.dark-theme input[type="text"],
+.dark-theme input[type="number"],
+.dark-theme input[type="date"],
+.dark-theme input[type="time"],
+.dark-theme select,
+.dark-theme textarea {
+  background: #18181b !important;
+  border-color: #27272a !important;
+  color: #ffffff !important;
+}
+
+.dark-theme input[type="text"]:focus,
+.dark-theme input[type="number"]:focus,
+.dark-theme input[type="date"]:focus,
+.dark-theme input[type="time"]:focus,
+.dark-theme select:focus,
+.dark-theme textarea:focus {
+  border-color: #f97316 !important;
+  box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.25) !important;
+}
+
+/* Dark Mode Universal Safety Selectors for Inlined Styles */
+.dark-theme [style*="color: #09090b"],
+.dark-theme [style*="color:#09090b"],
+.dark-theme [style*="color: #18181b"],
+.dark-theme [style*="color:#18181b"],
+.dark-theme [style*="color: #27272a"],
+.dark-theme [style*="color:#27272a"],
+.dark-theme [style*="color: #334155"],
+.dark-theme [style*="color:#334155"] {
+  color: #f4f4f5 !important;
+}
+
+.dark-theme [style*="background: #ffffff"],
+.dark-theme [style*="background:#ffffff"] {
+  background: #18181b !important;
+  border-color: #27272a !important;
+  color: #f4f4f5 !important;
+}
+
+.dark-theme [style*="background: #f8fafc"],
+.dark-theme [style*="background:#f8fafc"] {
+  background: #121214 !important;
+  border-color: #27272a !important;
+}
+
+.dark-theme [style*="background: #fff7ed"],
+.dark-theme [style*="background:#fff7ed"] {
+  background: rgba(249, 115, 22, 0.14) !important;
+  border-color: rgba(249, 115, 22, 0.35) !important;
+}
+
+.dark-theme [style*="border: 1px solid #cbd5e1"],
+.dark-theme [style*="border: 1px solid #e2e8f0"],
+.dark-theme [style*="border: 1px solid #e4e4e7"],
+.dark-theme [style*="border: 2px solid #09090b"],
+.dark-theme [style*="border:2px solid #09090b"] {
+  border-color: #27272a !important;
+}
+
+.dark-theme .pill-standard {
+  background: #18181b !important;
+  color: #a1a1aa !important;
+  border-color: #27272a !important;
+}
+
+.dark-theme .pill-next-month {
+  background: #18181b !important;
+  color: #e4e4e7 !important;
+  border-color: #3f3f46 !important;
+}
+
+.dark-theme .badge-pending {
+  background: #18181b !important;
+  color: #a1a1aa !important;
+  border-color: #27272a !important;
+}
+
+/* ==========================================================================
+   OFFICIAL PERSONAL BLOCK & AUTHENTICATED IDENTITY MANAGEMENT
+   ========================================================================== */
+
+.mphc-personal-block {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.personal-block-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 9px;
+  padding: 0.35rem 0.75rem;
+  color: #ffffff;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  text-align: left;
+}
+
+.personal-block-btn:hover {
+  background: rgba(255, 255, 255, 0.16);
+  border-color: #f97316;
+  box-shadow: 0 4px 14px rgba(249, 115, 22, 0.3);
+  transform: translateY(-1px);
+}
+
+.personal-avatar-box {
+  position: relative;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.9rem;
+  flex-shrink: 0;
+}
+
+.personal-avatar-judge {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: #09090b;
+  border: 2px solid #fde68a;
+  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.35);
+}
+
+.personal-avatar-advocate {
+  background: linear-gradient(135deg, #0284c7, #0369a1);
+  color: #ffffff;
+  border: 2px solid #bae6fd;
+  box-shadow: 0 2px 8px rgba(2, 132, 199, 0.35);
+}
+
+.personal-avatar-clerk {
+  background: linear-gradient(135deg, #059669, #047857);
+  color: #ffffff;
+  border: 2px solid #a7f3d0;
+  box-shadow: 0 2px 8px rgba(5, 150, 105, 0.35);
+}
+
+.personal-avatar-litigant {
+  background: linear-gradient(135deg, #8b5cf6, #6d28d9);
+  color: #ffffff;
+  border: 2px solid #ddd6fe;
+  box-shadow: 0 2px 8px rgba(139, 92, 246, 0.35);
+}
+
+.personal-status-indicator {
+  position: absolute;
+  bottom: -1px;
+  right: -1px;
+  width: 9px;
+  height: 9px;
+  background: #22c55e;
+  border: 2px solid #09090b;
+  border-radius: 50%;
+  box-shadow: 0 0 6px #22c55e;
+}
+
+.personal-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.personal-name-row {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.personal-name {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+
+.personal-badge-role {
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 0.1rem 0.4rem;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.role-badge-judge {
+  background: rgba(245, 158, 11, 0.25);
+  color: #fde68a;
+  border: 1px solid rgba(245, 158, 11, 0.5);
+}
+
+.role-badge-advocate {
+  background: rgba(56, 189, 248, 0.25);
+  color: #bae6fd;
+  border: 1px solid rgba(56, 189, 248, 0.5);
+}
+
+.role-badge-clerk {
+  background: rgba(34, 197, 94, 0.25);
+  color: #bbf7d0;
+  border: 1px solid rgba(34, 197, 94, 0.5);
+}
+
+.role-badge-litigant {
+  background: rgba(167, 139, 250, 0.25);
+  color: #ddd6fe;
+  border: 1px solid rgba(167, 139, 250, 0.5);
+}
+
+.personal-avatar-citizen {
+  background: linear-gradient(135deg, #0d9488, #0f766e);
+  color: #ffffff;
+  border: 2px solid #99f6e4;
+  box-shadow: 0 2px 8px rgba(13, 148, 136, 0.35);
+}
+
+.role-badge-citizen {
+  background: rgba(20, 184, 166, 0.25);
+  color: #99f6e4;
+  border: 1px solid rgba(20, 184, 166, 0.5);
+}
+
+.citizen-hero-banner {
+  background: linear-gradient(135deg, #09090b 0%, #1c1917 100%);
+  border: 1.5px solid #fed7aa;
+  border-left: 6px solid #f97316;
+  border-radius: 12px;
+  padding: 1.35rem 1.75rem;
+  color: #ffffff;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+}
+
+.citizen-feature-pill {
+  background: rgba(249, 115, 22, 0.12);
+  border: 1px solid rgba(249, 115, 22, 0.35);
+  color: #fb923c;
+  padding: 0.3rem 0.65rem;
+  border-radius: 6px;
+  font-size: 0.76rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.personal-subtext {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.72rem;
+  color: #d4d4d8;
+}
+
+.personal-id-tag {
+  color: #cbd5e1;
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 600;
+}
+
+.personal-dsc-tag {
+  color: #4ade80;
+  font-size: 0.68rem;
+  font-weight: 600;
+}
+
+.chevron-icon {
+  color: #fb923c;
+  margin-left: 0.2rem;
+}
+
+/* Modal Overlay & Card */
+.personal-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(6px);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  animation: fadeIn 0.2s ease;
+}
+
+.personal-modal-card {
+  background: #ffffff;
+  color: #09090b;
+  border-radius: 14px;
+  width: 100%;
+  max-width: 820px;
+  max-height: 88vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 24px 50px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(0, 0, 0, 0.1);
+  animation: slideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.dark-theme .personal-modal-card {
+  background: #141417;
+  color: #f4f4f5;
+  border: 1px solid #27272a;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(249, 115, 22, 0.3);
+}
+
+.personal-modal-header {
+  background: linear-gradient(135deg, #09090b 0%, #18181b 100%);
+  color: #ffffff;
+  padding: 1.15rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 3px solid #f97316;
+}
+
+.personal-modal-body {
+  padding: 1.25rem 1.5rem;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.personal-card-section {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 1rem 1.25rem;
+}
+
+.dark-theme .personal-card-section {
+  background: #18181b;
+  border-color: #27272a;
+}
+
+.officer-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+}
+
+.officer-item-card {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.65rem 0.8rem;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-align: left;
+}
+
+.dark-theme .officer-item-card {
+  background: #121214;
+  border-color: #27272a;
+  color: #f4f4f5;
+}
+
+.officer-item-card:hover {
+  border-color: #f97316;
+  background: #fff7ed;
+  transform: translateY(-1px);
+}
+
+.dark-theme .officer-item-card:hover {
+  background: rgba(249, 115, 22, 0.12);
+  border-color: #f97316;
+}
+
+.officer-item-card.active {
+  border-color: #f97316;
+  background: #fff7ed;
+  box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.25);
+}
+
+.dark-theme .officer-item-card.active {
+  background: rgba(249, 115, 22, 0.2);
+  border-color: #f97316;
+}
+
+/* ==========================================================================
+   OFFICIAL MP HIGH COURT MULTI-ROLE LOGIN GATEWAY & RBAC STYLES
+   ========================================================================== */
+
+.mphc-login-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--theme-bg);
+  color: var(--theme-text-primary);
+}
+
+.login-hero-strip {
+  background: linear-gradient(135deg, #09090b 0%, #121214 60%, #18181b 100%);
+  border-bottom: 4px solid #f97316;
+  padding: 2.25rem 2rem 2.75rem;
+  text-align: center;
+  color: #ffffff;
+  position: relative;
+  overflow: hidden;
+}
+
+.login-hero-strip::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 650px;
+  height: 100%;
+  background: radial-gradient(circle, rgba(249, 115, 22, 0.15) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.login-content-wrapper {
+  max-width: 1080px;
+  margin: -1.75rem auto 3rem;
+  padding: 0 1.5rem;
+  width: 100%;
+  position: relative;
+  z-index: 10;
+}
+
+.login-portal-card {
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1px solid #e4e4e7;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(0, 0, 0, 0.04);
+  overflow: hidden;
+}
+
+.dark-theme .login-portal-card {
+  background: #141417;
+  border-color: #27272a;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(249, 115, 22, 0.2);
+}
+
+/* 5-Role Grid Tabs (Judicial, Advocate, Clerk, Litigant, Citizen) */
+.login-role-selector-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  background: #f4f4f5;
+  border-bottom: 2px solid #e4e4e7;
+}
+
+.dark-theme .login-role-selector-grid {
+  background: #18181b;
+  border-bottom-color: #27272a;
+}
+
+.role-select-tab-btn {
+  background: transparent;
+  border: none;
+  border-bottom: 3px solid transparent;
+  padding: 1.25rem 0.75rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: #71717a;
+}
+
+.dark-theme .role-select-tab-btn {
+  color: #a1a1aa;
+}
+
+.role-select-tab-btn:hover {
+  background: rgba(249, 115, 22, 0.08);
+  color: #ea580c;
+}
+
+.role-select-tab-btn.active {
+  background: #ffffff;
+  border-bottom-color: #f97316;
+  color: #09090b;
+  font-weight: 700;
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.04);
+}
+
+.dark-theme .role-select-tab-btn.active {
+  background: #141417;
+  color: #ffffff;
+  border-bottom-color: #f97316;
+}
+
+.role-tab-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  transition: all 0.2s ease;
+}
+
+.role-select-tab-btn.active .role-tab-icon {
+  transform: scale(1.08);
+}
+
+.role-tab-judge .role-tab-icon {
+  background: #fef3c7;
+  color: #b45309;
+}
+
+.dark-theme .role-tab-judge .role-tab-icon {
+  background: rgba(245, 158, 11, 0.2);
+  color: #fde68a;
+}
+
+.role-tab-advocate .role-tab-icon {
+  background: #e0f2fe;
+  color: #0369a1;
+}
+
+.dark-theme .role-tab-advocate .role-tab-icon {
+  background: rgba(2, 132, 199, 0.2);
+  color: #bae6fd;
+}
+
+.role-tab-clerk .role-tab-icon {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.dark-theme .role-tab-clerk .role-tab-icon {
+  background: rgba(34, 197, 94, 0.2);
+  color: #bbf7d0;
+}
+
+.role-tab-client .role-tab-icon {
+  background: #ede9fe;
+  color: #6d28d9;
+}
+
+.dark-theme .role-tab-client .role-tab-icon {
+  background: rgba(124, 58, 237, 0.2);
+  color: #ddd6fe;
+}
+
+.role-tab-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+.role-tab-subtitle {
+  font-size: 0.72rem;
+  opacity: 0.8;
+  font-weight: 500;
+  text-align: center;
+}
+
+/* Login Card Body */
+.login-card-body-grid,
+.login-portal-split-body {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  padding: 2.25rem;
+  gap: 2.5rem;
+}
+
+@media (max-width: 860px) {
+  .login-role-selector-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .login-card-body-grid,
+  .login-portal-split-body {
+    grid-template-columns: 1fr;
+    gap: 1.75rem;
+    padding: 1.5rem;
+  }
+}
+
+.login-form-pane {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.login-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.login-form-group label {
+  font-size: 0.825rem;
+  font-weight: 700;
+  color: var(--theme-text-primary);
+  display: flex;
+  justify-content: space-between;
+}
+
+.login-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.login-input-icon {
+  position: absolute;
+  left: 0.9rem;
+  color: #94a3b8;
+  pointer-events: none;
+}
+
+.login-input-wrapper input {
+  width: 100%;
+  padding: 0.75rem 1rem 0.75rem 2.6rem;
+  font-size: 0.9rem;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  color: #09090b;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.dark-theme .login-input-wrapper input {
+  background: #18181b;
+  border-color: #27272a;
+  color: #ffffff;
+}
+
+.login-input-wrapper input:focus {
+  border-color: #f97316;
+  box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.2);
+}
+
+.login-submit-btn {
+  background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.85rem 1.5rem;
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 14px rgba(249, 115, 22, 0.35);
+  margin-top: 0.5rem;
+}
+
+.login-submit-btn:hover {
+  background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%);
+  transform: translateY(-1px);
+}
+
+/* Quick Demo Login Credentials Pane */
+.quick-credentials-pane {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 1.25rem 1.4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.dark-theme .quick-credentials-pane {
+  background: #18181b;
+  border-color: #27272a;
+}
+
+.quick-demo-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.65rem 0.85rem;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.15s ease;
+  color: #1e293b;
+}
+
+.dark-theme .quick-demo-btn {
+  background: #121214;
+  border-color: #27272a;
+  color: #f4f4f5;
+}
+
+.quick-demo-btn:hover {
+  border-color: #f97316;
+  background: #fff7ed;
+  transform: translateX(3px);
+}
+
+.dark-theme .quick-demo-btn:hover {
+  background: rgba(249, 115, 22, 0.15);
+  border-color: #f97316;
+}
+
+/* Client Specific Portal Styles */
+.client-hero-banner {
+  background: linear-gradient(135deg, #18181b 0%, #27272a 100%);
+  border: 1.5px solid #fed7aa;
+  border-left: 6px solid #f97316;
+  border-radius: 12px;
+  padding: 1.35rem 1.75rem;
+  color: #ffffff;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.client-stat-badge {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  padding: 0.5rem 0.85rem;
+  font-size: 0.8rem;
+}
+
+.statutory-restriction-callout {
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  border-left: 4px solid #f59e0b;
+  padding: 0.85rem 1.15rem;
+  border-radius: 8px;
+  color: #92400e;
+  font-size: 0.825rem;
+  margin-bottom: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.dark-theme .statutory-restriction-callout {
+  background: rgba(245, 158, 11, 0.12);
+  border-color: rgba(245, 158, 11, 0.35);
+  color: #fde68a;
+}
+
+/* =========================================================
+   DAILY CAUSE LIST (ROZNAMCHA / BOARD) STYLES
+   ========================================================= */
+.cause-list-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.cause-list-header {
+  background: var(--theme-card-bg);
+  border: 1px solid var(--theme-border);
+  border-radius: 12px;
+  padding: 1.5rem 1.75rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.cause-list-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+  margin-top: 1.25rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--theme-border);
+}
+
+.cause-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.cause-stat-card {
+  background: var(--theme-card-bg);
+  border: 1px solid var(--theme-border);
+  border-radius: 10px;
+  padding: 1rem 1.25rem;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.cause-stat-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  background: rgba(249, 115, 22, 0.1);
+  color: #f97316;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.cause-table-wrapper {
+  background: var(--theme-card-bg);
+  border: 1px solid var(--theme-border);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+
+.cause-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+  text-align: left;
+}
+
+.cause-table th {
+  background: #18181b;
+  color: #f4f4f5;
+  padding: 0.9rem 1rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  border-bottom: 2px solid #27272a;
+}
+
+.cause-table td {
+  padding: 1rem;
+  border-bottom: 1px solid var(--theme-border);
+  color: var(--theme-text-primary);
+  vertical-align: middle;
+}
+
+.cause-table tr:hover {
+  background: rgba(249, 115, 22, 0.04);
+}
+
+.live-pulse-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.25rem 0.65rem;
+  border-radius: 9999px;
+  font-weight: 700;
+  font-size: 0.74rem;
+}
+
+.live-pulse-badge.in-session {
+  background: #ecfdf5;
+  color: #059669;
+  border: 1px solid #a7f3d0;
+}
+
+.dark-theme .live-pulse-badge.in-session {
+  background: rgba(16, 185, 129, 0.15);
+  color: #34d399;
+  border-color: rgba(16, 185, 129, 0.4);
+}
+
+.live-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #10b981;
+  box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+  animation: pulse-green 1.5s infinite;
+}
+
+@keyframes pulse-green {
+  0% {
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 6px rgba(16, 185, 129, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+  }
+}
+
+/* =========================================================
+   WEBRTC VIRTUAL COURTROOM MODAL STYLES
+   ========================================================= */
+.courtroom-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(9, 9, 11, 0.92);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+}
+
+.courtroom-modal {
+  width: 100%;
+  max-width: 1300px;
+  height: 92vh;
+  background: #121214;
+  border: 1.5px solid #27272a;
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.85);
+  color: #f4f4f5;
+}
+
+.courtroom-header {
+  background: #09090b;
+  border-bottom: 1px solid #27272a;
+  padding: 0.85rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.courtroom-rec-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(239, 68, 68, 0.15);
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  color: #f87171;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+}
+
+.rec-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #ef4444;
+  animation: pulse-red 1.2s infinite;
+}
+
+@keyframes pulse-red {
+  0% { opacity: 1; }
+  50% { opacity: 0.3; }
+  100% { opacity: 1; }
+}
+
+.courtroom-body {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 0.85rem;
+  padding: 0.85rem;
+  background: #18181b;
+  overflow: hidden;
+}
+
+.courtroom-tile {
+  background: #121214;
+  border: 1px solid #27272a;
+  border-radius: 12px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.courtroom-tile.judge-bench {
+  border: 1.5px solid #f97316;
+  background: linear-gradient(180deg, rgba(249, 115, 22, 0.08) 0%, #121214 100%);
+}
+
+.courtroom-tile.active-speaker {
+  box-shadow: 0 0 0 2px #f97316;
+}
+
+.tile-avatar-halo {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  background: #27272a;
+  border: 2px solid #3f3f46;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.2rem;
+  margin-bottom: 0.75rem;
+  position: relative;
+}
+
+.tile-info-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.85));
+  padding: 0.75rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.courtroom-controls {
+  background: #09090b;
+  border-top: 1px solid #27272a;
+  padding: 0.85rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.ctrl-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.55rem 1.15rem;
+  border-radius: 8px;
+  font-size: 0.825rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid #27272a;
+  background: #18181b;
+  color: #f4f4f5;
+  transition: all 0.15s ease;
+}
+
+.ctrl-btn:hover {
+  background: #27272a;
+  color: #f97316;
+}
+
+.ctrl-btn.active-danger {
+  background: #ef4444;
+  border-color: #dc2626;
+  color: #ffffff;
+}
+
+.ctrl-btn.active-danger:hover {
+  background: #dc2626;
+}
+
+/* =========================================================
+   CYBER TREASURY & E-CHALLAN STYLES
+   ========================================================= */
+.echallan-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.echallan-grid-3 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 1.25rem;
+}
+
+.treasury-card {
+  background: var(--theme-card-bg);
+  border: 1px solid var(--theme-border);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+}
+
+.treasury-receipt-box {
+  background: #fff7ed;
+  border: 1.5px dashed #f97316;
+  border-radius: 10px;
+  padding: 1.25rem;
+  color: #09090b;
+  margin-top: 1rem;
+}
+
+.dark-theme .treasury-receipt-box {
+  background: rgba(249, 115, 22, 0.08);
+  border-color: rgba(249, 115, 22, 0.4);
+  color: #f4f4f5;
+}
+
+.hash-badge-mono {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  word-break: break-all;
+  background: rgba(0, 0, 0, 0.06);
+  padding: 0.35rem 0.5rem;
+  border-radius: 4px;
+  display: block;
+  margin-top: 0.35rem;
+}
+
+.dark-theme .hash-badge-mono {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* =========================================================
+   PRINT-READY JUDICIAL CMO DECREE
+   ========================================================= */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  .printable-decree, .printable-decree *,
+  .printable-summons, .printable-summons * {
+    visibility: visible;
+  }
+  .printable-decree, .printable-summons {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    margin: 0;
+    padding: 20mm;
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
+  .no-print {
+    display: none !important;
+  }
+}
+
+/* =========================================================
+   MULTI-CHANNEL NOTIFICATION SYSTEM (ORDER V CPC)
+   ========================================================= */
+.notif-bell-container {
+  position: relative;
+  display: inline-flex;
+}
+
+.mphc-notif-btn {
+  transition: all 0.2s ease;
+}
+
+.mphc-notif-btn:hover {
+  background: rgba(249, 115, 22, 0.2) !important;
+  border-color: #f97316 !important;
+}
+
+.notif-badge-pill {
+  background: #ef4444;
+  color: #ffffff;
+  font-size: 0.62rem;
+  font-weight: 800;
+  padding: 0.1rem 0.4rem;
+  border-radius: 9999px;
+  min-width: 16px;
+  text-align: center;
+  box-shadow: 0 0 6px rgba(239, 68, 68, 0.6);
+  animation: pulse-red 1.8s infinite;
+}
+
+.notif-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  width: 480px;
+  max-width: 90vw;
+  background: #121214;
+  border: 1.5px solid #27272a;
+  border-radius: 12px;
+  box-shadow: 0 20px 45px -10px rgba(0, 0, 0, 0.9), 0 0 0 1px rgba(249, 115, 22, 0.2);
+  z-index: 99999;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: dropdown-fade-in 0.15s ease-out;
+}
+
+@keyframes dropdown-fade-in {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.notif-dropdown-header {
+  background: #09090b;
+  border-bottom: 1px solid #27272a;
+  padding: 0.85rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.notif-filter-tabs {
+  display: flex;
+  background: #18181b;
+  border-bottom: 1px solid #27272a;
+  padding: 0.35rem 0.5rem;
+  gap: 0.25rem;
+}
+
+.notif-filter-tab {
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  padding: 0.3rem 0.6rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.notif-filter-tab:hover {
+  color: #ffffff;
+}
+
+.notif-filter-tab.active {
+  background: rgba(249, 115, 22, 0.2);
+  color: #fb923c;
+}
+
+.notif-list-container {
+  max-height: 420px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.notif-item-card {
+  padding: 0.85rem 1rem;
+  border-bottom: 1px solid #1f1f23;
+  display: flex;
+  gap: 0.75rem;
+  background: #121214;
+  transition: background 0.15s ease;
+}
+
+.notif-item-card.unread {
+  background: rgba(249, 115, 22, 0.05);
+  border-left: 3px solid #f97316;
+}
+
+.notif-item-card:hover {
+  background: #18181b;
+}
+
+.notif-channel-badge {
+  font-size: 0.65rem;
+  font-weight: 800;
+  padding: 0.15rem 0.45rem;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.channel-whatsapp {
+  background: rgba(34, 197, 94, 0.18);
+  color: #4ade80;
+  border: 1px solid rgba(34, 197, 94, 0.4);
+}
+
+.channel-sms {
+  background: rgba(59, 130, 246, 0.18);
+  color: #60a5fa;
+  border: 1px solid rgba(59, 130, 246, 0.4);
+}
+
+.channel-inapp {
+  background: rgba(249, 115, 22, 0.18);
+  color: #fb923c;
+  border: 1px solid rgba(249, 115, 22, 0.4);
+}
+
+/* =========================================================
+   VIVA DEMO TOUR GUIDED BANNER
+   ========================================================= */
+.viva-tour-banner {
+  background: linear-gradient(135deg, #09090b 0%, #18181b 100%);
+  border: 1.5px solid #f97316;
+  border-radius: 12px;
+  padding: 1rem 1.5rem;
+  margin-bottom: 1.25rem;
+  box-shadow: 0 10px 25px -5px rgba(249, 115, 22, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+  color: #f4f4f5;
+  animation: glow-pulse 3s infinite alternate;
+}
+
+@keyframes glow-pulse {
+  from { box-shadow: 0 4px 15px rgba(249, 115, 22, 0.2); }
+  to { box-shadow: 0 8px 30px rgba(249, 115, 22, 0.4); }
+}
+
+.viva-step-pill {
+  background: #f97316;
+  color: #ffffff;
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 0.2rem 0.65rem;
+  border-radius: 9999px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* =========================================================
+   JUDICIAL ANALYTICS & NJDG DASHBOARD
+   ========================================================= */
+.analytics-grid-4 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.analytics-card {
+  background: var(--theme-card-bg);
+  border: 1px solid var(--theme-border);
+  border-radius: 12px;
+  padding: 1.35rem;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+}
+
+.velocity-bar-track {
+  height: 10px;
+  background: #e2e8f0;
+  border-radius: 9999px;
+  overflow: hidden;
+  margin-top: 0.5rem;
+}
+
+.dark-theme .velocity-bar-track {
+  background: #27272a;
+}
+
+.velocity-bar-fill {
+  height: 100%;
+  border-radius: 9999px;
+  background: linear-gradient(90deg, #f97316, #10b981);
+}
+
+.hall-load-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.65rem 0.85rem;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.02);
+  border: 1px solid var(--theme-border);
+}
+
+.dark-theme .hall-load-item {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+/* =========================================================
+   SECTION 89 CPC ADR RECOMMENDATION CARD
+   ========================================================= */
+.section89-card {
+  background: linear-gradient(135deg, rgba(249, 115, 22, 0.08) 0%, rgba(16, 185, 129, 0.08) 100%);
+  border: 1.5px solid #f97316;
+  border-radius: 12px;
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+/* =========================================================
+   STATUTORY E-SUMMONS MODAL (ORDER V CPC)
+   ========================================================= */
+.summons-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(6px);
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+}
+
+.summons-card {
+  background: #ffffff;
+  color: #09090b;
+  width: 100%;
+  max-width: 850px;
+  max-height: 90vh;
+  border-radius: 14px;
+  border: 2px solid #f97316;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.summons-body {
+  padding: 2rem 2.5rem;
+  overflow-y: auto;
+  font-family: 'Times New Roman', serif;
+  line-height: 1.6;
+}
+
+
+
 

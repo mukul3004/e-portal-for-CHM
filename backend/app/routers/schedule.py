@@ -1,3 +1,5 @@
+from typing import Optional, List
+from datetime import date
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from backend.app.database import get_db
@@ -98,3 +100,91 @@ def book_cmh_slot(
     db.commit()
     db.refresh(session)
     return session
+
+@router.get("/cause-list")
+def get_daily_cause_list(
+    hearing_date: Optional[str] = None,
+    court_hall_id: Optional[str] = None,
+    db: Session = Depends(get_db)
+):
+    """
+    [Cause List / रोज़नामचा]
+    Fetches the High Court Daily Cause Board.
+    If hearing_date is not specified, returns the closest upcoming scheduled sessions.
+    """
+    query = db.query(CMHSession)
+    if hearing_date:
+        query = query.filter(CMHSession.hearing_date == hearing_date)
+    else:
+        # Default to upcoming active hearings from current date
+        today_val = date.today()
+        query = query.filter(CMHSession.hearing_date >= today_val)
+    if court_hall_id and court_hall_id != "ALL":
+        query = query.filter(CMHSession.court_hall_id == court_hall_id)
+
+    sessions = query.order_by(CMHSession.hearing_date.asc(), CMHSession.start_time.asc()).all()
+
+    # If no sessions found from today onwards, fetch all scheduled sessions
+    if not sessions:
+        sessions = db.query(CMHSession).order_by(CMHSession.hearing_date.desc(), CMHSession.start_time.asc()).limit(50).all()
+
+    items = []
+    for idx, s in enumerate(sessions, 1):
+        case = db.query(Case).filter(Case.id == s.case_id).first()
+        judge = db.query(User).filter(User.id == s.judge_id).first()
+        p_counsel = db.query(User).filter(User.id == case.plaintiff_counsel_id).first() if case and case.plaintiff_counsel_id else None
+        d_counsel = db.query(User).filter(User.id == case.defendant_counsel_id).first() if case and case.defendant_counsel_id else None
+
+        items.append({
+            "item_number": idx,
+            "session_id": s.id,
+            "hearing_date": s.hearing_date.isoformat(),
+            "start_time": s.start_time.strftime("%H:%M"),
+            "end_time": s.end_time.strftime("%H:%M"),
+            "court_hall_id": s.court_hall_id,
+            "status": s.status.value if hasattr(s.status, 'value') else str(s.status),
+            "webrtc_room_id": s.webrtc_room_id,
+            "case": {
+                "id": case.id if case else "",
+                "cnr_number": case.cnr_number if case else "",
+                "case_title": case.case_title if case else "Unassigned",
+                "case_type": case.case_type.value if case and hasattr(case.case_type, 'value') else (str(case.case_type) if case else ""),
+                "claim_valuation": case.claim_valuation if case else 0.0,
+            } if case else None,
+            "judge_name": judge.full_name if judge else "Hon'ble Presiding Judge",
+            "plaintiff_counsel": {
+                "name": p_counsel.full_name if p_counsel else "Advocate for Plaintiff",
+                "bar_council_id": p_counsel.bar_council_id if p_counsel else "N/A"
+            },
+            "defendant_counsel": {
+                "name": d_counsel.full_name if d_counsel else "Advocate for Defendant",
+                "bar_council_id": d_counsel.bar_council_id if d_counsel else "N/A"
+            }
+        })
+
+    return {
+        "total_items": len(items),
+        "hearing_date": hearing_date or (items[0]["hearing_date"] if items else None),
+        "items": items
+    }
+
+@router.patch("/sessions/{session_id}/status")
+def update_session_status(
+    session_id: str,
+    status_update: dict,
+    db: Session = Depends(get_db)
+):
+    """Updates session status (e.g. IN_PROGRESS, CONCLUDED, ADJOURNED, REFERRED_ADR)."""
+    session = db.query(CMHSession).filter(CMHSession.id == session_id).first()
+    if not session:
+        raise HTTPException(status_code=404, detail="Session not found.")
+
+    new_st = status_update.get("status")
+    if not new_st:
+        raise HTTPException(status_code=400, detail="Status is required.")
+
+    session.status = SessionStatus(new_st)
+    db.commit()
+    db.refresh(session)
+    return {"message": "Session status updated successfully", "session_id": session.id, "status": session.status}
+
