@@ -1,0 +1,97 @@
+@startuml Sequence_Diagram_CMH_ePortal
+title Sequence Diagram - Pre-Trial Case Management Hearing (Order XV-A CPC)
+autonumber
+skinparam roundcorner 6
+skinparam shadowing false
+skinparam defaultFontName "Helvetica"
+skinparam sequence {
+    ArrowColor #1A5276
+    ActorBorderColor #1A5276
+    LifeLineBorderColor #2C3E50
+    LifeLineBackgroundColor #EAECEE
+    ParticipantBorderColor #1A5276
+    ParticipantBackgroundColor #FFFFFF
+    ParticipantFontSize 12
+    ActorFontSize 12
+}
+
+actor "Advocate\n(Plaintiff/Def.)" as Adv #EBF5FB
+actor "Registry Clerk" as Clerk #FEF9E7
+actor "Hon'ble Judge" as Judge #FADBD8
+
+participant "Frontend UI\n(React 19 SPA)" as UI #FFFFFF
+participant "FastAPI Gateway\n& Auth Middleware" as API #EBF5FB
+participant "Admissions Matrix\nEngine (Order XI R4)" as Matrix #E8F8F5
+participant "Clash Detection\n& Scheduler Engine" as Sched #E8F8F5
+participant "Cyber Treasury\nMP e-Challan API" as Treas #FCF3CF
+participant "Automated CMO\nGeneration Engine" as CMO #FDEDEC
+database "Relational DB\n(SQLite / SQLAlchemy)" as DB #F2F4F4
+participant "Audit Trail &\nIntegrity Vault (SHA-256)" as Audit #EAECEE
+
+== 1. Advocate Authentication & Pre-Trial Admission Filing ==
+Adv -> UI : Login with Bar Council ID & Password
+UI -> API : POST /api/v1/auth/login
+API -> DB : Validate credentials & Fetch Role
+DB --> API : User details (Role: Advocate, Bar Reg: MP/4821)
+API --> UI : 200 OK + JWT Bearer Token
+Adv -> UI : Navigate to Active Case & Open Admissions Matrix
+UI -> API : GET /api/v1/cases/{case_id}/matrix
+API -> DB : Query Admission Items (Plaint & Written Statement assertions)
+DB --> API : List of 10 Assertions & Exhibit Documents
+API --> UI : 200 OK (Admissions Matrix DTO)
+
+Adv -> UI : Mark Statement (ADMITTED / DENIED / REQUIRES_PROOF) + upload exhibit
+UI -> API : POST /api/v1/cases/{case_id}/admissions (with SHA-256 hash)
+API -> Matrix : Process Admissions & Compute Statistical Ratio
+Matrix -> DB : Persist admission_status, admission_date, hash_signature
+DB --> Matrix : Record Updated
+Matrix -> Audit : Log Cryptographic Audit Trail (Action: ADMISSIONS_FILED)
+Audit -> DB : Insert immutable AuditLog row
+Matrix --> API : Matrix Status (Admitted: 6, Denied: 4)
+API --> UI : 200 OK + Real-time Update via WebSocket
+
+== 2. Court Fee Verification via Cyber Treasury MP ==
+Adv -> UI : Submit Commercial Court Fee Challan for Case Management
+UI -> API : POST /api/v1/echallan/verify
+API -> Treas : Validate Cyber Treasury Reference Number (CRN) & Amount
+Treas --> API : 200 OK (Status: PAID, Bank: SBI Cyber Treasury Indore, ₹12,500)
+API -> DB : Update Case Record (Fee Verified = True, e-Challan Linked)
+DB --> API : Success
+API --> UI : 200 OK (e-Challan Verified & SHA-256 Sealed)
+
+== 3. Pre-Trial Case Management Hearing (CMH) & Clash-Free Scheduling ==
+Judge -> UI : Initiate First CMH Scheduling (Order XV-A Rule 1 CPC)
+UI -> API : POST /api/v1/hearings/schedule-cmh
+API -> Sched : Check Advocate Courtroom Clashes & Bench Availability
+Sched -> DB : Query active Advocate hearings across High Court Benches
+DB --> Sched : Availability Matrix (Indore Bench Court Room 4, 11:30 AM Slot Available)
+Sched --> API : Conflict-Free Slot Confirmed
+API -> DB : Create Hearing Docket Entry & WebRTC Virtual Courtroom Room ID
+DB --> API : Hearing ID Created
+API --> UI : 200 OK (CMH Scheduled: 2026-11-12 11:30 AM IST)
+
+== 4. Virtual CMH Hearing & Automated Case Management Order (CMO) ==
+Judge -> UI : Convene Virtual CMH Session (WebRTC Split-Screen)
+UI <-> API : Real-time Signaling & Media Exchange
+Judge -> UI : Review Uncontested Facts & Extract Triable Issues
+UI -> CMO : Generate Draft CMO (Order XV-A Rule 2 CPC Timetable)
+CMO -> Matrix : Pull Formulated Admitted Facts & Narrowed Issues
+Matrix --> CMO : 4 Disputed Triable Issues for Examination
+CMO --> UI : Draft CMO Timetable (Inspection, Interrogatories, Witness Affidavits, Trial Date)
+
+Judge -> UI : Approve & Digitally Seal CMO (Judicial DSC Applied)
+UI -> API : POST /api/v1/cmo/issue (CMO payload + Judicial Signature)
+API -> CMO : Generate PDF/A Case Management Order
+CMO -> Audit : Compute Document SHA-256 Cryptographic Stamp
+Audit -> DB : Store Sealed CMO with Hash & Timestamp
+DB --> API : CMO Persisted & Status: DECREE_TIMETABLE_ACTIVE
+API --> UI : 201 Created (CMO Sealed & Downloadable)
+
+== 5. Multi-Party Notification & Discovery Deadline Monitoring ==
+API -> UI : Broadcast WebSocket event `CMO_ISSUED`
+API -> Audit : Log Event: "FIRST_CMH_CONCLUDED_ORDER_ISSUED"
+note over API, DB : Automated Discovery Countdown Daemons active\n(Statutory 15-day document inspection countdown starts)
+UI --> Adv : Dashboard Notification + Download Sealed CMO
+UI --> Clerk : Registry Docket Updated with Cause List Entry
+
+@enduml

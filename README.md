@@ -159,8 +159,24 @@ case-management-eportal/
 │   │   └── main.jsx                           <- React DOM entry point
 │   └── package.json                           <- Node.js dependencies & scripts
 ├── docs/                                      <- Project reports, synopsis, review paper
-└── diagrams/                                  <- UML Class and Component diagrams
+└── diagrams/                                  <- Complete 7-tier UML diagrams (PlantUML & Markdown)
 ```
+
+---
+
+## 🏛️ Comprehensive UML Architecture Specification (SVVV Phase 2 & 3)
+
+The project includes complete PlantUML source code (`.puml`) and interactive Mermaid Markdown documentation (`.md`) covering all 7 standard UML structural and behavioral views:
+
+| # | UML Diagram Type | PlantUML Source | Markdown & Mermaid View | Focus & Statutory Scope |
+| :-: | :--- | :--- | :--- | :--- |
+| 1 | **Class Diagram** | [Class_Diagram.puml](diagrams/Class_Diagram.puml) | [Class_Diagram.md](diagrams/Class_Diagram.md) | Domain entities, OOP inheritance, encapsulation, and database ORM mappings |
+| 2 | **Component Diagram** | [Component_Diagram.puml](diagrams/Component_Diagram.puml) | [Component_Diagram.md](diagrams/Component_Diagram.md) | 5-tier decoupled micro-architecture (Presentation, Gateway, Business, Storage, External) |
+| 3 | **Sequence Diagram** | [Sequence_Diagram.puml](diagrams/Sequence_Diagram.puml) | [Sequence_Diagram.md](diagrams/Sequence_Diagram.md) | Order XV-A pre-trial lifecycle (Admissions -> Clash check -> CMO issuance -> SHA-256 seal) |
+| 4 | **Deployment Diagram** | [Deployment_Diagram.puml](diagrams/Deployment_Diagram.puml) | [Deployment_Diagram.md](diagrams/Deployment_Diagram.md) | Physical node topologies, Uvicorn ASGI, SQLite WAL/MySQL, Cyber Treasury & NJDG gateways |
+| 5 | **Activity Diagram** | [Activity_Diagram.puml](diagrams/Activity_Diagram.puml) | [Activity_Diagram.md](diagrams/Activity_Diagram.md) | Commercial court pre-trial control flow, 120-day default forfeiture, discovery daemons |
+| 6 | **Package Diagram** | [Package_Diagram.puml](diagrams/Package_Diagram.puml) | [Package_Diagram.md](diagrams/Package_Diagram.md) | Modular package structure of `backend.core`, `models`, `schemas`, `services`, `api.v1`, `frontend` |
+| 7 | **Object Diagram** | [Object_Diagram.puml](diagrams/Object_Diagram.puml) | [Object_Diagram.md](diagrams/Object_Diagram.md) | Live runtime object snapshot of Suit `COMM_SUIT_301_2026` in Indore Commercial Court |
 
 ---
 
@@ -168,3 +184,4 @@ case-management-eportal/
 * **Code of Civil Procedure, 1908 (CPC)**: Order XV-A (Case Management Hearing).
 * **Commercial Courts Act, 2015**: Sections 2(1)(c), 15, and 16.
 * **Information Technology Act, 2000**: Section 65B (Admissibility of electronic records and digital certificates).
+

@@ -1,0 +1,139 @@
+@startuml Object_Diagram_CMH_ePortal
+title Object Diagram - Runtime Snapshot of Commercial Suit (Order XV-A CPC)
+skinparam roundcorner 6
+skinparam shadowing false
+skinparam defaultFontName "Helvetica"
+
+skinparam object {
+    BackgroundColor #FFFFFF
+    BorderColor #1A5276
+    ArrowColor #2C3E50
+    FontSize 11
+}
+
+' ==========================================
+' 1. CORE CASE OBJECT INSTANCE
+' ==========================================
+object "<u>caseInstance: Case</u>" as Case1 {
+    id = 1
+    cnr_number = "MPHC010048212026"
+    case_number = "COMM_SUIT_301_2026"
+    case_title = "M/s Malwa Agro Tech Ltd. v. Narmada Bio-Energy Pvt. Ltd."
+    claim_amount = ₹45,00,000.00
+    commercial_category = "COMMERCIAL_CONTRACT_301"
+    statutory_stage = "ORDER_XVA_CMH_ACTIVE"
+    bench = "Bench at Indore (Malwa Region)"
+    court_hall = "Court Room 4 (Commercial Division)"
+}
+
+' ==========================================
+' 2. JUDICIAL ACTORS OBJECT INSTANCES
+' ==========================================
+object "<u>judgeInstance: User</u>" as Judge1 {
+    id = 101
+    full_name = "Hon'ble Justice Arun Mishra"
+    role = "JUDGE"
+    bench = "Indore Bench"
+    dsc_fingerprint = "SHA256:7a9f4e21b8c0...3c81"
+}
+
+object "<u>plaintiffCounsel: User</u>" as AdvPlff {
+    id = 201
+    full_name = "Adv. Himanshu Bawaniya"
+    role = "ADVOCATE"
+    bar_registration = "MP/4821/2012"
+    assigned_party = "Plaintiff"
+    email = "adv.himanshu@barcouncil.org"
+}
+
+object "<u>defendantCounsel: User</u>" as AdvDef {
+    id = 202
+    full_name = "Adv. Ragini Sharma"
+    role = "ADVOCATE"
+    bar_registration = "MP/9102/2016"
+    assigned_party = "Defendant"
+    email = "adv.ragini@barcouncil.org"
+}
+
+object "<u>clerkInstance: User</u>" as Clerk1 {
+    id = 301
+    full_name = "Deepak Patel"
+    role = "CLERK"
+    department = "Commercial Filing Registry"
+}
+
+' ==========================================
+' 3. ADMISSIONS MATRIX OBJECT INSTANCES
+' ==========================================
+object "<u>admissionItem1: AdmissionItem</u>" as Adm1 {
+    id = 501
+    assertion_number = 1
+    statement = "Commercial Supply Contract signed at Indore on 14 Jan 2025"
+    status = "ADMITTED"
+    exhibit_ref = "Exhibit P-1 (Contract Agreement)"
+    admission_ratio = "UNCONTESTED_FACT"
+    sha256_hash = "a3f5b8c9d0e1...90de"
+}
+
+object "<u>admissionItem2: AdmissionItem</u>" as Adm2 {
+    id = 502
+    assertion_number = 2
+    statement = "Delivered agro-processing equipment conformed to technical specs"
+    status = "DENIED"
+    exhibit_ref = "Exhibit D-2 (Quality Rejection Notice)"
+    admission_ratio = "TRIABLE_ISSUE"
+    sha256_hash = "f1c2d3e4f5a6...45ab"
+}
+
+' ==========================================
+' 4. CASE MANAGEMENT ORDER (CMO) INSTANCE
+' ==========================================
+object "<u>cmoInstance: CaseManagementOrder</u>" as CMO1 {
+    id = 801
+    cmo_number = "CMO/IND/2026/04"
+    inspection_deadline = "2026-11-15 (<= 15 days)"
+    interrogatories_deadline = "2026-11-20 (<= 15 days)"
+    witness_affidavit_deadline = "2026-11-30 (<= 15 days)"
+    trial_commencement_date = "2026-12-08"
+    final_arguments_date = "2026-12-18"
+    is_digitally_signed = true
+    order_sha256_seal = "8e41bf920c81...29cf"
+    statutory_rule = "Order XV-A Rule 2 CPC"
+}
+
+' ==========================================
+' 5. E-CHALLAN & AUDIT TRAIL INSTANCES
+' ==========================================
+object "<u>challanInstance: EChallanPayment</u>" as Pay1 {
+    id = 901
+    crn_number = "MPCT20261028XVA7819"
+    amount = ₹12,500.00
+    fee_head = "0030-02-103-01: Commercial Court Ad-Valorem"
+    payment_status = "VERIFIED_PAID"
+    gateway_bank = "SBI Cyber Treasury MP"
+}
+
+object "<u>auditInstance: AuditLog</u>" as Audit1 {
+    id = 1001
+    event_type = "CMO_DIGITALLY_SEALED"
+    performed_by = "Hon'ble Justice Arun Mishra"
+    timestamp = "2026-10-28 11:45:00 IST"
+    cryptographic_seal = "982af01c64bc...fe71"
+}
+
+' Object Links and Associations
+Case1 "1" -- "1" Judge1 : Presided By >
+Case1 "1" -- "1" AdvPlff : Represented (Plaintiff) >
+Case1 "1" -- "1" AdvDef : Represented (Defendant) >
+Case1 "1" -- "1" Clerk1 : Ingested By >
+
+Case1 "1" *-- "many" Adm1 : Contains Pre-Trial Assertions >
+Case1 "1" *-- "many" Adm2 : Contains Pre-Trial Assertions >
+
+Case1 "1" -- "1" CMO1 : Governed By Statutory Timetable >
+CMO1 ..> Judge1 : Digitally Signed By >
+
+Case1 "1" -- "1" Pay1 : Court Fee Verified >
+CMO1 ..> Audit1 : Recorded In Audit Ledger >
+
+@enduml

@@ -1,0 +1,103 @@
+@startuml Deployment_Diagram_CMH_ePortal
+title Deployment Diagram - Physical Architecture of Case Management e-Portal
+skinparam roundcorner 6
+skinparam shadowing false
+skinparam defaultFontName "Helvetica"
+skinparam packageStyle rectangle
+
+skinparam node {
+    BackgroundColor #FFFFFF
+    BorderColor #1A5276
+    FontColor #154360
+}
+
+skinparam artifact {
+    BackgroundColor #F4F6F7
+    BorderColor #2C3E50
+}
+
+skinparam database {
+    BackgroundColor #EBF5FB
+    BorderColor #1B4F72
+}
+
+' ==========================================
+' 1. CLIENT HARDWARE / BROWSER TIER
+' ==========================================
+node "Client Device (Advocate / Judge / Clerk / Citizen)" as Node_Client <<Device>> {
+    node "Modern Web Browser\n(Google Chrome 120+ / Edge / Firefox)" as Node_Browser <<Execution Environment>> {
+        artifact "React 19 Single Page App\n(Vite Production Dist Assets)" as Art_ReactSPA
+        artifact "WebRTC MediaStream Client\n(Audio/Video/Screen Share)" as Art_WebRTC
+        artifact "FullCalendar Interactive Engine\n(Courtroom Schedule Grid)" as Art_Calendar
+    }
+}
+
+' ==========================================
+' 2. INGRESS & REVERSE PROXY
+' ==========================================
+node "Web Ingress / Gateway Server" as Node_Proxy <<Hardware Node>> {
+    node "NGINX Reverse Proxy / TLS Terminator\n(Port 443 HTTPS / Port 80 HTTP)" as Node_Nginx <<Execution Environment>> {
+        artifact "SSL/TLS 1.3 Certificate\n(High Court Domain MPHC.GOV.IN)" as Art_SSL
+    }
+}
+
+' ==========================================
+' 3. APPLICATION SERVER (FASTAPI ASGI)
+' ==========================================
+node "Application Server (Ubuntu 24.04 LTS)" as Node_AppServer <<Hardware Node>> {
+    node "Python 3.11 Runtime / Uvicorn ASGI Server\n(Port 8000)" as Node_Uvicorn <<Execution Environment>> {
+        artifact "FastAPI REST API Core\n(Order XV-A Endpoints)" as Art_FastAPI
+        artifact "WebSocket Signaling Hub\n(Live Hearing & Sync)" as Art_WS
+        artifact "Automated CMO Engine\n(PDF/A & Issue Framer)" as Art_CMO
+        artifact "Clash Detection Daemon\n(Cross-Bench Scheduler)" as Art_Clash
+        artifact "Discovery Countdown Worker\n(Statutory Timetable Monitor)" as Art_Countdown
+        artifact "SHA-256 Cryptographic Vault\n(Data Integrity Seal)" as Art_Hash
+    }
+}
+
+' ==========================================
+' 4. DATABASE & DOCUMENT STORAGE TIER
+' ==========================================
+node "Persistence & Data Storage Node" as Node_DBServer <<Hardware Node>> {
+    database "High Court Relational Database\n(SQLite 3 WAL Mode / MySQL 8.0)" as DB_Relational {
+        [cmh_portal.db / Tables:\n- cases (128 active commercial suits)\n- users & advocates\n- admissions_denials_matrix\n- case_management_orders\n- court_hearings & cause_list\n- echallan_payments\n- notifications & audit_trail]
+    }
+
+    node "Tamper-Proof Document Storage" as Node_DocStorage {
+        artifact "Encrypted Document Vault\n(/uploads/documents/)\n- Verified Plaints & Written Statements\n- Evidentiary Exhibits\n- Digitally Signed CMO Decrees (PDF/A)" as Art_Documents
+    }
+}
+
+' ==========================================
+' 5. EXTERNAL STATUTORY INTEGRATION GATEWAYS
+' ==========================================
+node "External Judicial & Sovereign Gateways" as Node_External {
+    node "MP Cyber Treasury Gateway\n(mptreasury.gov.in)" as Ext_Treasury <<External Service>>
+    node "e-Courts CIS / NJDG Repository\n(National Judicial Data Grid)" as Ext_eCourts <<External Service>>
+    node "India Post Speed Post Tracking\n(Summons Service Verification)" as Ext_Post <<External Service>>
+    node "Sovereign Judicial SMS / SMTP Gateway\n(Legal Notices & Reminders)" as Ext_SMS <<External Service>>
+}
+
+' ==========================================
+' 6. DEVOPS CI/CD PIPELINE
+' ==========================================
+node "GitHub Cloud Infrastructure" as Node_GitHub {
+    node "GitHub Actions CI/CD Runner\n(ubuntu-latest)" as Node_Actions <<Execution Environment>> {
+        artifact "Workflow (.github/workflows/ci.yml)\n- Job 1: Backend PyTest & Flake8\n- Job 2: Frontend Oxlint & Vite Dist\n- Job 3: CI Quality Gate" as Art_CI
+    }
+}
+
+' Physical & Logical Protocol Connections
+Node_Client -- Node_Proxy : HTTPS (Port 443) / WSS (WebSocket)
+Node_Proxy -- Node_AppServer : Reverse Proxy HTTP/1.1 (Port 8000)
+Node_AppServer -- DB_Relational : SQLAlchemy 2.0 (POSIX Unix Socket / Local I/O)
+Node_AppServer -- Node_DocStorage : Local FileSystem I/O (AES-256 & SHA-256)
+
+Art_FastAPI ..> Ext_Treasury : REST / TLS (CRN Fee Verification)
+Art_FastAPI ..> Ext_eCourts : REST / SOAP (CNR Number & CIS Sync)
+Art_FastAPI ..> Ext_Post : HTTPS (Tracking Summons Dispatch)
+Art_FastAPI ..> Ext_SMS : SMPP / SMTP (Court Notifications)
+
+Node_GitHub ..> Node_AppServer : Continuous Deployment (Automated Webhook)
+
+@enduml

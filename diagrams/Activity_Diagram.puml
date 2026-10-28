@@ -1,0 +1,83 @@
+@startuml Activity_Diagram_CMH_ePortal
+title Activity Diagram - Order XV-A CPC Pre-Trial Case Management Lifecycle
+skinparam roundcorner 6
+skinparam shadowing false
+skinparam defaultFontName "Helvetica"
+
+skinparam activity {
+    BackgroundColor #FFFFFF
+    BorderColor #1A5276
+    ArrowColor #2C3E50
+    BarColor #1A5276
+}
+
+skinparam decision {
+    BackgroundColor #FEF9E7
+    BorderColor #B7950B
+}
+
+start
+
+:Commercial Plaint Ingestion via e-Filing;
+:System Assigns 16-Digit CNR Number & Validates Claim Value (> ₹3 Lakhs);
+:Verify e-Challan Court Fees via Cyber Treasury MP;
+
+:Issue Judicial Summons with Plaint & Documents to Defendant;
+
+if (Defendant Files Written Statement within 30 to 120 Days?) then (yes)
+    :Pleadings Declared Complete by Registry;
+else (no - 120 days lapsed)
+    #FADBD8:Right to File Defense Forfeited (Order VIII Rule 1 CPC);
+    :Matter Listed for Ex-Parte Hearing / Judgment;
+    stop
+endif
+
+fork
+    :Plaintiff Uploads Statement of Admissions & Denials (Order XI Rule 4);
+fork again
+    :Defendant Uploads Statement of Admissions & Denials (Order XI Rule 4);
+end fork
+
+:Automated Matrix Engine Computes Admitted vs Disputed Assertions;
+:Clash-Detection Engine Evaluates Advocate Calendars across High Court Benches;
+:Issue Notice of First Case Management Hearing (CMH) (within 4 weeks);
+
+:Convene Case Management Hearing (In-Person / WebRTC Split-Screen);
+
+partition "Case Management Hearing (Order XV-A Rule 1 & 2 CPC)" {
+    :Judge Reviews Narrowed Issues & Evidentiary Exhibits;
+    
+    if (Parties Agree to Alternative Dispute Resolution - Sec 89 CPC?) then (yes - Mediation/Arbitration)
+        :Refer Matter to Mediation Centre / Lok Adalat;
+        :Record Consent Terms;
+        stop
+    else (no - Proceed with Commercial Trial)
+        :Judge Frames Substantive Triable Issues;
+        
+        partition "Prescribe Statutory Discovery & Trial Timetable (Rule 2)" {
+            :Set Document Inspection Deadline (<= 15 days);
+            :Set Interrogatories Deadline (<= 15 days);
+            :Set Production of Originals Deadline;
+            :Set Witness Affidavits Filing Deadline (<= 15 days);
+            :Schedule Consecutive Trial Dates for Cross-Examination;
+            :Schedule Date for Oral Final Arguments;
+        }
+    endif
+}
+
+:Automated CMO Engine Compiles Official Case Management Order;
+:Hon'ble Judge Digitally Signs CMO (DSC Cryptographic Stamp);
+:Generate PDF/A Decree & Compute SHA-256 Hash Seal;
+:Persist Sealed Order in Tamper-Proof Document Vault & Audit Ledger;
+
+fork
+    :Broadcast Real-Time WebSocket Alerts to Advocate Portals;
+fork again
+    :Automated Discovery Countdown Daemons Activated (Alerts at T-5, T-2 days);
+fork again
+    :Update Cause List & Sync with National Judicial Data Grid (NJDG);
+end fork
+
+stop
+
+@enduml

@@ -1,0 +1,128 @@
+@startuml Package_Diagram_CMH_ePortal
+title Package Diagram - High-Level Architectural Decomposition of CMH e-Portal
+skinparam roundcorner 6
+skinparam shadowing false
+skinparam defaultFontName "Helvetica"
+skinparam packageStyle rectangle
+
+skinparam package {
+    BackgroundColor #FFFFFF
+    BorderColor #1A5276
+    FontColor #154360
+}
+
+' ==========================================
+' 1. BACKEND PACKAGES (FASTAPI & PYTHON)
+' ==========================================
+package "backend (FastAPI REST & ASGI Application)" as Pkg_Backend #F4F6F7 {
+
+    package "backend.core" as Pkg_Core #EBF5FB {
+        class Config
+        class DatabaseSession
+        class SecurityAuth
+        class CryptographicHasher
+    }
+
+    package "backend.models (SQLAlchemy ORM Entities)" as Pkg_Models #E8F8F5 {
+        class CaseModel
+        class UserModel
+        class AdmissionMatrixModel
+        class CaseManagementOrderModel
+        class EChallanModel
+        class CourtHearingModel
+        class NotificationModel
+        class AuditLogModel
+    }
+
+    package "backend.schemas (Pydantic DTO Validation)" as Pkg_Schemas #FEF9E7 {
+        class CaseSchema
+        class AdmissionSchema
+        class CMOSchema
+        class EChallanSchema
+        class AuthTokenSchema
+        class CalendarSlotSchema
+    }
+
+    package "backend.services (Judicial Business Logic)" as Pkg_Services #FDEDEC {
+        class ClashDetectionEngine
+        class IssueFramingEngine
+        class CyberTreasuryService
+        class CMODocumentGenerator
+        class DiscoveryDeadlineDaemon
+        class AuditVaultService
+    }
+
+    package "backend.api.v1 (RESTful Route Controllers)" as Pkg_Routers #EBF5FB {
+        class AuthRouter
+        class CasesRouter
+        class AdmissionsRouter
+        class CMORouter
+        class CalendarRouter
+        class VirtualCourtRouter
+        class EChallanRouter
+        class NotificationsRouter
+        class AuditRouter
+    }
+
+    package "backend.tests (PyTest Automated Test Suites)" as Pkg_Tests #F2F4F4 {
+        class TestAuthSuite
+        class TestCasesSuite
+        class TestAdmissionsSuite
+        class TestCMOSuite
+        class TestClashSuite
+        class TestEChallanSuite
+    }
+}
+
+' ==========================================
+' 2. FRONTEND PACKAGES (REACT 19 SPA)
+' ==========================================
+package "frontend.src (React 19 Single Page App)" as Pkg_Frontend #FDFEFE {
+
+    package "frontend.components" as Pkg_Components #EBF5FB {
+        class JudicialDashboard
+        class AdvocatePortal
+        class AdmissionsMatrixUI
+        class FullCalendarView
+        class WebRTCVirtualCourtroom
+        class EChallanVerifierUI
+        class SealedCMODownloader
+        class BilingualHeader
+    }
+
+    package "frontend.services" as Pkg_ClientServices #E8F8F5 {
+        class APIClient
+        class WebSocketConnectionManager
+        class WebRTCMediaStreamController
+    }
+
+    package "frontend.context" as Pkg_Context #FEF9E7 {
+        class AuthContextProvider
+        class LanguageContextProvider
+        class NotificationContextProvider
+    }
+
+    package "frontend.i18n" as Pkg_i18n #F4F6F7 {
+        class HindiEnglishJudicialLexicon
+    }
+}
+
+' Backend Internal Dependencies
+Pkg_Routers ..> Pkg_Schemas : <<validates with>>
+Pkg_Routers ..> Pkg_Services : <<delegates to>>
+Pkg_Routers ..> Pkg_Core : <<uses auth & db>>
+Pkg_Services ..> Pkg_Models : <<queries & mutates>>
+Pkg_Models ..> Pkg_Core : <<inherits Base & Session>>
+Pkg_Services ..> Pkg_Core : <<uses Hasher & Security>>
+Pkg_Tests ..> Pkg_Routers : <<integration tests>>
+Pkg_Tests ..> Pkg_Models : <<unit tests>>
+
+' Frontend Internal Dependencies
+Pkg_Components ..> Pkg_ClientServices : <<invokes>>
+Pkg_Components ..> Pkg_Context : <<consumes state>>
+Pkg_Components ..> Pkg_i18n : <<translates terms>>
+
+' Cross-Tier API Boundary
+Pkg_ClientServices ..> Pkg_Routers : <<HTTP REST & WebSockets (TLS 1.3)>>
+
+@enduml
