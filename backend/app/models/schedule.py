@@ -2,6 +2,7 @@ import enum
 import uuid
 from datetime import datetime, date, time
 from sqlalchemy import Column, String, Integer, Date, Time, DateTime, Enum, ForeignKey
+from sqlalchemy.orm import relationship
 from backend.app.database import Base
 
 class SessionStatus(str, enum.Enum):
@@ -34,3 +35,5 @@ class CMHSession(Base):
     webrtc_room_id = Column(String(100), nullable=False, default=lambda: f"cmh-room-{uuid.uuid4().hex[:8]}")
     status = Column(Enum(SessionStatus), default=SessionStatus.SCHEDULED)
     created_at = Column(DateTime, default=datetime.utcnow)
+
+    case = relationship("Case", foreign_keys=[case_id], overlaps="sessions")

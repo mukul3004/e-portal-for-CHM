@@ -9,7 +9,9 @@ from backend.app.models.user import User, RoleType
 from backend.app.models.case import Case, CaseStatus, Pleading, Exhibit
 from backend.app.models.admissions import AdmissionsChecklist, AdmissionItem
 from backend.app.models.schedule import CMHSession, SessionStatus
-from backend.app.models.order import CaseManagementOrder, DiscoveryDeadline
+from backend.app.models.order import CaseManagementOrder, DiscoveryDeadline, DeadlineStatus
+from backend.app.patterns.factory import DecreeFactoryProvider
+from backend.app.patterns.singleton import JudicialVaultSingleton
 from backend.app.schemas.case import (
     CaseCreate,
     CaseResponse,
@@ -544,3 +546,87 @@ def record_pleading(
     db.commit()
     db.refresh(pleading)
     return pleading
+
+@router.post("/{case_id}/generate-cmo")
+def generate_cmo_order(
+    case_id: str,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_roles(RoleType.JUDGE, RoleType.CLERK))
+):
+    """
+    [GoF Factory Pattern] Generates a formal Order XV-A Rule 2 Case Management Order
+    and statutory discovery schedule dynamically tailored to the Case Category.
+    """
+    import json
+    case = db.query(Case).filter(Case.id == case_id).first()
+    if not case:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Case not found.")
+
+    judge_user = db.query(User).filter(User.id == case.judge_id).first() if case.judge_id else None
+    judge_name = judge_user.full_name if judge_user else (current_user.full_name or "Hon'ble Presiding Judge")
+    category_str = case.case_type.value if hasattr(case.case_type, "value") else str(case.case_type)
+
+    # 1. Use GoF Factory Pattern to build category-specific decree
+    decree_bundle = DecreeFactoryProvider.create_decree_for_case(
+        case_category=category_str,
+        case_id=case.id,
+        case_number=case.cnr_number,
+        title=case.case_title,
+        judge_name=judge_name,
+        base_date=date.today()
+    )
+
+    # 2. Use GoF Singleton Judicial Vault to compute SHA-256 seal
+    vault = JudicialVaultSingleton.get_instance()
+    decree_bytes = json.dumps(decree_bundle, sort_keys=True).encode("utf-8")
+    sha256_seal = vault.compute_sha256(decree_bytes)
+
+    # 3. Check for existing CMO and upsert
+    existing_cmo = db.query(CaseManagementOrder).filter(CaseManagementOrder.case_id == case.id).first()
+    if existing_cmo:
+        db.delete(existing_cmo)
+        db.commit()
+
+    cmo = CaseManagementOrder(
+        case_id=case.id,
+        judge_id=current_user.id,
+        order_date=datetime.utcnow(),
+        undisputed_facts_summary=f"Statutory Order XV-A Rule 2 Decree issued for {decree_bundle['category']}. Governed by {decree_bundle['governing_statute']}.",
+        framed_issues_json=json.dumps(decree_bundle["framed_issues"]),
+        witness_quota_plaintiff=decree_bundle["witness_caps"]["plaintiff"],
+        witness_quota_defendant=decree_bundle["witness_caps"]["defendant"],
+        pdf_storage_url=f"/orders/{decree_bundle['decree_id']}.pdf",
+        sha256_digest=sha256_seal,
+        qr_verification_code=f"VERIFY:{decree_bundle['decree_id']}:{sha256_seal[:16]}",
+        is_digitally_signed=True
+    )
+    db.add(cmo)
+    db.flush()
+
+    # 4. Insert statutory discovery deadlines
+    for d_item in decree_bundle["discovery_deadlines"]:
+        d_obj = DiscoveryDeadline(
+            order_id=cmo.id,
+            task_description=d_item["task"],
+            due_date=date.fromisoformat(d_item["due_date"]),
+            status=DeadlineStatus.PENDING
+        )
+        db.add(d_obj)
+
+    db.commit()
+    db.refresh(cmo)
+
+    # Register in Judicial Vault
+    vault.register_certified_document(
+        document_id=cmo.id,
+        case_id=case.id,
+        document_type="CASE_MANAGEMENT_ORDER_RULE_2",
+        raw_bytes=decree_bytes,
+        signatory_bar_or_judge_id=current_user.email
+    )
+
+    decree_bundle["cmo_id"] = cmo.id
+    decree_bundle["sha256_digest"] = sha256_seal
+    decree_bundle["vault_id"] = vault.vault_id
+    return decree_bundle
+

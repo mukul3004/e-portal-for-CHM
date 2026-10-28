@@ -1,15 +1,31 @@
 from datetime import date, time
-from typing import List, Tuple, Optional
+from typing import List, Tuple, Optional, Dict, Any
 from sqlalchemy.orm import Session
-from backend.app.models.schedule import CMHSession, SessionStatus
-from backend.app.models.case import Case
-from backend.app.models.user import User
+from backend.app.patterns.strategy import (
+    SchedulingStrategy,
+    StrictBenchSlottingStrategy,
+    FlexibleBufferSlottingStrategy,
+    VirtualHybridSlottingStrategy,
+    ClashDetectionContext
+)
 
 class ClashDetectionEngine:
     """
     Algorithmic Conflict-Detection Engine (Order XV-A CMH Scheduler).
-    Checks advocate rosters across all court halls to eliminate double-booking.
+    Utilizes the GoF Strategy Pattern to dynamically switch between:
+      1. StrictBenchSlottingStrategy (default in-person zero overlap)
+      2. FlexibleBufferSlottingStrategy (inter-hall transit buffer)
+      3. VirtualHybridSlottingStrategy (virtual courtroom mode)
     """
+
+    @classmethod
+    def get_strategy_by_name(cls, strategy_name: str = "strict", buffer_minutes: int = 15) -> SchedulingStrategy:
+        name = (strategy_name or "strict").lower()
+        if "buffer" in name or "flex" in name:
+            return FlexibleBufferSlottingStrategy(buffer_minutes=buffer_minutes)
+        elif "virt" in name or "hybrid" in name or "vc" in name:
+            return VirtualHybridSlottingStrategy()
+        return StrictBenchSlottingStrategy()
 
     @staticmethod
     def check_conflict(
@@ -18,50 +34,44 @@ class ClashDetectionEngine:
         hearing_date: date,
         start_time: time,
         end_time: time,
-        court_hall_id: str
+        court_hall_id: str,
+        strategy_name: str = "strict",
+        buffer_minutes: int = 15,
+        is_virtual: bool = False
     ) -> Tuple[bool, Optional[str], Optional[str], Optional[str]]:
         """
-        Scans all scheduled CMH sessions on hearing_date for overlapping time intervals.
+        Scans all scheduled CMH sessions on hearing_date for overlapping time intervals
+        delegating to the selected GoF SchedulingStrategy.
         Returns: (has_conflict, message, conflicting_counsel_bar_id, conflicting_court_hall)
         """
-        # Find user IDs associated with these Bar Council IDs
-        advocates = db.query(User).filter(User.bar_council_id.in_(advocate_bar_ids)).all()
-        advocate_ids = [adv.id for adv in advocates]
-        bar_id_map = {adv.id: adv.bar_council_id for adv in advocates}
+        strat = ClashDetectionEngine.get_strategy_by_name(strategy_name, buffer_minutes)
+        context = ClashDetectionContext(strat)
+        return context.execute_conflict_check(
+            db=db,
+            advocate_bar_ids=advocate_bar_ids,
+            hearing_date=hearing_date,
+            start_time=start_time,
+            end_time=end_time,
+            court_hall_id=court_hall_id,
+            is_virtual=is_virtual
+        )
 
-        # Query all active scheduled sessions on this date
-        active_sessions = db.query(CMHSession).join(Case, CMHSession.case_id == Case.id).filter(
-            CMHSession.hearing_date == hearing_date,
-            CMHSession.status == SessionStatus.SCHEDULED
-        ).all()
-
-        for session in active_sessions:
-            # Check for time interval overlap: max(start1, start2) < min(end1, end2)
-            has_time_overlap = (session.start_time < end_time) and (session.end_time > start_time)
-            if not has_time_overlap:
-                continue
-
-            # Check if court hall is already occupied
-            if session.court_hall_id == court_hall_id:
-                return (
-                    True,
-                    f"Court Hall '{court_hall_id}' is already booked between {session.start_time} and {session.end_time}.",
-                    None,
-                    court_hall_id
-                )
-
-            # Check if any counsel in the request is booked in another courtroom hall
-            session_case = session.case
-            if session_case:
-                involved_counsels = [session_case.plaintiff_counsel_id, session_case.defendant_counsel_id]
-                for counsel_id in involved_counsels:
-                    if counsel_id in advocate_ids:
-                        bar_id = bar_id_map.get(counsel_id, "Unknown Bar ID")
-                        return (
-                            True,
-                            f"Scheduling Collision: Advocate [{bar_id}] is already appearing in Court Hall '{session.court_hall_id}' from {session.start_time} to {session.end_time}.",
-                            bar_id,
-                            session.court_hall_id
-                        )
-
-        return False, None, None, None
+    @staticmethod
+    def recommend_slot(
+        db: Session,
+        advocate_bar_ids: List[str],
+        hearing_date: date,
+        duration_minutes: int = 30,
+        court_hall_id: str = "Court Hall 01",
+        strategy_name: str = "strict"
+    ) -> Optional[Dict[str, Any]]:
+        """Recommends an alternative conflict-free hearing window."""
+        strat = ClashDetectionEngine.get_strategy_by_name(strategy_name)
+        context = ClashDetectionContext(strat)
+        return context.recommend_slot(
+            db=db,
+            advocate_bar_ids=advocate_bar_ids,
+            hearing_date=hearing_date,
+            duration_minutes=duration_minutes,
+            court_hall_id=court_hall_id
+        )

@@ -23,6 +23,13 @@ class BookSlotRequest(BaseModel):
     start_time: time
     end_time: time
 
+class RecommendSlotRequest(BaseModel):
+    hearing_date: date
+    court_hall_id: str = "Court Hall 01"
+    duration_minutes: int = 30
+    strategy: str = "strict"
+    advocate_bar_ids: Optional[List[str]] = None
+
 class CMHSessionResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 

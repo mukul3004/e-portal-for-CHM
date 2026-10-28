@@ -10,7 +10,8 @@ from backend.app.schemas.schedule import (
     SlotClashCheckRequest,
     ClashCheckResponse,
     BookSlotRequest,
-    CMHSessionResponse
+    CMHSessionResponse,
+    RecommendSlotRequest
 )
 from backend.app.services.clash_detector import ClashDetectionEngine
 from backend.app.security.jwt_auth import get_current_user
@@ -187,4 +188,44 @@ def update_session_status(
     db.commit()
     db.refresh(session)
     return {"message": "Session status updated successfully", "session_id": session.id, "status": session.status}
+
+@router.get("/strategies")
+def list_scheduling_strategies():
+    """[GoF Strategy Pattern] Enumerates active runtime scheduling policies."""
+    return [
+        {
+            "id": "strict",
+            "name": "Strict Bench Slotting Strategy",
+            "description": "Zero-tolerance non-overlap policy for physical courtroom benches and advocate appearances."
+        },
+        {
+            "id": "buffered",
+            "name": "Flexible Buffer Slotting Strategy",
+            "description": "Applies a 15-minute inter-hall transit buffer to prevent back-to-back advocate exhaustion."
+        },
+        {
+            "id": "virtual",
+            "name": "Virtual Hybrid Slotting Strategy",
+            "description": "E-Courts VC Link mode: courtroom physical hall collision waived, counsel personal clash enforced."
+        }
+    ]
+
+@router.post("/recommend-slot")
+def recommend_hearing_slot(
+    payload: RecommendSlotRequest,
+    db: Session = Depends(get_db)
+):
+    """[GoF Strategy Pattern] Recommends conflict-free hearing slot using active policy."""
+    slot = ClashDetectionEngine.recommend_slot(
+        db=db,
+        advocate_bar_ids=payload.advocate_bar_ids or [],
+        hearing_date=payload.hearing_date,
+        duration_minutes=payload.duration_minutes,
+        court_hall_id=payload.court_hall_id,
+        strategy_name=payload.strategy
+    )
+    if not slot:
+        raise HTTPException(status_code=404, detail="No conflict-free slot found on the selected date.")
+    return slot
+
 
