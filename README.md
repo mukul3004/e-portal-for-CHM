@@ -165,10 +165,11 @@ case-management-eportal/
 │   │   ├── core/                              <- Config & database engine
 │   │   ├── models/                            <- SQLAlchemy ORM models (Case, User, CMO, etc.)
 │   │   ├── schemas/                           <- Pydantic validation schemas
-│   │   ├── routers/                           <- API endpoints (cases, admissions, cmh, cmo, auth)
+│   │   ├── patterns/                          <- GoF Design Patterns (Singleton, Factory, Strategy)
+│   │   ├── routers/                           <- API endpoints (cases, admissions, cmh, cmo, auth, patterns)
 │   │   ├── security/                          <- JWT authentication & password hashing
 │   │   └── services/                          <- Clash detection & admissions engine
-│   └── tests/                                 <- Pytest test suite
+│   └── tests/                                 <- Pytest test suite (27 passing test cases)
 ├── frontend/
 │   ├── src/
 │   │   ├── App.jsx                            <- Interactive Judicial Single-Page App
@@ -231,18 +232,23 @@ The codebase incorporates formal **Gang of Four (GoF) Design Patterns** in `back
     * **`FlexibleBufferSlottingStrategy`**: Enforces a 15-minute inter-courtroom transit buffer preventing advocate exhaustion across expansive district court complexes.
     * **`VirtualHybridSlottingStrategy`**: E-Courts VC Link mode where courtroom physical collisions are waived, while advocate personal clashes remain strictly enforced.
 
+> [!TIP]
+> **Complete Academic Design Patterns Specification**:  
+> Read the full architectural document at **[docs/Design_Patterns_Specification.md](docs/Design_Patterns_Specification.md)** for detailed UML Class diagrams, sequence flows, and external examiner viva voce defense answers.
+> * **Interactive Swagger API Endpoints**: Test endpoints directly at `http://localhost:8000/docs#/GoF_Design_Patterns` (`/api/v1/patterns/catalog`, `/singleton/vault-status`, `/factory/cmo-preview`, `/strategy/simulate-clash`).
+
 ---
 
 ## 🧪 Automated Testing & Code Coverage Report
 
-The platform is fortified with 23 comprehensive PyTest test suites covering API security, RBAC, Order XV-A statutory workflows, and GoF patterns:
+The platform is fortified with 27 comprehensive PyTest test suites covering API security, RBAC, Order XV-A statutory workflows, and GoF patterns:
 
 ```bash
 # Run complete test suite with coverage report
 PYTHONPATH=. pytest backend/tests/ -v --cov=backend/app --cov-report=term --cov-report=html:htmlcov
 ```
 
-* **Test Suites**: 23/23 Tests Passed (100% Pass Rate).
+* **Test Suites**: 27/27 Tests Passed (100% Pass Rate).
 * **Code Coverage**: Comprehensive line and branch coverage across models, schemas, routers, and patterns.
 * **Interactive Coverage Report**: View HTML report at [`htmlcov/index.html`](htmlcov/index.html).
 

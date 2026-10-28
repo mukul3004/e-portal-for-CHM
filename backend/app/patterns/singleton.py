@@ -124,6 +124,14 @@ class JudicialVaultSingleton:
         return self._vault_id
 
     @property
+    def hash_algorithm(self) -> str:
+        return self._hash_algorithm
+
+    @property
+    def tamper_records(self) -> Dict[str, Dict[str, Any]]:
+        return self._tamper_records
+
+    @property
     def total_verifications(self) -> int:
         return self._verification_count
 

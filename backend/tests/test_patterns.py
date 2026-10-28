@@ -491,3 +491,55 @@ def test_api_generate_cmo_order(client, test_schedule_data):
     assert "discovery_deadlines" in cmo_data
     assert len(cmo_data["discovery_deadlines"]) > 0
     assert "witness_caps" in cmo_data
+
+
+def test_api_patterns_catalog_endpoint(client):
+    """Verify GET /api/v1/patterns/catalog returns formal GoF catalog."""
+    resp = client.get("/api/v1/patterns/catalog")
+    assert resp.status_code == 200
+    data = resp.json()
+    assert data["academic_framework"] == "SVVV B.Tech CSE Semester-VII (BTCS706N)"
+    assert len(data["patterns_implemented"]) == 3
+
+
+def test_api_singleton_vault_status_endpoint(client):
+    """Verify GET /api/v1/patterns/singleton/vault-status confirms identical memory pointers."""
+    resp = client.get("/api/v1/patterns/singleton/vault-status")
+    assert resp.status_code == 200
+    data = resp.json()
+    assert data["single_instance_verified"] is True
+    assert data["status"] == "HEALTHY_SINGLETON_INVARIANCE_CONFIRMED"
+
+
+def test_api_factory_cmo_preview_endpoint(client):
+    """Verify POST /api/v1/patterns/factory/cmo-preview instantiates decrees dynamically."""
+    payload = {
+        "case_type": "ARBITRATION_PETITION",
+        "case_number": "ARB_PET_99_2026",
+        "case_title": "Narmada Infra v. State of MP",
+        "judge_name": "Hon'ble Justice Alok Verma"
+    }
+    resp = client.post("/api/v1/patterns/factory/cmo-preview", json=payload)
+    assert resp.status_code == 200
+    data = resp.json()
+    assert data["factory_used"] == "ArbitrationDecreeFactory"
+    assert data["product_instantiated"] == "ArbitrationEnforcementDecree"
+    assert data["witness_caps"]["plaintiff_maximum"] == 0
+
+
+def test_api_strategy_simulate_clash_endpoint(client):
+    """Verify POST /api/v1/patterns/strategy/simulate-clash executes chosen strategy."""
+    payload = {
+        "strategy_type": "strict",
+        "advocate_bar_id": "MP/14297/2026",
+        "hearing_date": date.today().isoformat(),
+        "start_time": "14:00:00",
+        "end_time": "14:30:00",
+        "court_hall_id": "HALL_04",
+        "is_virtual": False
+    }
+    resp = client.post("/api/v1/patterns/strategy/simulate-clash", json=payload)
+    assert resp.status_code == 200
+    data = resp.json()
+    assert data["active_strategy_name"] == "Strict Bench Slotting Strategy"
+    assert "collision_result" in data

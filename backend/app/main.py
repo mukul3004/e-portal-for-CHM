@@ -5,7 +5,7 @@ from backend.app.config import settings
 from backend.app.database import engine, Base, SessionLocal
 from backend.app.models import User, RoleType, CourtRoom
 from backend.app.security.hashing import hash_password
-from backend.app.routers import auth, cases, admissions, schedule, echallan, notifications
+from backend.app.routers import auth, cases, admissions, schedule, echallan, notifications, patterns
 
 def seed_initial_users():
     """Seeds default demo users if database is empty."""
@@ -171,6 +171,7 @@ app.include_router(admissions.router, prefix=settings.API_V1_STR)
 app.include_router(schedule.router, prefix=settings.API_V1_STR)
 app.include_router(echallan.router, prefix=settings.API_V1_STR)
 app.include_router(notifications.router, prefix=settings.API_V1_STR)
+app.include_router(patterns.router, prefix=settings.API_V1_STR)
 
 @app.get("/", tags=["System Health"])
 @app.get("/health", tags=["System Health"])
