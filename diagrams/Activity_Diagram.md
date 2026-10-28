@@ -8,6 +8,19 @@
 
 ---
 
+## 🖼️ Print-Ready Diagram Image
+
+> [!TIP]
+> **High-Resolution Vector SVG**: [Download Activity_Diagram.svg](file:///Users/mukulbhamgare/Desktop/case-management-eportal/diagrams/Activity_Diagram.svg)  
+> **Print-Ready PNG Image**: [Download Activity_Diagram.png](file:///Users/mukulbhamgare/Desktop/case-management-eportal/diagrams/Activity_Diagram.png)  
+> **Full Printable UML Book (HTML)**: [Open Printable_UML_Book.html](file:///Users/mukulbhamgare/Desktop/case-management-eportal/diagrams/Printable_UML_Book.html)
+
+<div align="center">
+  <img src="Activity_Diagram.png" alt="Activity Diagram - Order XV-A CPC Lifecycle" width="85%" style="border: 1px solid #e2e8f0; border-radius: 8px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);" />
+</div>
+
+---
+
 ## 1. Visual Mermaid Activity Diagram
 
 ```mermaid

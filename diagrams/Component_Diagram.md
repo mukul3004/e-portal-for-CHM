@@ -6,6 +6,19 @@
 
 ---
 
+## 🖼️ Print-Ready Diagram Image
+
+> [!TIP]
+> **High-Resolution Vector SVG**: [Download Component_Diagram.svg](file:///Users/mukulbhamgare/Desktop/case-management-eportal/diagrams/Component_Diagram.svg)  
+> **Print-Ready PNG Image**: [Download Component_Diagram.png](file:///Users/mukulbhamgare/Desktop/case-management-eportal/diagrams/Component_Diagram.png)  
+> **Full Printable UML Book (HTML)**: [Open Printable_UML_Book.html](file:///Users/mukulbhamgare/Desktop/case-management-eportal/diagrams/Printable_UML_Book.html)
+
+<div align="center">
+  <img src="Component_Diagram.png" alt="Component Diagram - 5-Tier Architecture" width="85%" style="border: 1px solid #e2e8f0; border-radius: 8px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);" />
+</div>
+
+---
+
 ## 1. Visual Mermaid Component Diagram
 
 ```mermaid

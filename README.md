@@ -166,17 +166,21 @@ case-management-eportal/
 
 ## 🏛️ Comprehensive UML Architecture Specification (SVVV Phase 2 & 3)
 
-The project includes complete PlantUML source code (`.puml`) and interactive Mermaid Markdown documentation (`.md`) covering all 7 standard UML structural and behavioral views:
+> [!IMPORTANT]
+> **🖨️ University Print Dossier Available**:  
+> Open **[Printable_UML_Book.html](diagrams/Printable_UML_Book.html)** in any browser and press **Cmd + P** (or click the floating print button) to print the complete, formatted A4 lab submission dossier with title cover, high-resolution vector diagrams, and legal analysis.
 
-| # | UML Diagram Type | PlantUML Source | Markdown & Mermaid View | Focus & Statutory Scope |
-| :-: | :--- | :--- | :--- | :--- |
-| 1 | **Class Diagram** | [Class_Diagram.puml](diagrams/Class_Diagram.puml) | [Class_Diagram.md](diagrams/Class_Diagram.md) | Domain entities, OOP inheritance, encapsulation, and database ORM mappings |
-| 2 | **Component Diagram** | [Component_Diagram.puml](diagrams/Component_Diagram.puml) | [Component_Diagram.md](diagrams/Component_Diagram.md) | 5-tier decoupled micro-architecture (Presentation, Gateway, Business, Storage, External) |
-| 3 | **Sequence Diagram** | [Sequence_Diagram.puml](diagrams/Sequence_Diagram.puml) | [Sequence_Diagram.md](diagrams/Sequence_Diagram.md) | Order XV-A pre-trial lifecycle (Admissions -> Clash check -> CMO issuance -> SHA-256 seal) |
-| 4 | **Deployment Diagram** | [Deployment_Diagram.puml](diagrams/Deployment_Diagram.puml) | [Deployment_Diagram.md](diagrams/Deployment_Diagram.md) | Physical node topologies, Uvicorn ASGI, SQLite WAL/MySQL, Cyber Treasury & NJDG gateways |
-| 5 | **Activity Diagram** | [Activity_Diagram.puml](diagrams/Activity_Diagram.puml) | [Activity_Diagram.md](diagrams/Activity_Diagram.md) | Commercial court pre-trial control flow, 120-day default forfeiture, discovery daemons |
-| 6 | **Package Diagram** | [Package_Diagram.puml](diagrams/Package_Diagram.puml) | [Package_Diagram.md](diagrams/Package_Diagram.md) | Modular package structure of `backend.core`, `models`, `schemas`, `services`, `api.v1`, `frontend` |
-| 7 | **Object Diagram** | [Object_Diagram.puml](diagrams/Object_Diagram.puml) | [Object_Diagram.md](diagrams/Object_Diagram.md) | Live runtime object snapshot of Suit `COMM_SUIT_301_2026` in Indore Commercial Court |
+The project includes complete PlantUML source code (`.puml`), high-resolution print images (`.png` / `.svg`), and interactive Mermaid Markdown documentation (`.md`) covering all 7 standard UML structural and behavioral views:
+
+| # | UML Diagram Type | Print-Ready Image | PlantUML Source | Markdown & Spec | Focus & Statutory Scope |
+| :-: | :--- | :--- | :--- | :--- | :--- |
+| 1 | **Activity Diagram** | [PNG](diagrams/Activity_Diagram.png) / [SVG](diagrams/Activity_Diagram.svg) | [Source](diagrams/Activity_Diagram.puml) | [Activity_Diagram.md](diagrams/Activity_Diagram.md) | Order XV-A pre-trial lifecycle, 120-day default forfeiture, discovery daemons |
+| 2 | **Sequence Diagram** | [PNG](diagrams/Sequence_Diagram.png) / [SVG](diagrams/Sequence_Diagram.svg) | [Source](diagrams/Sequence_Diagram.puml) | [Sequence_Diagram.md](diagrams/Sequence_Diagram.md) | Advocate admissions -> MP Cyber Treasury fee check -> Clash check -> CMO decree |
+| 3 | **Class Diagram** | [PNG](diagrams/Class_Diagram.png) / [SVG](diagrams/Class_Diagram.svg) | [Source](diagrams/Class_Diagram.puml) | [Class_Diagram.md](diagrams/Class_Diagram.md) | Domain entities, OOP inheritance, encapsulation, and database ORM mappings |
+| 4 | **Component Diagram** | [PNG](diagrams/Component_Diagram.png) / [SVG](diagrams/Component_Diagram.svg) | [Source](diagrams/Component_Diagram.puml) | [Component_Diagram.md](diagrams/Component_Diagram.md) | 5-tier decoupled micro-architecture (Presentation, Gateway, Business, Storage, External) |
+| 5 | **Deployment Diagram** | [PNG](diagrams/Deployment_Diagram.png) / [SVG](diagrams/Deployment_Diagram.svg) | [Source](diagrams/Deployment_Diagram.puml) | [Deployment_Diagram.md](diagrams/Deployment_Diagram.md) | Physical node topologies, Uvicorn ASGI, SQLite WAL/MySQL, Cyber Treasury & NJDG gateways |
+| 6 | **Package Diagram** | [PNG](diagrams/Package_Diagram.png) / [SVG](diagrams/Package_Diagram.svg) | [Source](diagrams/Package_Diagram.puml) | [Package_Diagram.md](diagrams/Package_Diagram.md) | Modular package structure of `backend.core`, `models`, `schemas`, `services`, `api.v1`, `frontend` |
+| 7 | **Object Diagram** | [PNG](diagrams/Object_Diagram.png) / [SVG](diagrams/Object_Diagram.svg) | [Source](diagrams/Object_Diagram.puml) | [Object_Diagram.md](diagrams/Object_Diagram.md) | Live runtime object snapshot of Suit `COMM_SUIT_301_2026` in Indore Commercial Court |
 
 ---
 

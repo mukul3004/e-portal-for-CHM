@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UML Architecture Dossier - SVVV CSE Major Project (MP-14)</title>
+    <style>
+        :root {
+            --primary: #1e3a8a;
+            --primary-dark: #0f172a;
+            --accent: #f97316;
+            --bg-card: #ffffff;
+            --border: #e2e8f0;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f8fafc;
+            color: var(--text-main);
+            line-height: 1.5;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        /* Floating Controls (Hidden on Print) */
+        .no-print {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            display: flex;
+            gap: 12px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 10px 16px;
+            border-radius: 9999px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.15), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(8px);
+            border: 1px solid var(--border);
+        }
+
+        .btn-print {
+            background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-weight: 600;
+            font-size: 14px;
+            border-radius: 9999px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-print:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(249, 115, 22, 0.4);
+        }
+
+        .btn-secondary {
+            background: #f1f5f9;
+            color: #334155;
+            border: 1px solid #cbd5e1;
+            padding: 10px 18px;
+            font-weight: 600;
+            font-size: 14px;
+            border-radius: 9999px;
+            cursor: pointer;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-secondary:hover {
+            background: #e2e8f0;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        /* Cover Page */
+        .cover-page {
+            min-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 60px 40px;
+            background: white;
+            border: 2px solid #cbd5e1;
+            border-radius: 12px;
+            margin-bottom: 50px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+        }
+
+        .university-header {
+            font-size: 24px;
+            font-weight: 800;
+            color: #0f172a;
+            letter-spacing: -0.5px;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        .institute-sub {
+            font-size: 17px;
+            font-weight: 600;
+            color: #475569;
+            margin-bottom: 4px;
+        }
+
+        .dept-sub {
+            font-size: 15px;
+            color: #64748b;
+            margin-bottom: 30px;
+        }
+
+        .divider {
+            width: 120px;
+            height: 4px;
+            background: #f97316;
+            margin: 0 auto 30px auto;
+            border-radius: 2px;
+        }
+
+        .project-title {
+            font-size: 26px;
+            font-weight: 800;
+            color: #1e3a8a;
+            max-width: 800px;
+            line-height: 1.3;
+            margin-bottom: 12px;
+        }
+
+        .project-subtitle {
+            font-size: 16px;
+            color: #475569;
+            margin-bottom: 40px;
+        }
+
+        .metadata-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            width: 100%;
+            max-width: 650px;
+            background: #f8fafc;
+            padding: 24px;
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
+            text-align: left;
+            margin-bottom: 30px;
+        }
+
+        .metadata-item h4 {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #64748b;
+            margin-bottom: 4px;
+        }
+
+        .metadata-item p {
+            font-size: 15px;
+            font-weight: 600;
+            color: #0f172a;
+        }
+
+        /* Diagram Page */
+        .diagram-page {
+            background: white;
+            padding: 35px;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            margin-bottom: 50px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+        }
+
+        .diagram-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            border-bottom: 2px solid #f1f5f9;
+            padding-bottom: 16px;
+            margin-bottom: 24px;
+        }
+
+        .diagram-title-group h2 {
+            font-size: 22px;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 4px;
+        }
+
+        .diagram-title-group p {
+            font-size: 14px;
+            color: #64748b;
+        }
+
+        .badge-type {
+            background: #eff6ff;
+            color: #1d4ed8;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 6px 14px;
+            border-radius: 9999px;
+            border: 1px solid #bfdbfe;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .diagram-image-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px 0;
+            margin-bottom: 24px;
+            background: #fafafa;
+            border-radius: 8px;
+            border: 1px solid #f1f5f9;
+        }
+
+        .diagram-image-container img {
+            max-width: 100%;
+            height: auto;
+            max-height: 800px;
+            object-fit: contain;
+            border-radius: 4px;
+        }
+
+        .diagram-details {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+            background: #f8fafc;
+            padding: 18px 22px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .diagram-details h3 {
+            font-size: 14px;
+            font-weight: 700;
+            color: #1e3a8a;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .diagram-details p, .diagram-details li {
+            font-size: 13px;
+            color: #334155;
+            line-height: 1.6;
+        }
+
+        .diagram-details ul {
+            padding-left: 18px;
+        }
+
+        .file-links {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            justify-content: center;
+        }
+
+        .file-links a {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #f97316;
+            text-decoration: none;
+            padding: 6px 12px;
+            background: white;
+            border: 1px solid #fed7aa;
+            border-radius: 6px;
+            transition: background 0.15s;
+        }
+
+        .file-links a:hover {
+            background: #fff7ed;
+        }
+
+        /* PRINT STYLES FOR CRISP LAB FILE PRINTING */
+        @media print {
+            body {
+                background: white;
+                font-size: 12pt;
+            }
+
+            .no-print {
+                display: none !important;
+            }
+
+            .container {
+                max-width: 100%;
+                padding: 0;
+                margin: 0;
+            }
+
+            .cover-page {
+                min-height: 100vh;
+                margin: 0;
+                padding: 40px;
+                border: 2px solid #000;
+                page-break-after: always;
+                break-after: page;
+            }
+
+            .diagram-page {
+                margin: 0;
+                padding: 20px;
+                border: none;
+                box-shadow: none;
+                page-break-after: always;
+                break-after: page;
+                min-height: 98vh;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+            }
+
+            .diagram-image-container {
+                background: white;
+                border: none;
+                padding: 10px 0;
+                flex-grow: 1;
+            }
+
+            .diagram-image-container img {
+                max-height: 650px;
+                width: auto;
+                max-width: 100%;
+            }
+
+            .diagram-details {
+                background: #f8f8f8;
+                border: 1px solid #ccc;
+                font-size: 10pt;
+            }
+
+            @page {
+                size: A4 portrait;
+                margin: 12mm;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Floating Action Bar (Hidden when Printing) -->
+    <div class="no-print">
+        <button class="btn-print" onclick="window.print()">
+            <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4H7v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+            Print Entire UML Book (Cmd + P)
+        </button>
+        <a class="btn-secondary" href="../README.md">← Back to Project</a>
+    </div>
+
+    <div class="container">
+
+        <!-- ========================================== -->
+        <!-- COVER PAGE FOR ACADEMIC SUBMISSION -->
+        <!-- ========================================== -->
+        <div class="cover-page">
+            <h1 class="university-header">Shri Vaishnav Vidyapeeth Vishwavidyalaya, Indore</h1>
+            <h2 class="institute-sub">Shri Vaishnav Institute of Information Technology</h2>
+            <h3 class="dept-sub">Department of Computer Science and Engineering</h3>
+
+            <div class="divider"></div>
+
+            <h1 class="project-title">UML Architecture & System Design Dossier</h1>
+            <p class="project-subtitle">Automated Pre-Trial Case Management Hearing (CMH) e-Portal<br>Under Order XV-A of the Code of Civil Procedure, 1908 & Commercial Courts Act, 2015</p>
+
+            <div class="metadata-grid">
+                <div class="metadata-item">
+                    <h4>Course Code & Title</h4>
+                    <p>BTCS706N - Major Project (Phase 2 & 3)</p>
+                </div>
+                <div class="metadata-item">
+                    <h4>Academic Session</h4>
+                    <p>B.Tech CSE - 7th Semester (2026)</p>
+                </div>
+                <div class="metadata-item">
+                    <h4>Team ID</h4>
+                    <p>SVVV-CSE-2026-MP-14</p>
+                </div>
+                <div class="metadata-item">
+                    <h4>Project Guide</h4>
+                    <p>Prof. Shweta Pandey</p>
+                </div>
+                <div class="metadata-item" style="grid-column: span 2;">
+                    <h4>UML Design Scope (Rubric Weightage: 30%)</h4>
+                    <p>Class, Component, Sequence, Deployment, Activity, Package, and Object Models</p>
+                </div>
+            </div>
+
+            <p style="font-size: 12px; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px;">
+                Verified with SHA-256 Cryptographic Tamper-Proof Audit Seals
+            </p>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- 1. ACTIVITY DIAGRAM -->
+        <!-- ========================================== -->
+        <div class="diagram-page" id="activity">
+            <div class="diagram-header">
+                <div class="diagram-title-group">
+                    <h2>1. UML Activity Diagram</h2>
+                    <p>Order XV-A CPC Pre-Trial Case Management Workflow & Decision Nodes</p>
+                </div>
+                <span class="badge-type">Behavioral Model</span>
+            </div>
+
+            <div class="diagram-image-container">
+                <img src="Activity_Diagram.png" alt="Activity Diagram">
+            </div>
+
+            <div class="diagram-details">
+                <div>
+                    <h3>Statutory Workflow Highlights</h3>
+                    <ul>
+                        <li><strong>Ingestion & Valuation:</strong> Claims verified for Commercial Court Specified Value (> ₹3 Lakhs).</li>
+                        <li><strong>Strict Statutory Limitation:</strong> Enforces 120-day maximum for Written Statements (Order VIII Rule 1 CPC).</li>
+                        <li><strong>Order XI Rule 4 Matrix:</strong> Itemized parallel filing of statement of admissions and denials.</li>
+                        <li><strong>Order XV-A Rule 2 Timetable:</strong> Document inspection (≤15d), interrogatories (≤15d), witness affidavits (≤15d).</li>
+                    </ul>
+                </div>
+                <div class="file-links">
+                    <a href="Activity_Diagram.svg" target="_blank">🔍 Open Vector SVG</a>
+                    <a href="Activity_Diagram.png" target="_blank">💾 Download Hi-Res PNG</a>
+                    <a href="Activity_Diagram.puml" target="_blank">📄 View PlantUML Code</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- 2. SEQUENCE DIAGRAM -->
+        <!-- ========================================== -->
+        <div class="diagram-page" id="sequence">
+            <div class="diagram-header">
+                <div class="diagram-title-group">
+                    <h2>2. UML Sequence Diagram</h2>
+                    <p>Pre-Trial Case Management Hearing & Multi-Party Interaction</p>
+                </div>
+                <span class="badge-type">Behavioral Model</span>
+            </div>
+
+            <div class="diagram-image-container">
+                <img src="Sequence_Diagram.png" alt="Sequence Diagram">
+            </div>
+
+            <div class="diagram-details">
+                <div>
+                    <h3>Interaction Phases</h3>
+                    <ul>
+                        <li><strong>Phase 1:</strong> Advocate Bar Council JWT login and collaborative admissions filing.</li>
+                        <li><strong>Phase 2:</strong> Cyber Treasury MP e-Challan fee verification via REST API.</li>
+                        <li><strong>Phase 3:</strong> Automated conflict-free scheduling checking advocate cross-bench clashes.</li>
+                        <li><strong>Phase 4:</strong> Virtual WebRTC CMH session and judicial digital signing of the CMO decree.</li>
+                        <li><strong>Phase 5:</strong> WebSocket real-time broadcast and automated discovery countdown daemons.</li>
+                    </ul>
+                </div>
+                <div class="file-links">
+                    <a href="Sequence_Diagram.svg" target="_blank">🔍 Open Vector SVG</a>
+                    <a href="Sequence_Diagram.png" target="_blank">💾 Download Hi-Res PNG</a>
+                    <a href="Sequence_Diagram.puml" target="_blank">📄 View PlantUML Code</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- 3. CLASS DIAGRAM -->
+        <!-- ========================================== -->
+        <div class="diagram-page" id="class">
+            <div class="diagram-header">
+                <div class="diagram-title-group">
+                    <h2>3. UML Class Diagram</h2>
+                    <p>Domain Object-Oriented Design, Encapsulation, and ORM Entities</p>
+                </div>
+                <span class="badge-type">Structural Model</span>
+            </div>
+
+            <div class="diagram-image-container">
+                <img src="Class_Diagram.png" alt="Class Diagram">
+            </div>
+
+            <div class="diagram-details">
+                <div>
+                    <h3>Object-Oriented Architecture</h3>
+                    <ul>
+                        <li><strong>Inheritance & Roles:</strong> Base `User` class inherited by `Judge`, `Advocate`, `Clerk`, and `Litigant`.</li>
+                        <li><strong>Encapsulation:</strong> Private hash attributes with public cryptographic validator interfaces.</li>
+                        <li><strong>Statutory Associations:</strong> Case links to Admission Matrix (1:N), CMO (1:1), e-Challan (1:1), and Audit Trail.</li>
+                    </ul>
+                </div>
+                <div class="file-links">
+                    <a href="Class_Diagram.svg" target="_blank">🔍 Open Vector SVG</a>
+                    <a href="Class_Diagram.png" target="_blank">💾 Download Hi-Res PNG</a>
+                    <a href="Class_Diagram.puml" target="_blank">📄 View PlantUML Code</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- 4. COMPONENT DIAGRAM -->
+        <!-- ========================================== -->
+        <div class="diagram-page" id="component">
+            <div class="diagram-header">
+                <div class="diagram-title-group">
+                    <h2>4. UML Component Diagram</h2>
+                    <p>5-Tier Decoupled Judicial Architecture & Interface Contracts</p>
+                </div>
+                <span class="badge-type">Structural Model</span>
+            </div>
+
+            <div class="diagram-image-container">
+                <img src="Component_Diagram.png" alt="Component Diagram">
+            </div>
+
+            <div class="diagram-details">
+                <div>
+                    <h3>Tier Boundaries</h3>
+                    <ul>
+                        <li><strong>Tier 1:</strong> Client Presentation (React 19, Tailwind CSS, FullCalendar, WebRTC).</li>
+                        <li><strong>Tier 2:</strong> API Gateway & Security (FastAPI ASGI, RBAC, JWT Auth Guard).</li>
+                        <li><strong>Tier 3:</strong> 9 Business Logic Micro-Engines (Clash Detection, CMO Builder, Vault).</li>
+                        <li><strong>Tier 4 & 5:</strong> Persistence (SQLite WAL / MySQL) & External Gateways (Cyber Treasury, NJDG).</li>
+                    </ul>
+                </div>
+                <div class="file-links">
+                    <a href="Component_Diagram.svg" target="_blank">🔍 Open Vector SVG</a>
+                    <a href="Component_Diagram.png" target="_blank">💾 Download Hi-Res PNG</a>
+                    <a href="Component_Diagram.puml" target="_blank">📄 View PlantUML Code</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- 5. DEPLOYMENT DIAGRAM -->
+        <!-- ========================================== -->
+        <div class="diagram-page" id="deployment">
+            <div class="diagram-header">
+                <div class="diagram-title-group">
+                    <h2>5. UML Deployment Diagram</h2>
+                    <p>Hardware Nodes, Execution Environments, and Protocols</p>
+                </div>
+                <span class="badge-type">Physical Topology</span>
+            </div>
+
+            <div class="diagram-image-container">
+                <img src="Deployment_Diagram.png" alt="Deployment Diagram">
+            </div>
+
+            <div class="diagram-details">
+                <div>
+                    <h3>Node Infrastructure</h3>
+                    <ul>
+                        <li><strong>Client Devices:</strong> Modern Web Browsers running Single Page App over TLS 1.3 / WSS.</li>
+                        <li><strong>Web Ingress:</strong> NGINX reverse proxy handling SSL termination and rate limiting.</li>
+                        <li><strong>App Server:</strong> Ubuntu 24.04 LTS host running Python 3.11 with Uvicorn ASGI on port 8000.</li>
+                        <li><strong>Document Vault:</strong> Local POSIX file system storing SHA-256 encrypted PDF/A exhibits.</li>
+                    </ul>
+                </div>
+                <div class="file-links">
+                    <a href="Deployment_Diagram.svg" target="_blank">🔍 Open Vector SVG</a>
+                    <a href="Deployment_Diagram.png" target="_blank">💾 Download Hi-Res PNG</a>
+                    <a href="Deployment_Diagram.puml" target="_blank">📄 View PlantUML Code</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- 6. PACKAGE DIAGRAM -->
+        <!-- ========================================== -->
+        <div class="diagram-page" id="package">
+            <div class="diagram-header">
+                <div class="diagram-title-group">
+                    <h2>6. UML Package Diagram</h2>
+                    <p>Modular Codebase Decomposition & Layered Architecture</p>
+                </div>
+                <span class="badge-type">Structural Model</span>
+            </div>
+
+            <div class="diagram-image-container">
+                <img src="Package_Diagram.png" alt="Package Diagram">
+            </div>
+
+            <div class="diagram-details">
+                <div>
+                    <h3>Package Organization</h3>
+                    <ul>
+                        <li><strong>`backend.core`:</strong> Configuration, database sessions, bcrypt, and hashing.</li>
+                        <li><strong>`backend.models` & `schemas`:</strong> SQLAlchemy domain entities & Pydantic DTO contracts.</li>
+                        <li><strong>`backend.services`:</strong> Isolated business engines (Clash Detection, Issue Framing).</li>
+                        <li><strong>`backend.api.v1`:</strong> REST route controllers and WebSocket hubs.</li>
+                    </ul>
+                </div>
+                <div class="file-links">
+                    <a href="Package_Diagram.svg" target="_blank">🔍 Open Vector SVG</a>
+                    <a href="Package_Diagram.png" target="_blank">💾 Download Hi-Res PNG</a>
+                    <a href="Package_Diagram.puml" target="_blank">📄 View PlantUML Code</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- 7. OBJECT DIAGRAM -->
+        <!-- ========================================== -->
+        <div class="diagram-page" id="object">
+            <div class="diagram-header">
+                <div class="diagram-title-group">
+                    <h2>7. UML Object Diagram</h2>
+                    <p>Runtime Instance Snapshot: Commercial Suit COMM_SUIT_301_2026</p>
+                </div>
+                <span class="badge-type">Instance Snapshot</span>
+            </div>
+
+            <div class="diagram-image-container">
+                <img src="Object_Diagram.png" alt="Object Diagram">
+            </div>
+
+            <div class="diagram-details">
+                <div>
+                    <h3>Concrete Runtime Entities</h3>
+                    <ul>
+                        <li><strong>Case Instance:</strong> `MPHC010048212026` (Malwa Agro Tech v. Narmada Bio-Energy, ₹45L).</li>
+                        <li><strong>Judicial Officers:</strong> Hon'ble Justice Arun Mishra, Adv. Himanshu Bawaniya, Adv. Ragini Sharma.</li>
+                        <li><strong>Admissions Contrast:</strong> Admitted contract vs Denied equipment conformity triable issue.</li>
+                        <li><strong>Sealed Timetable:</strong> CMO/IND/2026/04 with SHA-256 seal `8e41bf920c81...29cf`.</li>
+                    </ul>
+                </div>
+                <div class="file-links">
+                    <a href="Object_Diagram.svg" target="_blank">🔍 Open Vector SVG</a>
+                    <a href="Object_Diagram.png" target="_blank">💾 Download Hi-Res PNG</a>
+                    <a href="Object_Diagram.puml" target="_blank">📄 View PlantUML Code</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>
