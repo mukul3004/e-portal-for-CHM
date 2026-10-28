@@ -1,9 +1,14 @@
 # e-Portal for Facilitating Case Management Hearing (CMH) of Various Types of Cases
 
+[![CI/CD Pipeline](https://github.com/mukul3004/e-portal-for-CHM/actions/workflows/ci.yml/badge.svg)](https://github.com/mukul3004/e-portal-for-CHM/actions/workflows/ci.yml)
+[![PyTest Status](https://img.shields.io/badge/PyTest-7%20Passed-brightgreen)](https://github.com/mukul3004/e-portal-for-CHM)
+[![Vite Build](https://img.shields.io/badge/Vite%208.3-Compiled%20Clean-blue)](https://github.com/mukul3004/e-portal-for-CHM)
+[![Git Branching](https://img.shields.io/badge/Git%20Workflow-Main%20%7C%20Develop%20%7C%20Feature-orange)](https://github.com/mukul3004/e-portal-for-CHM)
+
 > **Specialized Judicial Workflow Platform under Order XV-A of the Code of Civil Procedure (CPC) & Commercial Courts Act, 2015**
 
 **Department of Computer Science & Engineering, SVIIT, SVVV, Indore**  
-**Course:** Major Project (2025–2026) | **Team ID:** `SVVV-CSE-2026-MP-14`  
+**Course:** Major Project (2025–2026) | **Course Code:** `BTCS706N` | **Team ID:** `SVVV-CSE-2026-MP-14`  
 **Project Guide:** Prof. Shweta Pandey  
 
 **Team Members:**
