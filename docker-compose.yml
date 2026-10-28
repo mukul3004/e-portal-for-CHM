@@ -1,0 +1,89 @@
+# =========================================================================
+# DOCKER COMPOSE ORCHESTRATION SPECIFICATION
+# Project: Case Management Hearing e-Portal (Order XV-A CPC)
+# SVVV B.Tech CSE Semester-VII Major Project (BTCS706N) - Team MP-14
+#
+# USAGE:
+#   docker compose up --build -d   (Start in background)
+#   docker compose ps              (Check service health)
+#   docker compose logs -f         (Tail unified logs)
+#   docker compose down            (Stop all services)
+# =========================================================================
+
+version: "3.8"
+
+services:
+  # -----------------------------------------------------------------------
+  # 1. BACKEND SERVICE: FastAPI Asynchronous ASGI Application
+  # -----------------------------------------------------------------------
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    image: svvv-mp14/cmh-backend:latest
+    container_name: cmh_backend_api
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - ENVIRONMENT=production
+      - PROJECT_NAME=Commercial Division e-Portal (Order XV-A CPC)
+      - PROJECT_VERSION=1.0.0
+      - DATABASE_URL=sqlite:///./cmh_portal.db
+      - JWT_SECRET_KEY=svvv-commercial-court-portal-jwt-secret-key-2026
+      - ACCESS_TOKEN_EXPIRE_MINUTES=1440
+    volumes:
+      - cmh_db_data:/app/data
+      - cmh_uploads_data:/app/uploads
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    networks:
+      - cmh_judicial_network
+
+  # -----------------------------------------------------------------------
+  # 2. FRONTEND SERVICE: React 19 SPA + NGINX Production Reverse Proxy
+  # -----------------------------------------------------------------------
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    image: svvv-mp14/cmh-frontend:latest
+    container_name: cmh_frontend_portal
+    restart: unless-stopped
+    ports:
+      - "80:80"       # Standard HTTP Production Port
+      - "5173:80"     # Vite Development Port Mapping (Backward Compatibility)
+    depends_on:
+      backend:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/"]
+      interval: 20s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    networks:
+      - cmh_judicial_network
+
+# -------------------------------------------------------------------------
+# PERSISTENT STORAGE VOLUMES
+# -------------------------------------------------------------------------
+volumes:
+  cmh_db_data:
+    driver: local
+    name: cmh_portal_sqlite_data
+  cmh_uploads_data:
+    driver: local
+    name: cmh_portal_document_vault
+
+# -------------------------------------------------------------------------
+# ISOLATED JUDICIAL BRIDGE NETWORK
+# -------------------------------------------------------------------------
+networks:
+  cmh_judicial_network:
+    driver: bridge
+    name: cmh_internal_network

@@ -90,7 +90,25 @@ Traditional commercial litigation in India is often plagued by procedural delays
 
 ---
 
-## 💻 Local Setup & Quickstart
+## 🐳 1-Command Docker Deployment (Production & Evaluation)
+
+The portal provides production-grade Docker containerization for instant, zero-configuration evaluation:
+
+```bash
+# Clone and start with Docker Compose
+git clone https://github.com/mukul3004/e-portal-for-CHM.git
+cd case-management-eportal
+docker compose up --build -d
+```
+
+* **Frontend Web Portal**: [http://localhost](http://localhost) (or [http://localhost:5173](http://localhost:5173))
+* **FastAPI Backend & Swagger**: [http://localhost:8000/docs](http://localhost:8000/docs)
+* **System Health Check**: [http://localhost:8000/health](http://localhost:8000/health)
+* Detailed Guide: [docs/Docker_Deployment_Guide.md](docs/Docker_Deployment_Guide.md)
+
+---
+
+## 💻 Local Manual Setup & Quickstart
 
 ### Prerequisites
 * Python 3.11+

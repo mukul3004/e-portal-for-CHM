@@ -1,0 +1,59 @@
+# Git
+.git
+.gitignore
+.gitattributes
+
+# GitHub
+.github
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+*.db-journal
+
+# Testing & Coverage
+.pytest_cache/
+.coverage
+htmlcov/
+test-reports/
+*.xml
+
+# Node & Frontend
+frontend/node_modules/
+frontend/dist/
+frontend/.oxlintrc.json
+.npm/
+
+# IDE & Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Documentation Scratch & Logs
+docs/* 2.*
+diagrams/* 2.*
+*.log

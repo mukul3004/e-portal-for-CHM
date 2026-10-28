@@ -173,6 +173,8 @@ app.include_router(echallan.router, prefix=settings.API_V1_STR)
 app.include_router(notifications.router, prefix=settings.API_V1_STR)
 
 @app.get("/", tags=["System Health"])
+@app.get("/health", tags=["System Health"])
+@app.get("/api/v1/health", tags=["System Health"])
 def root():
     return {
         "project": settings.PROJECT_NAME,
@@ -182,3 +184,12 @@ def root():
         "swagger_docs": "/docs",
         "redoc_docs": "/redoc"
     }
+
+# Mount static frontend production build if present (for single-container all-in-one deployment)
+import os
+from fastapi.staticfiles import StaticFiles
+
+_dist_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "frontend", "dist"))
+if os.path.exists(_dist_dir) and os.path.isdir(_dist_dir):
+    app.mount("/portal", StaticFiles(directory=_dist_dir, html=True), name="portal_spa")
+
