@@ -167,20 +167,21 @@ case-management-eportal/
 ## 🏛️ Comprehensive UML Architecture Specification (SVVV Phase 2 & 3)
 
 > [!IMPORTANT]
-> **🖨️ University Print Dossier Available**:  
-> Open **[Printable_UML_Book.html](diagrams/Printable_UML_Book.html)** in any browser and press **Cmd + P** (or click the floating print button) to print the complete, formatted A4 lab submission dossier with title cover, high-resolution vector diagrams, and legal analysis.
+> **📄 University Print-Ready A4 PDF Dossier (100% Calibrated for A4 Hardcopy)**:  
+> * **[Download Complete 8-Page A4 PDF Dossier](diagrams/SVVV_UML_Architecture_Dossier_A4.pdf)** — Formatted with official SVVV university cover page, SVIIT department header, team credentials, and all 7 diagrams centered on individual A4 pages with zero overflow.
+> * **[Interactive HTML Print Dossier](diagrams/Printable_UML_Book.html)** — Open in browser and click the floating **"🖨️ Print Entire UML Book (Cmd + P)"** button.
 
-The project includes complete PlantUML source code (`.puml`), high-resolution print images (`.png` / `.svg`), and interactive Mermaid Markdown documentation (`.md`) covering all 7 standard UML structural and behavioral views:
+The project includes complete PlantUML source code (`.puml`), print-ready A4 PDFs (`.pdf`), high-resolution print images (`.png` / `.svg`), and interactive Mermaid Markdown documentation (`.md`) covering all 7 standard UML structural and behavioral views:
 
-| # | UML Diagram Type | Print-Ready Image | PlantUML Source | Markdown & Spec | Focus & Statutory Scope |
-| :-: | :--- | :--- | :--- | :--- | :--- |
-| 1 | **Activity Diagram** | [PNG](diagrams/Activity_Diagram.png) / [SVG](diagrams/Activity_Diagram.svg) | [Source](diagrams/Activity_Diagram.puml) | [Activity_Diagram.md](diagrams/Activity_Diagram.md) | Order XV-A pre-trial lifecycle, 120-day default forfeiture, discovery daemons |
-| 2 | **Sequence Diagram** | [PNG](diagrams/Sequence_Diagram.png) / [SVG](diagrams/Sequence_Diagram.svg) | [Source](diagrams/Sequence_Diagram.puml) | [Sequence_Diagram.md](diagrams/Sequence_Diagram.md) | Advocate admissions -> MP Cyber Treasury fee check -> Clash check -> CMO decree |
-| 3 | **Class Diagram** | [PNG](diagrams/Class_Diagram.png) / [SVG](diagrams/Class_Diagram.svg) | [Source](diagrams/Class_Diagram.puml) | [Class_Diagram.md](diagrams/Class_Diagram.md) | Domain entities, OOP inheritance, encapsulation, and database ORM mappings |
-| 4 | **Component Diagram** | [PNG](diagrams/Component_Diagram.png) / [SVG](diagrams/Component_Diagram.svg) | [Source](diagrams/Component_Diagram.puml) | [Component_Diagram.md](diagrams/Component_Diagram.md) | 5-tier decoupled micro-architecture (Presentation, Gateway, Business, Storage, External) |
-| 5 | **Deployment Diagram** | [PNG](diagrams/Deployment_Diagram.png) / [SVG](diagrams/Deployment_Diagram.svg) | [Source](diagrams/Deployment_Diagram.puml) | [Deployment_Diagram.md](diagrams/Deployment_Diagram.md) | Physical node topologies, Uvicorn ASGI, SQLite WAL/MySQL, Cyber Treasury & NJDG gateways |
-| 6 | **Package Diagram** | [PNG](diagrams/Package_Diagram.png) / [SVG](diagrams/Package_Diagram.svg) | [Source](diagrams/Package_Diagram.puml) | [Package_Diagram.md](diagrams/Package_Diagram.md) | Modular package structure of `backend.core`, `models`, `schemas`, `services`, `api.v1`, `frontend` |
-| 7 | **Object Diagram** | [PNG](diagrams/Object_Diagram.png) / [SVG](diagrams/Object_Diagram.svg) | [Source](diagrams/Object_Diagram.puml) | [Object_Diagram.md](diagrams/Object_Diagram.md) | Live runtime object snapshot of Suit `COMM_SUIT_301_2026` in Indore Commercial Court |
+| # | UML Diagram Type | Print-Ready A4 PDF | High-Res Visuals | PlantUML Source | Markdown & Spec | Focus & Statutory Scope |
+| :-: | :--- | :--- | :--- | :--- | :--- | :--- |
+| 1 | **Activity Diagram** | [A4 PDF](diagrams/Activity_Diagram_A4.pdf) | [PNG](diagrams/Activity_Diagram.png) / [SVG](diagrams/Activity_Diagram.svg) | [Source](diagrams/Activity_Diagram.puml) | [Activity_Diagram.md](diagrams/Activity_Diagram.md) | Order XV-A pre-trial lifecycle, 120-day default forfeiture, discovery daemons |
+| 2 | **Sequence Diagram** | [A4 PDF](diagrams/Sequence_Diagram_A4.pdf) | [PNG](diagrams/Sequence_Diagram.png) / [SVG](diagrams/Sequence_Diagram.svg) | [Source](diagrams/Sequence_Diagram.puml) | [Sequence_Diagram.md](diagrams/Sequence_Diagram.md) | Advocate admissions -> MP Cyber Treasury fee check -> Clash check -> CMO decree |
+| 3 | **Class Diagram** | [A4 PDF](diagrams/Class_Diagram_A4.pdf) | [PNG](diagrams/Class_Diagram.png) / [SVG](diagrams/Class_Diagram.svg) | [Source](diagrams/Class_Diagram.puml) | [Class_Diagram.md](diagrams/Class_Diagram.md) | Domain entities, OOP inheritance, encapsulation, and database ORM mappings |
+| 4 | **Component Diagram** | [A4 PDF](diagrams/Component_Diagram_A4.pdf) | [PNG](diagrams/Component_Diagram.png) / [SVG](diagrams/Component_Diagram.svg) | [Source](diagrams/Component_Diagram.puml) | [Component_Diagram.md](diagrams/Component_Diagram.md) | 5-tier decoupled micro-architecture (Presentation, Gateway, Business, Storage, External) |
+| 5 | **Deployment Diagram** | [A4 PDF](diagrams/Deployment_Diagram_A4.pdf) | [PNG](diagrams/Deployment_Diagram.png) / [SVG](diagrams/Deployment_Diagram.svg) | [Source](diagrams/Deployment_Diagram.puml) | [Deployment_Diagram.md](diagrams/Deployment_Diagram.md) | Physical node topologies, Uvicorn ASGI, SQLite WAL/MySQL, Cyber Treasury & NJDG gateways |
+| 6 | **Package Diagram** | [A4 PDF](diagrams/Package_Diagram_A4.pdf) | [PNG](diagrams/Package_Diagram.png) / [SVG](diagrams/Package_Diagram.svg) | [Source](diagrams/Package_Diagram.puml) | [Package_Diagram.md](diagrams/Package_Diagram.md) | Modular package structure of `backend.core`, `models`, `schemas`, `services`, `api.v1`, `frontend` |
+| 7 | **Object Diagram** | [A4 PDF](diagrams/Object_Diagram_A4.pdf) | [PNG](diagrams/Object_Diagram.png) / [SVG](diagrams/Object_Diagram.svg) | [Source](diagrams/Object_Diagram.puml) | [Object_Diagram.md](diagrams/Object_Diagram.md) | Live runtime object snapshot of Suit `COMM_SUIT_301_2026` in Indore Commercial Court |
 
 ---
 
