@@ -250,3 +250,4 @@ classDiagram
 
 ### Q4: How are these design patterns tested?
 > **Answer:** We maintain 20+ automated unit tests in `backend/tests/test_patterns.py` verifying thread-safety, memory pointer invariance (`id(v1) == id(v2)`), polymorphic factory dispatch, and runtime strategy swapping. All tests execute in our automated GitHub Actions CI/CD pipeline.
+

@@ -177,7 +177,11 @@ case-management-eportal/
 │   │   ├── index.css                          <- Typography & base tokens
 │   │   └── main.jsx                           <- React DOM entry point
 │   └── package.json                           <- Node.js dependencies & scripts
-├── docs/                                      <- Project reports, synopsis, review paper
+├── docs/                                      <- Academic final project report, synopsis, review paper, specifications
+│   ├── Final_Major_Project_Report_BTCS706N.md <- Complete academic project report
+│   ├── Printable_Project_Report.html          <- Print-ready A4 project report document
+│   ├── Design_Patterns_Specification.md       <- GoF design patterns architecture
+│   └── Jira_Sprint_and_Backlog_Specification.md <- Agile 6-sprint backlog mapping
 └── diagrams/                                  <- Complete 7-tier UML diagrams (PlantUML & Markdown)
 ```
 
