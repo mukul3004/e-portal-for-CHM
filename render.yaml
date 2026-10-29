@@ -27,8 +27,6 @@ services:
   - type: web
     name: cmh-eportal-frontend
     runtime: static
-    region: oregon
-    plan: free
     buildCommand: "cd frontend && npm install && npm run build"
     staticPublishPath: "./frontend/dist"
     autoDeploy: true
@@ -38,7 +36,4 @@ services:
         destination: /index.html
     envVars:
       - key: VITE_API_URL
-        fromService:
-          type: web
-          name: cmh-eportal-backend
-          property: host
+        value: https://cmh-eportal-backend.onrender.com
