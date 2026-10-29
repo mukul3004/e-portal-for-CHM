@@ -132,3 +132,4 @@ def test_api_cause_list_includes_joinability(client):
         assert "join_label" in item
         assert "join_message" in item
         assert isinstance(item["is_joinable"], bool)
+
