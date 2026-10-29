@@ -1,5 +1,5 @@
 from typing import Optional, List
-from datetime import date
+from datetime import date, datetime, timedelta
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from backend.app.database import get_db
@@ -18,6 +18,95 @@ from backend.app.security.jwt_auth import get_current_user
 from backend.app.security.rbac import require_roles
 
 router = APIRouter(prefix="/schedule", tags=["Smart Hearing Scheduling"])
+
+
+def evaluate_session_joinability(session: CMHSession, ref_datetime: Optional[datetime] = None) -> dict:
+    """
+    [Order XV-A Rule 1 CPC Virtual Courtroom Admittance Protocol]
+    Universal admittance gate: enforces strictly across ALL participants (Judges, Advocates,
+    Litigants, and Observers) that virtual meetings may only be joined at their scheduled time.
+    Admittance window opens 15 minutes before scheduled start time and extends up to 30 minutes
+    after scheduled end time (or continuously while actively marked IN_PROGRESS).
+    """
+    if ref_datetime is None:
+        ref_datetime = datetime.now()
+    today = ref_datetime.date()
+
+    # 1. Concluded proceedings cannot be rejoined
+    if session.status == SessionStatus.CONCLUDED:
+        return {
+            "is_joinable": False,
+            "join_status": "CONCLUDED",
+            "join_label": "Hearing Concluded",
+            "join_message": "This hearing has already concluded under Order XV-A Rule 6 CPC. The virtual courtroom is closed."
+        }
+
+    # 2. Adjourned proceedings
+    if session.status == SessionStatus.ADJOURNED:
+        return {
+            "is_joinable": False,
+            "join_status": "ADJOURNED",
+            "join_label": "Hearing Adjourned",
+            "join_message": "This matter has been adjourned by the Hon'ble Court. Virtual courtroom access is inactive."
+        }
+
+    # 3. Actively in progress (Judge has convened court)
+    if session.status == SessionStatus.IN_PROGRESS:
+        return {
+            "is_joinable": True,
+            "join_status": "IN_PROGRESS",
+            "join_label": "In Session • Live Now",
+            "join_message": "Court is actively in session. You may enter the virtual courtroom."
+        }
+
+    # 4. Scheduled Session - Date Check
+    h_date = session.hearing_date
+    if h_date > today:
+        diff_days = (h_date - today).days
+        day_str = "Tomorrow" if diff_days == 1 else f"in {diff_days} days ({h_date.strftime('%d %b %Y')})"
+        return {
+            "is_joinable": False,
+            "join_status": "UPCOMING",
+            "join_label": f"Locked • {h_date.strftime('%d %b')} {session.start_time.strftime('%H:%M')}",
+            "join_message": f"Virtual courtroom is locked. Scheduled for {day_str} at {session.start_time.strftime('%H:%M')}. Participants may only join at the scheduled time."
+        }
+    elif h_date < today:
+        return {
+            "is_joinable": False,
+            "join_status": "EXPIRED",
+            "join_label": "Date Passed",
+            "join_message": f"The scheduled hearing date ({h_date.strftime('%d %b %Y')}) has passed. Virtual courtroom access is closed."
+        }
+
+    # 5. Scheduled Session Today - Time Window Check
+    start_dt = datetime.combine(today, session.start_time)
+    end_dt = datetime.combine(today, session.end_time)
+    early_admittance = start_dt - timedelta(minutes=15)
+    grace_end = end_dt + timedelta(minutes=30)
+
+    if ref_datetime < early_admittance:
+        mins_remaining = max(1, int((early_admittance - ref_datetime).total_seconds() / 60))
+        return {
+            "is_joinable": False,
+            "join_status": "TOO_EARLY",
+            "join_label": f"Opens {early_admittance.strftime('%H:%M')}",
+            "join_message": f"Virtual courtroom opens 15 minutes prior to scheduled start. Scheduled for {session.start_time.strftime('%H:%M')} (opens in {mins_remaining} min). Early admittance is restricted."
+        }
+    elif ref_datetime > grace_end:
+        return {
+            "is_joinable": False,
+            "join_status": "SLOT_PASSED",
+            "join_label": "Slot Ended",
+            "join_message": f"The scheduled time slot ({session.start_time.strftime('%H:%M')} - {session.end_time.strftime('%H:%M')}) has ended. Virtual courtroom access is closed."
+        }
+    else:
+        return {
+            "is_joinable": True,
+            "join_status": "LIVE_NOW",
+            "join_label": "Join Virtual Hearing",
+            "join_message": "Scheduled hearing window is active. You may join the virtual hearing."
+        }
+
 
 @router.post("/check-clash", response_model=ClashCheckResponse)
 def check_advocate_clash(
@@ -145,6 +234,10 @@ def get_daily_cause_list(
             "court_hall_id": s.court_hall_id,
             "status": s.status.value if hasattr(s.status, 'value') else str(s.status),
             "webrtc_room_id": s.webrtc_room_id,
+            "is_joinable": evaluate_session_joinability(s)["is_joinable"],
+            "join_status": evaluate_session_joinability(s)["join_status"],
+            "join_label": evaluate_session_joinability(s)["join_label"],
+            "join_message": evaluate_session_joinability(s)["join_message"],
             "case": {
                 "id": case.id if case else "",
                 "cnr_number": case.cnr_number if case else "",
@@ -167,6 +260,31 @@ def get_daily_cause_list(
         "total_items": len(items),
         "hearing_date": hearing_date or (items[0]["hearing_date"] if items else None),
         "items": items
+    }
+
+@router.get("/sessions/{session_id}/verify-join")
+def verify_session_join(
+    session_id: str,
+    db: Session = Depends(get_db)
+):
+    """
+    [Order XV-A Rule 1 CPC Virtual Courtroom Admittance Gate]
+    Validates whether the session is joinable right now according to authoritative court time.
+    Universal admittance enforcement for Judges, Advocates, and Litigants alike.
+    """
+    session = db.query(CMHSession).filter(CMHSession.id == session_id).first()
+    if not session:
+        raise HTTPException(status_code=404, detail="Hearing session not found.")
+
+    eval_res = evaluate_session_joinability(session)
+    return {
+        "session_id": session.id,
+        "hearing_date": session.hearing_date.isoformat(),
+        "start_time": session.start_time.strftime("%H:%M"),
+        "end_time": session.end_time.strftime("%H:%M"),
+        "court_hall_id": session.court_hall_id,
+        "status": session.status.value if hasattr(session.status, 'value') else str(session.status),
+        **eval_res
     }
 
 @router.patch("/sessions/{session_id}/status")
