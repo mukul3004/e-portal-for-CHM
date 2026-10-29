@@ -801,3 +801,4 @@ This major project successfully designed, architected, and implemented an end-to
 
 ### Q5: How is software quality and CI/CD verified in your project?
 > **Answer:** We maintain an automated GitHub Actions CI/CD pipeline (`.github/workflows/ci.yml`) triggering on pushes to `main` and `develop`. It runs static analysis (Flake8 and Oxlint) and executes 27 PyTest test suites verifying authentication, admissions, e-Challan payments, and GoF patterns, achieving 79% statement coverage and producing production-ready Docker containers.
+
