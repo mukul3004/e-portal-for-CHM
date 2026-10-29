@@ -61,7 +61,8 @@ import {
 } from 'lucide-react';
 import { t, tCategory, tStatus, tStance, tDeadlineStatus, tRelativeDate } from './translations';
 
-const API_BASE = 'http://localhost:8000/api/v1';
+const BACKEND_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+const API_BASE = `${BACKEND_URL}/api/v1`;
 
 // Official Madhya Pradesh High Court Vector Emblem (Ashoka Lion Capital + Scales of Justice)
 function MpHcEmblem({ size = 70 }) {
@@ -798,7 +799,7 @@ export default function App() {
   // Check Backend Health
   const checkHealthAndLoad = async () => {
     try {
-      const res = await fetch('http://localhost:8000/');
+      const res = await fetch(`${BACKEND_URL}/health`);
       setBackendOnline(res.ok);
     } catch (e) {
       setBackendOnline(false);
