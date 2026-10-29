@@ -4,74 +4,128 @@
 body.light-theme,
 [data-theme="light"],
 .light-theme {
-  /* White, Orange, and Black Core Palette (Light Mode) */
-  --theme-black: #09090b;
-  --theme-black-elevated: #121214;
-  --theme-dark-surface: #18181b;
-  --theme-dark-border: #27272a;
+  /* =========================================================
+     CLASSIC MP HIGH COURT NAVY & SAFFRON GOLD (LIGHT MODE)
+     ========================================================= */
+  
+  /* Primary Judicial Navy Palette */
+  --theme-navy: #0f172a;
+  --theme-navy-deep: #070d1e;
+  --theme-navy-mid: #1e3a8a;
+  --theme-navy-surface: #1e293b;
+  --theme-navy-border: #334155;
+  --theme-navy-light: #2563eb;
+  --theme-navy-tint: #f0f4fc;
 
-  --theme-orange: #f97316;
-  --theme-orange-hover: #ea580c;
-  --theme-orange-deep: #c2410c;
-  --theme-orange-light: #fb923c;
-  --theme-orange-tint: #fff7ed;
-  --theme-orange-border: #fed7aa;
-  --theme-orange-glow: rgba(249, 115, 22, 0.28);
+  /* Regal Court Saffron Gold Palette */
+  --theme-gold: #d97706;
+  --theme-gold-hover: #b45309;
+  --theme-gold-deep: #92400e;
+  --theme-gold-light: #f59e0b;
+  --theme-gold-tint: #fffbeb;
+  --theme-gold-border: #fde68a;
+  --theme-gold-glow: rgba(217, 119, 6, 0.28);
 
+  /* Full Compatibility Aliases (theme-orange / theme-black) */
+  --theme-orange: #d97706;
+  --theme-orange-hover: #b45309;
+  --theme-orange-deep: #92400e;
+  --theme-orange-light: #f59e0b;
+  --theme-orange-tint: #fffbeb;
+  --theme-orange-border: #fde68a;
+  --theme-orange-glow: rgba(217, 119, 6, 0.28);
+
+  --theme-black: #0f172a;
+  --theme-black-elevated: #1e293b;
+  --theme-dark-surface: #0f172a;
+  --theme-dark-border: #1e3a8a;
+
+  /* Surfaces & Typography */
   --theme-white: #ffffff;
   --theme-bg: #f8fafc;
   --theme-card: #ffffff;
   --theme-card-bg: #ffffff;
-  --theme-border: #e4e4e7;
+  --theme-border: #e2e8f0;
   
-  --theme-text-primary: #09090b;
-  --theme-text-secondary: #3f3f46;
-  --theme-text-muted: #71717a;
+  --theme-text-primary: #0f172a;
+  --theme-text-secondary: #334155;
+  --theme-text-muted: #64748b;
 
   /* Legacy variable mapping to ensure 100% theme consistency */
-  --primary-navy: #09090b;
-  --primary-dark: #000000;
-  --court-gold: #f97316;
-  --court-gold-light: #fff7ed;
-  --accent-blue: #f97316;
-  --accent-blue-light: #fff7ed;
-  --emerald-green: #10b981;
+  --primary-navy: #0f172a;
+  --primary-dark: #070d1e;
+  --court-gold: #d97706;
+  --court-gold-light: #fffbeb;
+  --accent-blue: #1e3a8a;
+  --accent-blue-light: #eff6ff;
+  --emerald-green: #059669;
   --emerald-light: #ecfdf5;
   --danger-red: #ef4444;
   --danger-light: #fef2f2;
   --bg-slate: #f8fafc;
   --bg-card: #ffffff;
-  --border-slate: #e4e4e7;
-  --text-main: #09090b;
-  --text-muted: #71717a;
+  --border-slate: #e2e8f0;
+  --text-main: #0f172a;
+  --text-muted: #64748b;
 
-  /* Precision Shadows */
-  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 10px -1px rgba(0, 0, 0, 0.07), 0 2px 4px -2px rgba(0, 0, 0, 0.04);
-  --shadow-lg: 0 12px 24px -4px rgba(0, 0, 0, 0.09), 0 4px 8px -4px rgba(0, 0, 0, 0.04);
-  --shadow-orange: 0 8px 24px -4px rgba(249, 115, 22, 0.35);
-  --shadow-black: 0 10px 30px -5px rgba(0, 0, 0, 0.45);
+  /* Precision Judicial Shadows */
+  --shadow-sm: 0 1px 3px 0 rgba(15, 23, 42, 0.06);
+  --shadow-md: 0 4px 10px -1px rgba(15, 23, 42, 0.08), 0 2px 4px -2px rgba(15, 23, 42, 0.04);
+  --shadow-lg: 0 12px 24px -4px rgba(15, 23, 42, 0.12), 0 4px 8px -4px rgba(15, 23, 42, 0.04);
+  --shadow-orange: 0 8px 24px -4px rgba(217, 119, 6, 0.35);
+  --shadow-gold: 0 8px 24px -4px rgba(217, 119, 6, 0.35);
+  --shadow-black: 0 10px 30px -5px rgba(7, 13, 30, 0.45);
 }
 
-/* Dark Theme Variables */
+/* =========================================================
+   CLASSIC MP HIGH COURT NAVY & SAFFRON GOLD (DARK THEME)
+   ========================================================= */
 body.dark-theme,
 [data-theme="dark"],
 .dark-theme {
-  --theme-bg: #09090b;
-  --theme-card: #121214;
-  --theme-card-bg: #121214;
-  --theme-border: #27272a;
-  --theme-text-primary: #f4f4f5;
-  --theme-text-secondary: #d4d4d8;
-  --theme-text-muted: #a1a1aa;
-  --theme-orange-tint: rgba(249, 115, 22, 0.15);
-  --theme-orange-border: rgba(249, 115, 22, 0.4);
+  --theme-navy: #070d1e;
+  --theme-navy-deep: #030712;
+  --theme-navy-mid: #1e3a8a;
+  --theme-navy-surface: #0f172a;
+  --theme-navy-border: #1e3a8a;
+  --theme-navy-light: #3b82f6;
+  --theme-navy-tint: rgba(30, 58, 138, 0.2);
 
-  --bg-slate: #09090b;
-  --bg-card: #121214;
-  --border-slate: #27272a;
-  --text-main: #f4f4f5;
-  --text-muted: #a1a1aa;
+  --theme-gold: #f59e0b;
+  --theme-gold-hover: #fbbf24;
+  --theme-gold-deep: #d97706;
+  --theme-gold-light: #fde047;
+  --theme-gold-tint: rgba(245, 158, 11, 0.16);
+  --theme-gold-border: rgba(245, 158, 11, 0.4);
+  --theme-gold-glow: rgba(245, 158, 11, 0.35);
+
+  --theme-orange: #f59e0b;
+  --theme-orange-hover: #fbbf24;
+  --theme-orange-deep: #d97706;
+  --theme-orange-light: #fde047;
+  --theme-orange-tint: rgba(245, 158, 11, 0.16);
+  --theme-orange-border: rgba(245, 158, 11, 0.4);
+  --theme-orange-glow: rgba(245, 158, 11, 0.35);
+
+  --theme-bg: #070d1e;
+  --theme-card: #0f172a;
+  --theme-card-bg: #0f172a;
+  --theme-border: #1e293b;
+  
+  --theme-black: #070d1e;
+  --theme-black-elevated: #0f172a;
+  --theme-dark-surface: #0f172a;
+  --theme-dark-border: #1e3a8a;
+
+  --theme-text-primary: #f8fafc;
+  --theme-text-secondary: #cbd5e1;
+  --theme-text-muted: #94a3b8;
+
+  --bg-slate: #070d1e;
+  --bg-card: #0f172a;
+  --border-slate: #1e293b;
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
 
   --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.5);
   --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.6);
@@ -125,16 +179,16 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background: var(--theme-bg);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #d4d4d8;
+  background: #94a3b8;
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #f97316;
+  background: var(--theme-gold);
 }
 
 .mono {

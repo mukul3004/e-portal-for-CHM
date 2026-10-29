@@ -77,9 +77,9 @@ function MpHcEmblem({ size = 70 }) {
       aria-label="High Court of Madhya Pradesh Official Emblem"
     >
       {/* Outer decorative borders */}
-      <circle cx="50" cy="50" r="48" stroke="#f97316" strokeWidth="2.5" />
-      <circle cx="50" cy="50" r="45" stroke="#fb923c" strokeWidth="1" strokeDasharray="2.5 1.5" />
-      <circle cx="50" cy="50" r="42" fill="#09090b" stroke="#f97316" strokeWidth="1.5" />
+      <circle cx="50" cy="50" r="48" stroke="#d97706" strokeWidth="2.5" />
+      <circle cx="50" cy="50" r="45" stroke="#f59e0b" strokeWidth="1" strokeDasharray="2.5 1.5" />
+      <circle cx="50" cy="50" r="42" fill="#070d1e" stroke="#d97706" strokeWidth="1.5" />
       
       {/* Curved Text Paths for High Court Title */}
       <path id="mphcUpperArc" d="M 16,50 A 34,34 0 1,1 84,50" fill="none" />
@@ -91,39 +91,39 @@ function MpHcEmblem({ size = 70 }) {
         </textPath>
       </text>
 
-      <text fill="#fb923c" fontSize="4.6" fontWeight="700" letterSpacing="0.05em">
+      <text fill="#f59e0b" fontSize="4.6" fontWeight="700" letterSpacing="0.05em">
         <textPath href="#mphcLowerArc" startOffset="50%" textAnchor="middle">
           सत्यमेव जयते • JABALPUR
         </textPath>
       </text>
 
       {/* Central Inner Disc */}
-      <circle cx="50" cy="50" r="25" fill="#18181b" stroke="#f97316" strokeWidth="1" />
+      <circle cx="50" cy="50" r="25" fill="#1e293b" stroke="#d97706" strokeWidth="1" />
 
       {/* Ashoka Pillar Lion Capital stylized silhouette */}
       <path d="M 45 32 Q 44 27 46 25 Q 48 27 48 30 Z" fill="#ffffff" />
-      <path d="M 50 31 Q 48 26 50 24 Q 52 26 52 31 Z" fill="#f97316" />
+      <path d="M 50 31 Q 48 26 50 24 Q 52 26 52 31 Z" fill="#d97706" />
       <path d="M 55 32 Q 56 27 54 25 Q 52 27 52 30 Z" fill="#ffffff" />
-      <rect x="43" y="32" width="14" height="2" rx="0.5" fill="#f97316" />
+      <rect x="43" y="32" width="14" height="2" rx="0.5" fill="#d97706" />
 
       {/* Central Scales of Justice (Tarazu) */}
       <line x1="50" y1="34" x2="50" y2="62" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round" />
-      <line x1="33" y1="39" x2="67" y2="39" stroke="#f97316" strokeWidth="1.8" strokeLinecap="round" />
+      <line x1="33" y1="39" x2="67" y2="39" stroke="#d97706" strokeWidth="1.8" strokeLinecap="round" />
       
       {/* Left Pan */}
-      <line x1="34" y1="40" x2="30" y2="49" stroke="#fb923c" strokeWidth="0.8" />
-      <line x1="34" y1="40" x2="38" y2="49" stroke="#fb923c" strokeWidth="0.8" />
-      <path d="M 28 49 Q 34 53 40 49 Z" fill="#ffffff" stroke="#f97316" strokeWidth="0.8" />
+      <line x1="34" y1="40" x2="30" y2="49" stroke="#f59e0b" strokeWidth="0.8" />
+      <line x1="34" y1="40" x2="38" y2="49" stroke="#f59e0b" strokeWidth="0.8" />
+      <path d="M 28 49 Q 34 53 40 49 Z" fill="#ffffff" stroke="#d97706" strokeWidth="0.8" />
 
       {/* Right Pan */}
-      <line x1="66" y1="40" x2="62" y2="49" stroke="#fb923c" strokeWidth="0.8" />
-      <line x1="66" y1="40" x2="70" y2="49" stroke="#fb923c" strokeWidth="0.8" />
-      <path d="M 60 49 Q 66 53 72 49 Z" fill="#ffffff" stroke="#f97316" strokeWidth="0.8" />
+      <line x1="66" y1="40" x2="62" y2="49" stroke="#f59e0b" strokeWidth="0.8" />
+      <line x1="66" y1="40" x2="70" y2="49" stroke="#f59e0b" strokeWidth="0.8" />
+      <path d="M 60 49 Q 66 53 72 49 Z" fill="#ffffff" stroke="#d97706" strokeWidth="0.8" />
 
       {/* Base Dharmachakra */}
-      <circle cx="50" cy="62" r="3.5" stroke="#f97316" strokeWidth="0.9" fill="#09090b" />
-      <circle cx="50" cy="62" r="1" fill="#f97316" />
-      <path d="M 42 67 L 58 67 L 55 64 L 45 64 Z" fill="#f97316" />
+      <circle cx="50" cy="62" r="3.5" stroke="#d97706" strokeWidth="0.9" fill="#070d1e" />
+      <circle cx="50" cy="62" r="1" fill="#d97706" />
+      <path d="M 42 67 L 58 67 L 55 64 L 45 64 Z" fill="#d97706" />
     </svg>
   );
 }
@@ -1256,7 +1256,7 @@ export default function App() {
             <span className="sep">|</span>
             <span>High Court of Madhya Pradesh • मध्य प्रदेश उच्च न्यायालय</span>
             <span className="sep">|</span>
-            <span style={{ color: '#fb923c' }}>NJDG Partner</span>
+            <span style={{ color: '#f59e0b' }}>NJDG Partner</span>
           </div>
 
           <div className="mphc-top-right">
@@ -1364,7 +1364,7 @@ export default function App() {
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '1.25rem', flexWrap: 'wrap' }}>
               <MpHcEmblem size={75} />
               <div style={{ textAlign: 'center' }}>
-                <div style={{ fontSize: '0.9rem', color: '#fb923c', fontWeight: 700, letterSpacing: '0.04em' }}>
+                <div style={{ fontSize: '0.9rem', color: '#f59e0b', fontWeight: 700, letterSpacing: '0.04em' }}>
                   {tr('मध्य प्रदेश उच्च न्यायालय • जबलपुर / इन्दौर / ग्वालियर')}
                 </div>
                 <h1 style={{ fontSize: '1.75rem', fontWeight: 900, color: '#ffffff', letterSpacing: '0.02em', margin: '0.2rem 0' }}>
@@ -1383,7 +1383,7 @@ export default function App() {
             <div className="login-portal-card">
               {/* Card Header */}
               <div className="login-portal-header">
-                <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', background: 'rgba(249, 115, 22, 0.15)', border: '1px solid rgba(249, 115, 22, 0.4)', color: '#ea580c', padding: '0.25rem 0.75rem', borderRadius: '9999px', fontSize: '0.74rem', fontWeight: 800, textTransform: 'uppercase', marginBottom: '0.6rem' }}>
+                <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', background: 'rgba(217, 119, 6, 0.15)', border: '1px solid rgba(217, 119, 6, 0.4)', color: '#b45309', padding: '0.25rem 0.75rem', borderRadius: '9999px', fontSize: '0.74rem', fontWeight: 800, textTransform: 'uppercase', marginBottom: '0.6rem' }}>
                   <ShieldCheck size={14} />
                   {tr('Role-Based Authentication Gateway')}
                 </div>
@@ -1527,8 +1527,8 @@ export default function App() {
                         type="button" 
                         className="login-submit-btn"
                         style={{
-                          background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)',
-                          boxShadow: '0 4px 14px rgba(249, 115, 22, 0.4)',
+                          background: 'linear-gradient(135deg, #d97706 0%, #b45309 100%)',
+                          boxShadow: '0 4px 14px rgba(217, 119, 6, 0.4)',
                           fontSize: '0.92rem',
                           padding: '0.85rem'
                         }}
@@ -1577,7 +1577,7 @@ export default function App() {
                             <button 
                               type="button" 
                               onClick={() => setShowPassword(!showPassword)}
-                              style={{ background: 'none', border: 'none', color: '#ea580c', fontSize: '0.72rem', cursor: 'pointer', fontWeight: 600 }}
+                              style={{ background: 'none', border: 'none', color: '#b45309', fontSize: '0.72rem', cursor: 'pointer', fontWeight: 600 }}
                             >
                               {showPassword ? tr('Hide PIN') : tr('Show PIN')}
                             </button>
@@ -1635,7 +1635,7 @@ export default function App() {
                               setShowLoginPage(false);
                               loadCaseDossier('MPIN01593559452026', false);
                             }}
-                            style={{ background: 'none', border: 'none', color: '#ea580c', fontSize: '0.8rem', fontWeight: 600, cursor: 'pointer', textDecoration: 'underline' }}
+                            style={{ background: 'none', border: 'none', color: '#b45309', fontSize: '0.8rem', fontWeight: 600, cursor: 'pointer', textDecoration: 'underline' }}
                           >
                             {tr('Continue as Public Case Inquirer / Guest ➔')}
                           </button>
@@ -1647,7 +1647,7 @@ export default function App() {
 
                 {/* Right Column: 1-Click Quick Demo Sign-In */}
                 <div className="quick-credentials-pane">
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#c2410c', fontSize: '0.8rem', fontWeight: 800, textTransform: 'uppercase' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', color: '#92400e', fontSize: '0.8rem', fontWeight: 800, textTransform: 'uppercase' }}>
                     <Sparkles size={14} />
                     <span>{tr('Instant 1-Click Demo Logins')}</span>
                   </div>
@@ -1674,7 +1674,7 @@ export default function App() {
                         <Globe size={15} />
                       </div>
                       <div style={{ flex: 1, minWidth: 0 }}>
-                        <div style={{ fontSize: '0.8rem', fontWeight: 800, color: '#f97316' }}>
+                        <div style={{ fontSize: '0.8rem', fontWeight: 800, color: '#d97706' }}>
                           {lang === 'HI' ? 'जनसाधारण नागरिक (खुली अदालत)' : 'Public Citizen / जनसाधारण (Open Courts)'}
                         </div>
                         <div style={{ fontSize: '0.7rem', color: 'var(--theme-text-secondary)' }}>
@@ -1830,7 +1830,7 @@ export default function App() {
           <span className="sep">|</span>
           <span>High Court of Madhya Pradesh • मध्य प्रदेश उच्च न्यायालय</span>
           <span className="sep">|</span>
-          <span style={{ color: '#fb923c' }}>NJDG Partner</span>
+          <span style={{ color: '#f59e0b' }}>NJDG Partner</span>
         </div>
 
         <div className="mphc-top-right">
@@ -1932,9 +1932,9 @@ export default function App() {
                 display: 'inline-flex',
                 alignItems: 'center',
                 gap: '0.35rem',
-                background: notifDropdownOpen ? 'rgba(249, 115, 22, 0.3)' : 'rgba(255, 255, 255, 0.08)',
-                border: notifDropdownOpen ? '1px solid #f97316' : '1px solid rgba(255, 255, 255, 0.2)',
-                color: notifSummary.unread_count > 0 ? '#fb923c' : '#ffffff',
+                background: notifDropdownOpen ? 'rgba(217, 119, 6, 0.3)' : 'rgba(255, 255, 255, 0.08)',
+                border: notifDropdownOpen ? '1px solid #d97706' : '1px solid rgba(255, 255, 255, 0.2)',
+                color: notifSummary.unread_count > 0 ? '#f59e0b' : '#ffffff',
                 borderRadius: '6px',
                 padding: '0.22rem 0.55rem',
                 fontSize: '0.72rem',
@@ -1956,7 +1956,7 @@ export default function App() {
                 <div className="notif-dropdown-header">
                   <div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontWeight: 800, fontSize: '0.85rem', color: '#ffffff' }}>
-                      <Bell size={14} color="#f97316" />
+                      <Bell size={14} color="#d97706" />
                       <span>{tr("Multi-Channel Hearing Alerts (Order V CPC)")}</span>
                     </div>
                     <div style={{ fontSize: '0.7rem', color: '#94a3b8' }}>
@@ -1970,7 +1970,7 @@ export default function App() {
                       onClick={handleDispatchHearingAlerts}
                       disabled={dispatchingNotifs}
                       style={{
-                        background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)',
+                        background: 'linear-gradient(135deg, #d97706 0%, #b45309 100%)',
                         color: '#ffffff',
                         border: 'none',
                         borderRadius: '6px',
@@ -1992,7 +1992,7 @@ export default function App() {
                       type="button" 
                       onClick={handleMarkAllNotifsRead}
                       style={{
-                        background: '#27272a',
+                        background: '#334155',
                         color: '#cbd5e1',
                         border: '1px solid #3f3f46',
                         borderRadius: '6px',
@@ -2082,7 +2082,7 @@ export default function App() {
 
                               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.4rem' }}>
                                 <span style={{ fontSize: '0.68rem', color: '#94a3b8' }}>
-                                  To: <strong style={{ color: '#fed7aa' }}>{n.recipient_name}</strong> ({n.recipient_role})
+                                  To: <strong style={{ color: '#fde68a' }}>{n.recipient_name}</strong> ({n.recipient_role})
                                 </span>
 
                                 <div style={{ display: 'flex', gap: '0.35rem', alignItems: 'center' }}>
@@ -2157,7 +2157,7 @@ export default function App() {
               display: 'inline-flex',
               alignItems: 'center',
               gap: '0.35rem',
-              background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)',
+              background: 'linear-gradient(135deg, #d97706 0%, #b45309 100%)',
               color: '#ffffff',
               border: 'none',
               borderRadius: '6px',
@@ -2165,7 +2165,7 @@ export default function App() {
               fontSize: '0.72rem',
               fontWeight: 800,
               cursor: 'pointer',
-              boxShadow: '0 2px 8px rgba(249, 115, 22, 0.4)'
+              boxShadow: '0 2px 8px rgba(217, 119, 6, 0.4)'
             }}
             title="Interactive viva presentation tour for external examiners"
           >
@@ -2200,8 +2200,8 @@ export default function App() {
           {/* User Session & Logout Button */}
           {currentRole === 'CITIZEN' ? (
             <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.45rem' }}>
-              <span style={{ fontSize: '0.74rem', color: '#fed7aa', display: 'inline-flex', alignItems: 'center', gap: '0.3rem', fontWeight: 700 }}>
-                <Globe size={13} color="#f97316" />
+              <span style={{ fontSize: '0.74rem', color: '#fde68a', display: 'inline-flex', alignItems: 'center', gap: '0.3rem', fontWeight: 700 }}>
+                <Globe size={13} color="#d97706" />
                 <span>Public Citizen</span>
               </span>
               <span className="personal-badge-role role-badge-citizen" style={{ fontSize: '0.62rem', padding: '0.1rem 0.35rem' }}>
@@ -2215,9 +2215,9 @@ export default function App() {
                   display: 'inline-flex',
                   alignItems: 'center',
                   gap: '0.3rem',
-                  background: 'rgba(249, 115, 22, 0.25)',
-                  border: '1px solid rgba(249, 115, 22, 0.5)',
-                  color: '#fed7aa',
+                  background: 'rgba(217, 119, 6, 0.25)',
+                  border: '1px solid rgba(217, 119, 6, 0.5)',
+                  color: '#fde68a',
                   borderRadius: '6px',
                   padding: '0.2rem 0.55rem',
                   fontSize: '0.72rem',
@@ -2233,7 +2233,7 @@ export default function App() {
           ) : (
             <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.45rem' }}>
               <span style={{ fontSize: '0.74rem', color: '#f4f4f5', display: 'inline-flex', alignItems: 'center', gap: '0.3rem', fontWeight: 600 }}>
-                <User size={12} color="#f97316" />
+                <User size={12} color="#d97706" />
                 <span>{currentOfficer?.full_name?.split(' ')[0] || 'User'}</span>
               </span>
               <span className={`personal-badge-role role-badge-${currentOfficer?.category?.toLowerCase() || (currentRole === 'JUDGE' ? 'judge' : (currentRole === 'CLERK' ? 'clerk' : (currentRole === 'LITIGANT' ? 'litigant' : (currentRole === 'CITIZEN' ? 'citizen' : 'advocate'))))}`} style={{ fontSize: '0.62rem', padding: '0.1rem 0.35rem' }}>
@@ -2285,7 +2285,7 @@ export default function App() {
                   {tr('Commercial Division (Order XV-A CPC Case Management e-Portal)')}
                 </span>
                 <span style={{ color: '#71717a' }}>•</span>
-                <span style={{ color: '#fb923c', fontWeight: 600 }}>
+                <span style={{ color: '#f59e0b', fontWeight: 600 }}>
                   {activeBench === 'INDORE' && tr('Active Jurisdiction: Bench at Indore (Malwa Region)')}
                   {activeBench === 'JABALPUR' && tr('Active Jurisdiction: Principal Seat at Jabalpur')}
                   {activeBench === 'GWALIOR' && tr('Active Jurisdiction: Bench at Gwalior (Chambal Region)')}
@@ -2388,7 +2388,7 @@ export default function App() {
       <div className="role-bar judicial-action-bar">
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem', flexWrap: 'wrap' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.82rem', fontWeight: 700, color: 'var(--theme-text-secondary)' }}>
-            <Landmark size={15} color="#ea580c" />
+            <Landmark size={15} color="#b45309" />
             <span>{tr('Commercial Division')}</span>
             <span style={{ color: 'var(--theme-border)' }}>•</span>
             <span style={{ color: 'var(--theme-text-muted)', fontWeight: 600 }}>{tr('Order XV-A CPC Pre-Trial Node')}</span>
@@ -2396,7 +2396,7 @@ export default function App() {
 
           {activeCase ? (
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'var(--theme-orange-tint)', border: '1px solid var(--theme-orange-border)', padding: '0.2rem 0.6rem', borderRadius: '6px' }}>
-              <span style={{ fontSize: '0.72rem', fontWeight: 800, color: '#c2410c', textTransform: 'uppercase' }}>{tr('Active Docket:')}</span>
+              <span style={{ fontSize: '0.72rem', fontWeight: 800, color: '#92400e', textTransform: 'uppercase' }}>{tr('Active Docket:')}</span>
               <button 
                 onClick={() => loadCaseDossier(activeCase.cnr_number)}
                 title={lang === 'HI' ? 'संपूर्ण डोसीयर देखने हेतु क्लिक करें' : 'Click to view full dossier'}
@@ -2466,7 +2466,7 @@ export default function App() {
             }}
             title={lang === 'HI' ? 'व्यक्तिगत प्रोफ़ाइल खोलें एवं न्यायिक पद बदलें' : 'Open Personal Profile & Switch Judicial Persona'}
           >
-            <UserCheck size={14} color="#f97316" />
+            <UserCheck size={14} color="#d97706" />
             <span>{tr('Switch Identity')}</span>
           </button>
         </div>
@@ -2481,7 +2481,7 @@ export default function App() {
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem' }}>
                 <MpHcEmblem size={38} />
                 <div>
-                  <div style={{ fontSize: '0.72rem', color: '#fb923c', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                  <div style={{ fontSize: '0.72rem', color: '#f59e0b', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                     {tr('Commercial Division • Official Personal Block')}
                   </div>
                   <h3 style={{ fontSize: '1.15rem', fontWeight: 800, color: '#ffffff', margin: 0, fontFamily: 'Cinzel, serif' }}>
@@ -2501,7 +2501,7 @@ export default function App() {
             {/* Modal Body */}
             <div className="personal-modal-body">
               {/* 1. Active Authenticated Officer Dossier */}
-              <div className="personal-card-section" style={{ borderLeft: '4px solid #f97316' }}>
+              <div className="personal-card-section" style={{ borderLeft: '4px solid #d97706' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem' }}>
                   <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
                     <div className={`personal-avatar-box personal-avatar-${currentOfficer.category?.toLowerCase() || (currentRole === 'JUDGE' ? 'judge' : (currentRole === 'CLERK' ? 'clerk' : (currentRole === 'CITIZEN' ? 'citizen' : (currentRole === 'LITIGANT' ? 'litigant' : 'advocate'))))}`} style={{ width: '56px', height: '56px', fontSize: '1.25rem' }}>
@@ -2699,8 +2699,8 @@ export default function App() {
                           fontWeight: 700,
                           padding: '0.25rem 0.65rem',
                           borderRadius: '6px',
-                          border: '1px solid ' + (officerFilterTab === tabKey ? '#f97316' : 'var(--theme-border)'),
-                          background: officerFilterTab === tabKey ? '#f97316' : 'var(--theme-card)',
+                          border: '1px solid ' + (officerFilterTab === tabKey ? '#d97706' : 'var(--theme-border)'),
+                          background: officerFilterTab === tabKey ? '#d97706' : 'var(--theme-card)',
                           color: officerFilterTab === tabKey ? '#ffffff' : 'var(--theme-text-secondary)',
                           cursor: 'pointer'
                         }}
@@ -2770,7 +2770,7 @@ export default function App() {
             <div className="display-board-text">
               <span>{lang === 'HI' ? 'वर्तमान विचाराधीन प्रकरण: ' : 'Item in Progress: '}<strong style={{ color: '#ffffff' }}>{lang === 'HI' ? '#०३ (स्वीकृति एवं वाद विषय निर्धारण)' : '#03 (Admissions & Framing Timetable)'}</strong></span>
               <span style={{ color: '#71717a' }}>•</span>
-              <span>{tr('Presiding:')} <strong style={{ color: '#fb923c' }}>{lang === 'HI' ? 'माननीय न्यायमूर्ति राजेश शर्मा' : "Hon'ble Justice Rajesh Sharma"}</strong></span>
+              <span>{tr('Presiding:')} <strong style={{ color: '#f59e0b' }}>{lang === 'HI' ? 'माननीय न्यायमूर्ति राजेश शर्मा' : "Hon'ble Justice Rajesh Sharma"}</strong></span>
             </div>
           </div>
 
@@ -2828,7 +2828,7 @@ export default function App() {
           <div className="citizen-hero-banner">
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem', marginBottom: '0.85rem' }}>
               <div>
-                <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', background: 'rgba(249, 115, 22, 0.25)', border: '1px solid #f97316', color: '#fb923c', padding: '0.2rem 0.6rem', borderRadius: '9999px', fontSize: '0.72rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.4rem' }}>
+                <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', background: 'rgba(217, 119, 6, 0.25)', border: '1px solid #d97706', color: '#f59e0b', padding: '0.2rem 0.6rem', borderRadius: '9999px', fontSize: '0.72rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.4rem' }}>
                   <Globe size={12} />
                   {tr('Open Courts Citizen Portal • Art. 145(4) Constitution of India')}
                 </div>
@@ -2844,7 +2844,7 @@ export default function App() {
                 type="button" 
                 onClick={() => setShowLoginPage(true)}
                 style={{
-                  background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)',
+                  background: 'linear-gradient(135deg, #d97706 0%, #b45309 100%)',
                   color: '#ffffff',
                   border: 'none',
                   borderRadius: '8px',
@@ -2855,7 +2855,7 @@ export default function App() {
                   display: 'inline-flex',
                   alignItems: 'center',
                   gap: '0.4rem',
-                  boxShadow: '0 2px 8px rgba(249, 115, 22, 0.4)'
+                  boxShadow: '0 2px 8px rgba(217, 119, 6, 0.4)'
                 }}
               >
                 <Lock size={13} />
@@ -2878,7 +2878,7 @@ export default function App() {
           <div className="client-hero-banner">
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem', marginBottom: '1rem' }}>
               <div>
-                <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', background: 'rgba(249, 115, 22, 0.25)', border: '1px solid #f97316', color: '#fb923c', padding: '0.2rem 0.6rem', borderRadius: '9999px', fontSize: '0.72rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.4rem' }}>
+                <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', background: 'rgba(217, 119, 6, 0.25)', border: '1px solid #d97706', color: '#f59e0b', padding: '0.2rem 0.6rem', borderRadius: '9999px', fontSize: '0.72rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.4rem' }}>
                   <Briefcase size={12} />
                   {tr('Commercial Litigant Portal • Live Dispute Tracker')}
                 </div>
@@ -2888,7 +2888,7 @@ export default function App() {
                     : (lang === 'HI' ? 'एपेक्स इन्फोटेक लि. बनाम हॉराइजन लॉजिस्टिक्स प्रा. लि.' : 'Apex Infotech Ltd. vs. Horizon Logistics Pvt. Ltd.')}
                 </h2>
                 <div style={{ fontSize: '0.82rem', color: '#cbd5e1' }}>
-                  CNR: <strong className="mono" style={{ color: '#fed7aa' }}>MPIN01593559452026</strong> • {lang === 'HI' ? 'दावा मूल्यांकन:' : 'Claim Valuation:'} <strong style={{ color: '#34d399' }}>₹45,00,000.00</strong> • {lang === 'HI' ? 'चरण:' : 'Stage:'} <span style={{ color: '#fb923c', fontWeight: 700 }}>{lang === 'HI' ? 'आदेश XV-A के तहत विचारण-पूर्व सीएमएच' : 'Pre-Trial CMH under Order XV-A'}</span>
+                  CNR: <strong className="mono" style={{ color: '#fde68a' }}>MPIN01593559452026</strong> • {lang === 'HI' ? 'दावा मूल्यांकन:' : 'Claim Valuation:'} <strong style={{ color: '#34d399' }}>₹45,00,000.00</strong> • {lang === 'HI' ? 'चरण:' : 'Stage:'} <span style={{ color: '#f59e0b', fontWeight: 700 }}>{lang === 'HI' ? 'आदेश XV-A के तहत विचारण-पूर्व सीएमएच' : 'Pre-Trial CMH under Order XV-A'}</span>
                 </div>
               </div>
 
@@ -2896,7 +2896,7 @@ export default function App() {
                 <div className="client-stat-badge">
                   <div style={{ fontSize: '0.68rem', color: '#94a3b8', textTransform: 'uppercase', fontWeight: 700 }}>{tr('Presiding Bench')}</div>
                   <div style={{ fontWeight: 800, color: '#ffffff', fontSize: '0.85rem' }}>{lang === 'HI' ? 'माननीय न्यायमूर्ति राजेश शर्मा' : "Hon'ble Justice Rajesh Sharma"}</div>
-                  <div style={{ fontSize: '0.7rem', color: '#fb923c' }}>{lang === 'HI' ? 'न्यायालय कक्ष ०४, इन्दौर खंडपीठ' : 'Court Hall 04, Indore Bench'}</div>
+                  <div style={{ fontSize: '0.7rem', color: '#f59e0b' }}>{lang === 'HI' ? 'न्यायालय कक्ष ०४, इन्दौर खंडपीठ' : 'Court Hall 04, Indore Bench'}</div>
                 </div>
                 <div className="client-stat-badge">
                   <div style={{ fontSize: '0.68rem', color: '#94a3b8', textTransform: 'uppercase', fontWeight: 700 }}>{tr('Next Hearing Date')}</div>
@@ -2963,7 +2963,7 @@ export default function App() {
                 Step {vivaTourStep} of 7
               </div>
               <div>
-                <h4 style={{ margin: '0 0 0.2rem 0', fontWeight: 800, color: '#fb923c', fontSize: '1rem' }}>
+                <h4 style={{ margin: '0 0 0.2rem 0', fontWeight: 800, color: '#f59e0b', fontSize: '1rem' }}>
                   {vivaTourStep === 1 && "1. High Court Daily Cause List (रोज़नामचा & Board)"}
                   {vivaTourStep === 2 && "2. Pre-Trial Hearing Scheduler & Advocate Conflict Shield"}
                   {vivaTourStep === 3 && "3. WebRTC Virtual Courtroom & Digital Evidence Desk"}
@@ -3007,7 +3007,7 @@ export default function App() {
                     else if (nextStep === 7) { setActiveTab('analytics'); }
                   }}
                   style={{
-                    background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)',
+                    background: 'linear-gradient(135deg, #d97706 0%, #b45309 100%)',
                     color: '#ffffff',
                     border: 'none',
                     borderRadius: '8px',
@@ -3018,7 +3018,7 @@ export default function App() {
                     display: 'inline-flex',
                     alignItems: 'center',
                     gap: '0.4rem',
-                    boxShadow: '0 2px 8px rgba(249, 115, 22, 0.4)'
+                    boxShadow: '0 2px 8px rgba(217, 119, 6, 0.4)'
                   }}
                 >
                   <span>{tr("Next Tour Step")}</span>
@@ -3173,7 +3173,7 @@ export default function App() {
             <div className="search-hero">
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
                 <div>
-                  <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', background: 'rgba(249, 115, 22, 0.18)', border: '1px solid rgba(249, 115, 22, 0.45)', color: '#fb923c', padding: '0.2rem 0.6rem', borderRadius: '9999px', fontSize: '0.75rem', fontWeight: 700, letterSpacing: '0.05em', textTransform: 'uppercase', marginBottom: '0.5rem' }}>
+                  <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', background: 'rgba(217, 119, 6, 0.18)', border: '1px solid rgba(217, 119, 6, 0.45)', color: '#f59e0b', padding: '0.2rem 0.6rem', borderRadius: '9999px', fontSize: '0.75rem', fontWeight: 700, letterSpacing: '0.05em', textTransform: 'uppercase', marginBottom: '0.5rem' }}>
                     <Sparkles size={13} />
                     {tr('Official e-Courts Case Dossier Lookup')}
                   </div>
@@ -3273,13 +3273,13 @@ export default function App() {
                       }}
                       className="quick-search-chip"
                       style={{
-                        borderColor: dossier?.cnr_number === c.cnr_number ? '#f97316' : 'rgba(255,255,255,0.15)',
-                        background: dossier?.cnr_number === c.cnr_number ? 'rgba(249, 115, 22, 0.3)' : 'rgba(255,255,255,0.1)'
+                        borderColor: dossier?.cnr_number === c.cnr_number ? '#d97706' : 'rgba(255,255,255,0.15)',
+                        background: dossier?.cnr_number === c.cnr_number ? 'rgba(217, 119, 6, 0.3)' : 'rgba(255,255,255,0.1)'
                       }}
                     >
                       <span style={{ fontFamily: 'monospace', fontWeight: 700 }}>{c.cnr_number}</span> - {(c.case_title || '').split(' vs.')[0]}
                       {c.next_hearing_formatted && (
-                        <span style={{ fontSize: '0.7rem', color: '#fb923c', marginLeft: '0.35rem', fontWeight: 700 }}>
+                        <span style={{ fontSize: '0.7rem', color: '#f59e0b', marginLeft: '0.35rem', fontWeight: 700 }}>
                           • {trRel(c.next_hearing_formatted)}
                         </span>
                       )}
@@ -3322,7 +3322,7 @@ export default function App() {
                       }}
                     >
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.35rem' }}>
-                        <span className="mono" style={{ fontWeight: 700, fontSize: '0.85rem', color: '#ea580c' }}>
+                        <span className="mono" style={{ fontWeight: 700, fontSize: '0.85rem', color: '#b45309' }}>
                           {res.cnr_number}
                         </span>
                         <div style={{ display: 'flex', gap: '0.35rem', alignItems: 'center' }}>
@@ -3346,7 +3346,7 @@ export default function App() {
                         {res.next_hearing_formatted && (
                           <>
                             <span>•</span>
-                            <span style={{ color: '#ea580c', fontWeight: 700 }}>
+                            <span style={{ color: '#b45309', fontWeight: 700 }}>
                               {tr('📅 Next Hearing:')} {res.next_hearing_formatted} ({res.next_hearing_purpose ? tr(res.next_hearing_purpose) : tr('Order XV-A CMH')})
                             </span>
                           </>
@@ -3361,7 +3361,7 @@ export default function App() {
             {/* Loading Indicator */}
             {loadingDossier && (
               <div className="court-card" style={{ textAlign: 'center', padding: '3rem 1rem' }}>
-                <RefreshCw size={32} color="#f97316" style={{ animation: 'spin 1s linear infinite', marginBottom: '1rem' }} />
+                <RefreshCw size={32} color="#d97706" style={{ animation: 'spin 1s linear infinite', marginBottom: '1rem' }} />
                 <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--theme-text-primary)', marginBottom: '0.35rem' }}>
                   {tr('Compiling Judicial Case Dossier...')}
                 </h3>
@@ -3407,9 +3407,9 @@ export default function App() {
                         )}
 
                         <span className="badge" style={{
-                          background: dossier.status === 'CMO_ISSUED_TRIAL_ACTIVE' ? '#ecfdf5' : '#fff7ed',
-                          color: dossier.status === 'CMO_ISSUED_TRIAL_ACTIVE' ? '#065f46' : '#c2410c',
-                          borderColor: dossier.status === 'CMO_ISSUED_TRIAL_ACTIVE' ? '#a7f3d0' : '#fed7aa',
+                          background: dossier.status === 'CMO_ISSUED_TRIAL_ACTIVE' ? '#ecfdf5' : '#fffbeb',
+                          color: dossier.status === 'CMO_ISSUED_TRIAL_ACTIVE' ? '#065f46' : '#92400e',
+                          borderColor: dossier.status === 'CMO_ISSUED_TRIAL_ACTIVE' ? '#a7f3d0' : '#fde68a',
                           borderWidth: '1px',
                           borderStyle: 'solid'
                         }}>
@@ -3473,8 +3473,8 @@ export default function App() {
                           setActiveTab('matrix');
                         }}
                         style={{
-                          background: '#09090b',
-                          border: '1px solid #f97316',
+                          background: '#070d1e',
+                          border: '1px solid #d97706',
                           color: 'white',
                           padding: '0.5rem 0.9rem',
                           borderRadius: '8px',
@@ -3484,7 +3484,7 @@ export default function App() {
                           display: 'flex',
                           alignItems: 'center',
                           gap: '0.4rem',
-                          boxShadow: '0 2px 6px rgba(249, 115, 22, 0.25)'
+                          boxShadow: '0 2px 6px rgba(217, 119, 6, 0.25)'
                         }}
                       >
                         <FileText size={14} />
@@ -3497,7 +3497,7 @@ export default function App() {
                           setSummonsModalOpen(true);
                         }}
                         style={{
-                          background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)',
+                          background: 'linear-gradient(135deg, #d97706 0%, #b45309 100%)',
                           border: 'none',
                           color: '#ffffff',
                           padding: '0.5rem 0.9rem',
@@ -3508,7 +3508,7 @@ export default function App() {
                           display: 'flex',
                           alignItems: 'center',
                           gap: '0.4rem',
-                          boxShadow: '0 2px 8px rgba(249, 115, 22, 0.35)'
+                          boxShadow: '0 2px 8px rgba(217, 119, 6, 0.35)'
                         }}
                         title="Issue and preview official statutory e-Summons under Order V Rules 1 & 9 CPC"
                       >
@@ -3527,7 +3527,7 @@ export default function App() {
                         </div>
                         <div>
                           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem' }}>
-                            <span style={{ fontSize: '0.72rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.06em', color: '#ea580c' }}>
+                            <span style={{ fontSize: '0.72rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.06em', color: '#b45309' }}>
                               {tr('⚡ Next Scheduled Court Hearing (Live Cause List)')}
                             </span>
                             <span className={`hearing-pill-badge ${dossier.next_hearing_relative?.includes('Next Week') ? 'pill-next-week' : (dossier.next_hearing_relative?.includes('Next Month') ? 'pill-next-month' : 'pill-standard')}`}>
@@ -3569,11 +3569,11 @@ export default function App() {
                     {/* Judge */}
                     <div className="stakeholder-card">
                       <div className="stakeholder-header">
-                        <div className="stakeholder-avatar" style={{ background: '#09090b', color: '#f97316', border: '1px solid #27272a' }}>
+                        <div className="stakeholder-avatar" style={{ background: '#070d1e', color: '#d97706', border: '1px solid #334155' }}>
                           <Gavel size={20} />
                         </div>
                         <div>
-                          <div style={{ fontSize: '0.7rem', fontWeight: 800, textTransform: 'uppercase', color: '#ea580c', letterSpacing: '0.05em' }}>
+                          <div style={{ fontSize: '0.7rem', fontWeight: 800, textTransform: 'uppercase', color: '#b45309', letterSpacing: '0.05em' }}>
                             {tr('Presiding Judicial Officer')}
                           </div>
                           <div style={{ fontSize: '0.95rem', fontWeight: 700, color: 'var(--theme-text-primary)' }}>
@@ -3591,11 +3591,11 @@ export default function App() {
                     {/* Plaintiff Counsel */}
                     <div className="stakeholder-card">
                       <div className="stakeholder-header">
-                        <div className="stakeholder-avatar" style={{ background: 'var(--theme-orange-tint)', color: '#ea580c', border: '1px solid var(--theme-orange-border)' }}>
+                        <div className="stakeholder-avatar" style={{ background: 'var(--theme-orange-tint)', color: '#b45309', border: '1px solid var(--theme-orange-border)' }}>
                           <User size={20} />
                         </div>
                         <div>
-                          <div style={{ fontSize: '0.7rem', fontWeight: 800, textTransform: 'uppercase', color: '#ea580c', letterSpacing: '0.05em' }}>
+                          <div style={{ fontSize: '0.7rem', fontWeight: 800, textTransform: 'uppercase', color: '#b45309', letterSpacing: '0.05em' }}>
                             {tr('Plaintiff Legal Counsel')}
                           </div>
                           <div style={{ fontSize: '0.95rem', fontWeight: 700, color: 'var(--theme-text-primary)' }}>
@@ -3613,7 +3613,7 @@ export default function App() {
                     {/* Defendant Counsel */}
                     <div className="stakeholder-card">
                       <div className="stakeholder-header">
-                        <div className="stakeholder-avatar" style={{ background: '#18181b', color: '#ffffff', border: '1px solid #27272a' }}>
+                        <div className="stakeholder-avatar" style={{ background: '#1e293b', color: '#ffffff', border: '1px solid #334155' }}>
                           <User size={20} />
                         </div>
                         <div>
@@ -3685,7 +3685,7 @@ export default function App() {
                   <div className="court-card">
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem' }}>
                       <h3 style={{ fontSize: '1.15rem', fontWeight: 700, margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--theme-text-primary)' }}>
-                        <History size={18} color="#f97316" />
+                        <History size={18} color="#d97706" />
                         {tr('Comprehensive Case Journey & Milestone History')}
                       </h3>
                       <span style={{ fontSize: '0.8rem', color: 'var(--theme-text-muted)' }}>
@@ -3703,7 +3703,7 @@ export default function App() {
                                 <span style={{ fontSize: '0.75rem', fontWeight: 700, background: 'var(--theme-card)', border: '1px solid var(--theme-border)', color: 'var(--theme-text-secondary)', padding: '0.2rem 0.5rem', borderRadius: '4px' }}>
                                   {step.date}
                                 </span>
-                                <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#ea580c', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                                <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#b45309', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
                                   [{tr(step.stage)}]
                                 </span>
                               </div>
@@ -3730,7 +3730,7 @@ export default function App() {
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem' }}>
                       <div>
                         <h3 style={{ fontSize: '1.15rem', fontWeight: 700, margin: '0 0 0.25rem 0', display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--theme-text-primary)' }}>
-                          <Calendar size={18} color="#f97316" />
+                          <Calendar size={18} color="#d97706" />
                           {tr('Past & Scheduled Courtroom Hearings (CMH Sessions)')}
                         </h3>
                         <p style={{ margin: 0, fontSize: '0.8rem', color: 'var(--theme-text-muted)' }}>
@@ -3750,11 +3750,11 @@ export default function App() {
                             border: h.is_upcoming ? '1.5px solid var(--theme-orange-border)' : '1px solid var(--theme-border)',
                             borderRadius: '10px',
                             padding: '1.25rem',
-                            borderLeft: h.status === 'CONCLUDED' ? '4px solid #10b981' : (h.is_upcoming ? '5px solid #f97316' : '4px solid #ea580c'),
-                            boxShadow: h.is_upcoming ? '0 4px 14px rgba(249, 115, 22, 0.12)' : '0 1px 3px rgba(0,0,0,0.03)'
+                            borderLeft: h.status === 'CONCLUDED' ? '4px solid #10b981' : (h.is_upcoming ? '5px solid #d97706' : '4px solid #b45309'),
+                            boxShadow: h.is_upcoming ? '0 4px 14px rgba(217, 119, 6, 0.12)' : '0 1px 3px rgba(0,0,0,0.03)'
                           }}>
                             {h.is_upcoming && (
-                              <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', background: '#ffedd5', color: '#c2410c', padding: '0.15rem 0.5rem', borderRadius: '4px', fontSize: '0.72rem', fontWeight: 800, marginBottom: '0.5rem', letterSpacing: '0.04em' }}>
+                              <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', background: '#ffedd5', color: '#92400e', padding: '0.15rem 0.5rem', borderRadius: '4px', fontSize: '0.72rem', fontWeight: 800, marginBottom: '0.5rem', letterSpacing: '0.04em' }}>
                                 <Sparkles size={12} />
                                 {tr('NEXT UPCOMING JUDICIAL PROCEEDING')}
                               </div>
@@ -3800,7 +3800,7 @@ export default function App() {
                               }}
                               style={{
                                 width: '100%',
-                                background: h.status === 'CONCLUDED' ? 'var(--theme-card)' : '#f97316',
+                                background: h.status === 'CONCLUDED' ? 'var(--theme-card)' : '#d97706',
                                 color: h.status === 'CONCLUDED' ? 'var(--theme-text-secondary)' : '#ffffff',
                                 border: '1px solid var(--theme-border)',
                                 padding: '0.5rem',
@@ -3812,7 +3812,7 @@ export default function App() {
                                 alignItems: 'center',
                                 justifyContent: 'center',
                                 gap: '0.4rem',
-                                boxShadow: h.status === 'CONCLUDED' ? 'none' : '0 2px 6px rgba(249, 115, 22, 0.3)'
+                                boxShadow: h.status === 'CONCLUDED' ? 'none' : '0 2px 6px rgba(217, 119, 6, 0.3)'
                               }}
                             >
                               <ExternalLink size={13} />
@@ -3835,7 +3835,7 @@ export default function App() {
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem' }}>
                       <div>
                         <h3 style={{ fontSize: '1.15rem', fontWeight: 700, margin: '0 0 0.25rem 0', display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--theme-text-primary)' }}>
-                          <FileCheck size={18} color="#f97316" />
+                          <FileCheck size={18} color="#d97706" />
                           {tr('Electronic Pleadings & Annexed Exhibits')}
                         </h3>
                         <p style={{ margin: 0, fontSize: '0.8rem', color: 'var(--theme-text-muted)' }}>
@@ -3879,7 +3879,7 @@ export default function App() {
                                 href={p.file_storage_url} 
                                 target="_blank" 
                                 rel="noreferrer"
-                                style={{ fontSize: '0.75rem', color: '#ea580c', fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: '0.25rem', textDecoration: 'none' }}
+                                style={{ fontSize: '0.75rem', color: '#b45309', fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: '0.25rem', textDecoration: 'none' }}
                               >
                                 <Eye size={13} />
                                 {tr('View PDF Document')}
@@ -3905,10 +3905,10 @@ export default function App() {
                                       fontSize: '0.8rem'
                                     }}>
                                       <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                                        <span className="mono" style={{ fontWeight: 700, color: '#ea580c', background: '#fff7ed', padding: '0.1rem 0.4rem', borderRadius: '4px', border: '1px solid #fed7aa' }}>
+                                        <span className="mono" style={{ fontWeight: 700, color: '#b45309', background: '#fffbeb', padding: '0.1rem 0.4rem', borderRadius: '4px', border: '1px solid #fde68a' }}>
                                           {ex.exhibit_number}
                                         </span>
-                                        <span style={{ fontWeight: 500, color: '#18181b' }}>
+                                        <span style={{ fontWeight: 500, color: '#1e293b' }}>
                                           {ex.document_title}
                                         </span>
                                       </div>
@@ -3936,8 +3936,8 @@ export default function App() {
                   <div className="court-card">
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem', marginBottom: '1.25rem' }}>
                       <div>
-                        <h3 style={{ fontSize: '1.15rem', fontWeight: 700, margin: '0 0 0.25rem 0', display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#09090b' }}>
-                          <FileText size={18} color="#f97316" />
+                        <h3 style={{ fontSize: '1.15rem', fontWeight: 700, margin: '0 0 0.25rem 0', display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#070d1e' }}>
+                          <FileText size={18} color="#d97706" />
                           {tr('Order XV-A Admissions & Denials Matrix')}
                         </h3>
                         <p style={{ margin: 0, fontSize: '0.8rem', color: '#71717a' }}>
@@ -3976,7 +3976,7 @@ export default function App() {
                               <td className="mono" style={{ fontWeight: 700, color: '#71717a' }}>
                                 #{it.statement_index}
                               </td>
-                              <td style={{ fontWeight: 500, color: '#09090b' }}>
+                              <td style={{ fontWeight: 500, color: '#070d1e' }}>
                                 {it.factual_statement}
                               </td>
                               <td>
@@ -4011,10 +4011,10 @@ export default function App() {
 
                 {/* SECTION E: CASE MANAGEMENT ORDER (CMO) */}
                 {(dossierSubTab === 'all' || dossierSubTab === 'cmo') && (
-                  <div className="court-card" style={{ border: '2px solid #09090b', background: '#ffffff', boxShadow: '0 4px 20px rgba(0,0,0,0.06)' }}>
+                  <div className="court-card" style={{ border: '2px solid #070d1e', background: '#ffffff', boxShadow: '0 4px 20px rgba(0,0,0,0.06)' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem', borderBottom: '2px solid #e4e4e7', paddingBottom: '1rem', marginBottom: '1.25rem' }}>
                       <div>
-                        <div style={{ fontSize: '0.75rem', fontWeight: 800, color: '#ea580c', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.25rem' }}>
+                        <div style={{ fontSize: '0.75rem', fontWeight: 800, color: '#b45309', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.25rem' }}>
                           {tr('Form 4 • Commercial Courts Act, 2015')}
                         </div>
                         <h3 style={{ fontSize: '1.25rem', fontWeight: 800, margin: 0, color: 'var(--theme-text-primary)' }}>
@@ -4045,7 +4045,7 @@ export default function App() {
                           <h4 style={{ fontSize: '0.85rem', fontWeight: 800, textTransform: 'uppercase', color: 'var(--theme-text-primary)', marginBottom: '0.4rem' }}>
                             {tr('2. Framed Triable Issues For Trial:')}
                           </h4>
-                          <div style={{ fontSize: '0.85rem', color: 'var(--theme-text-primary)', background: 'var(--theme-orange-tint)', padding: '0.75rem 1rem', borderRadius: '6px', borderLeft: '4px solid #f97316' }}>
+                          <div style={{ fontSize: '0.85rem', color: 'var(--theme-text-primary)', background: 'var(--theme-orange-tint)', padding: '0.75rem 1rem', borderRadius: '6px', borderLeft: '4px solid #d97706' }}>
                             {(() => {
                               try {
                                 let raw = dossier.cmo.framed_issues_json;
@@ -4106,7 +4106,7 @@ export default function App() {
                                     • {tr(dl.task_description)}
                                   </span>
                                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                                    <span className="mono" style={{ color: '#ea580c', fontWeight: 700 }}>
+                                    <span className="mono" style={{ color: '#b45309', fontWeight: 700 }}>
                                       {tr('Deadline:')} {dl.due_date}
                                     </span>
                                     <span className={`badge ${dl.status === 'COMPLETED' ? 'badge-undisputed' : 'badge-pending'}`}>
@@ -4122,7 +4122,7 @@ export default function App() {
                         {/* Official Seal Footer */}
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', borderTop: '1px dashed var(--theme-border)', paddingTop: '1.25rem', marginTop: '1rem' }}>
                           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                            <QrCode size={48} color={theme === 'dark' ? '#f4f4f5' : '#09090b'} />
+                            <QrCode size={48} color={theme === 'dark' ? '#f4f4f5' : '#070d1e'} />
                             <div style={{ fontSize: '0.75rem', color: 'var(--theme-text-muted)' }}>
                               <div style={{ fontWeight: 700, color: 'var(--theme-text-primary)' }}>{tr('National Judicial Digital Seal')}</div>
                               <div>{tr('QR Verification:')} <span className="mono">{dossier.cmo.qr_verification_code || 'ECOURTS-CMO-IN-MP-IND'}</span></div>
@@ -4159,7 +4159,7 @@ export default function App() {
           <div>
             <div className="metrics-grid">
               <div className="metric-card">
-                <div className="metric-icon-box" style={{ background: '#fff7ed', color: '#ea580c' }}>
+                <div className="metric-icon-box" style={{ background: '#fffbeb', color: '#b45309' }}>
                   <FileText size={24} />
                 </div>
                 <div>
@@ -4187,27 +4187,27 @@ export default function App() {
               </div>
 
               <div className="metric-card">
-                <div className="metric-icon-box" style={{ background: '#fff7ed', color: '#c2410c' }}>
+                <div className="metric-icon-box" style={{ background: '#fffbeb', color: '#92400e' }}>
                   <AlertTriangle size={24} />
                 </div>
                 <div>
                   <div style={{ fontSize: '0.75rem', color: '#71717a', fontWeight: 700, textTransform: 'uppercase' }}>
                     {tr('Contested Issues (Trial)')}
                   </div>
-                  <div style={{ fontSize: '1.4rem', fontWeight: 800, color: '#c2410c' }}>
+                  <div style={{ fontSize: '1.4rem', fontWeight: 800, color: '#92400e' }}>
                     {matrix?.items?.filter(i => i.resolution_status === 'CONTESTED_ISSUE').length || 0}
                   </div>
                 </div>
               </div>
 
               <div className="metric-card">
-                <div className="metric-icon-box" style={{ background: '#09090b', color: '#f97316' }}>
+                <div className="metric-icon-box" style={{ background: '#070d1e', color: '#d97706' }}>
                   <Clock size={24} />
                 </div>
                 <div style={{ flex: 1 }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', color: '#71717a', fontWeight: 700, marginBottom: '0.25rem' }}>
                     <span>{tr('Pre-Trial Readiness')}</span>
-                    <span style={{ color: '#ea580c', fontWeight: 800 }}>{Math.round((matrix?.readiness_score != null && matrix.readiness_score <= 1) ? matrix.readiness_score * 100 : (matrix?.readiness_score || 0))}%</span>
+                    <span style={{ color: '#b45309', fontWeight: 800 }}>{Math.round((matrix?.readiness_score != null && matrix.readiness_score <= 1) ? matrix.readiness_score * 100 : (matrix?.readiness_score || 0))}%</span>
                   </div>
                   <div className="progress-track">
                     <div className="progress-fill" style={{ width: `${Math.round((matrix?.readiness_score != null && matrix.readiness_score <= 1) ? matrix.readiness_score * 100 : (matrix?.readiness_score || 0))}%` }}></div>
@@ -4281,13 +4281,13 @@ export default function App() {
               if (consensusScore >= 40 || matrix?.readiness_score >= 0.4) {
                 return (
                   <div className="section89-card">
-                    <div style={{ background: '#fff7ed', border: '1.5px solid #f97316', borderRadius: '10px', padding: '0.65rem', color: '#ea580c', flexShrink: 0 }}>
+                    <div style={{ background: '#fffbeb', border: '1.5px solid #d97706', borderRadius: '10px', padding: '0.65rem', color: '#b45309', flexShrink: 0 }}>
                       <Award size={26} />
                     </div>
 
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '0.35rem' }}>
-                        <span style={{ background: '#ea580c', color: '#ffffff', fontSize: '0.68rem', fontWeight: 800, padding: '0.15rem 0.55rem', borderRadius: '9999px', textTransform: 'uppercase' }}>
+                        <span style={{ background: '#b45309', color: '#ffffff', fontSize: '0.68rem', fontWeight: 800, padding: '0.15rem 0.55rem', borderRadius: '9999px', textTransform: 'uppercase' }}>
                           Section 89 CPC Pre-Trial ADR Engine
                         </span>
                         <span style={{ fontSize: '0.78rem', color: '#059669', fontWeight: 800 }}>
@@ -4314,7 +4314,7 @@ export default function App() {
                             });
                           }}
                           style={{
-                            background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)',
+                            background: 'linear-gradient(135deg, #d97706 0%, #b45309 100%)',
                             color: '#ffffff',
                             border: 'none',
                             borderRadius: '8px',
@@ -4325,7 +4325,7 @@ export default function App() {
                             display: 'inline-flex',
                             alignItems: 'center',
                             gap: '0.4rem',
-                            boxShadow: '0 2px 8px rgba(249, 115, 22, 0.35)'
+                            boxShadow: '0 2px 8px rgba(217, 119, 6, 0.35)'
                           }}
                         >
                           <Gavel size={14} />
@@ -4392,15 +4392,15 @@ export default function App() {
                         display: 'inline-flex',
                         alignItems: 'center',
                         gap: '0.5rem',
-                        background: matrix?.is_locked ? 'var(--theme-text-muted)' : (theme === 'dark' ? '#18181b' : '#09090b'),
+                        background: matrix?.is_locked ? 'var(--theme-text-muted)' : (theme === 'dark' ? '#1e293b' : '#070d1e'),
                         color: 'white',
-                        border: '1px solid #f97316',
+                        border: '1px solid #d97706',
                         padding: '0.5rem 1rem',
                         borderRadius: '8px',
                         fontSize: '0.85rem',
                         fontWeight: 700,
                         cursor: matrix?.is_locked ? 'not-allowed' : 'pointer',
-                        boxShadow: '0 2px 8px rgba(249, 115, 22, 0.3)'
+                        boxShadow: '0 2px 8px rgba(217, 119, 6, 0.3)'
                       }}
                     >
                       <Lock size={16} />
@@ -4446,7 +4446,7 @@ export default function App() {
                     <tr key={item.id}>
                       <td className="mono" style={{ fontWeight: 600 }}>{item.statement_index}</td>
                       <td>
-                        <div style={{ fontWeight: 600, color: '#18181b', marginBottom: '0.2rem' }}>
+                        <div style={{ fontWeight: 600, color: '#1e293b', marginBottom: '0.2rem' }}>
                           {item.factual_statement}
                         </div>
                         {item.statutory_denial_reason && (
@@ -4549,7 +4549,7 @@ export default function App() {
                   <Gavel size={13} />
                   {tr('Judicial Bench Administration')}
                 </div>
-                <h3 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: '0.5rem', color: '#09090b' }}>
+                <h3 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: '0.5rem', color: '#070d1e' }}>
                   {tr('Commercial Division Docket Roster')}
                 </h3>
                 <p style={{ fontSize: '0.8rem', color: '#71717a', marginBottom: '1.25rem' }}>
@@ -4568,7 +4568,7 @@ export default function App() {
                   <ShieldCheck size={13} />
                   {tr('Registry Scrutiny Desk')}
                 </div>
-                <h3 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: '0.5rem', color: '#09090b' }}>
+                <h3 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: '0.5rem', color: '#070d1e' }}>
                   {tr('Docket Scrutiny & Cause Board')}
                 </h3>
                 <p style={{ fontSize: '0.8rem', color: '#71717a', marginBottom: '1.25rem' }}>
@@ -4583,8 +4583,8 @@ export default function App() {
               </div>
             ) : (
               <div className="court-card">
-                <h3 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#09090b' }}>
-                  <Plus size={18} color="#f97316" />
+                <h3 style={{ fontSize: '1.1rem', fontWeight: 700, marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#070d1e' }}>
+                  <Plus size={18} color="#d97706" />
                   {tr('New Case e-Filing (CNR Intake)')}
                 </h3>
                 <p style={{ fontSize: '0.8rem', color: '#71717a', marginBottom: '1.25rem' }}>
@@ -4638,7 +4638,7 @@ export default function App() {
                     type="submit"
                     style={{
                       width: '100%',
-                      background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)',
+                      background: 'linear-gradient(135deg, #d97706 0%, #b45309 100%)',
                       color: 'white',
                       border: 'none',
                       padding: '0.75rem',
@@ -4646,7 +4646,7 @@ export default function App() {
                       fontWeight: 700,
                       fontSize: '0.9rem',
                       cursor: 'pointer',
-                      boxShadow: '0 4px 14px rgba(249, 115, 22, 0.35)'
+                      boxShadow: '0 4px 14px rgba(217, 119, 6, 0.35)'
                     }}
                   >
                     {tr('Generate 16-Digit CNR & File Case')}
@@ -4658,7 +4658,7 @@ export default function App() {
             <div className="court-card">
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem', flexWrap: 'wrap', gap: '0.5rem' }}>
                 <div>
-                  <h3 style={{ fontSize: '1.1rem', fontWeight: 700, margin: 0, color: '#09090b' }}>
+                  <h3 style={{ fontSize: '1.1rem', fontWeight: 700, margin: 0, color: '#070d1e' }}>
                     {tr('Active Commercial Court Dockets')} ({displayedCases.length})
                   </h3>
                   <p style={{ fontSize: '0.8rem', color: '#71717a', margin: '0.2rem 0 0 0' }}>
@@ -4669,21 +4669,21 @@ export default function App() {
                   <button 
                     onClick={() => setTableRosterFilter('ALL')}
                     className={`roster-filter-btn ${tableRosterFilter === 'ALL' ? 'active' : ''}`}
-                    style={{ background: tableRosterFilter === 'ALL' ? '#09090b' : '#f4f4f5', color: tableRosterFilter === 'ALL' ? '#ffffff' : '#3f3f46', borderColor: '#d4d4d8' }}
+                    style={{ background: tableRosterFilter === 'ALL' ? '#070d1e' : '#f4f4f5', color: tableRosterFilter === 'ALL' ? '#ffffff' : '#3f3f46', borderColor: '#d4d4d8' }}
                   >
                     {tr('All')} ({cases.length})
                   </button>
                   <button 
                     onClick={() => setTableRosterFilter('NEXT_WEEK')}
                     className={`roster-filter-btn ${tableRosterFilter === 'NEXT_WEEK' ? 'active' : ''}`}
-                    style={{ background: tableRosterFilter === 'NEXT_WEEK' ? '#f97316' : '#fff7ed', color: tableRosterFilter === 'NEXT_WEEK' ? '#ffffff' : '#c2410c', borderColor: '#fed7aa' }}
+                    style={{ background: tableRosterFilter === 'NEXT_WEEK' ? '#d97706' : '#fffbeb', color: tableRosterFilter === 'NEXT_WEEK' ? '#ffffff' : '#92400e', borderColor: '#fde68a' }}
                   >
                     ⚡ {tr('Next Week')} ({nextWeekCount})
                   </button>
                   <button 
                     onClick={() => setTableRosterFilter('NEXT_MONTH')}
                     className={`roster-filter-btn ${tableRosterFilter === 'NEXT_MONTH' ? 'active' : ''}`}
-                    style={{ background: tableRosterFilter === 'NEXT_MONTH' ? '#18181b' : '#f4f4f5', color: tableRosterFilter === 'NEXT_MONTH' ? '#ffffff' : '#18181b', borderColor: '#d4d4d8' }}
+                    style={{ background: tableRosterFilter === 'NEXT_MONTH' ? '#1e293b' : '#f4f4f5', color: tableRosterFilter === 'NEXT_MONTH' ? '#ffffff' : '#1e293b', borderColor: '#d4d4d8' }}
                   >
                     📅 {tr('Next Month')} ({nextMonthCount})
                   </button>
@@ -4703,11 +4703,11 @@ export default function App() {
                 </thead>
                 <tbody>
                   {displayedCases.map((c) => (
-                    <tr key={c.id} style={{ background: activeCase?.id === c.id ? '#fff7ed' : 'transparent' }}>
-                      <td className="mono" style={{ fontWeight: 700, color: '#ea580c' }}>
+                    <tr key={c.id} style={{ background: activeCase?.id === c.id ? '#fffbeb' : 'transparent' }}>
+                      <td className="mono" style={{ fontWeight: 700, color: '#b45309' }}>
                         {c.cnr_number}
                       </td>
-                      <td style={{ fontWeight: 600, color: '#18181b' }}>
+                      <td style={{ fontWeight: 600, color: '#1e293b' }}>
                         {c.case_title}
                       </td>
                       <td className="mono">
@@ -4719,7 +4719,7 @@ export default function App() {
                       <td>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.2rem' }}>
                           <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                            <strong style={{ fontSize: '0.85rem', color: '#09090b' }}>{c.next_hearing_formatted ? trRel(c.next_hearing_formatted) : tr('Pending')}</strong>
+                            <strong style={{ fontSize: '0.85rem', color: '#070d1e' }}>{c.next_hearing_formatted ? trRel(c.next_hearing_formatted) : tr('Pending')}</strong>
                             {c.next_hearing_relative && (
                               <span className={`hearing-pill-badge ${c.next_hearing_relative.includes('Next Week') ? 'pill-next-week' : (c.next_hearing_relative.includes('Next Month') ? 'pill-next-month' : 'pill-standard')}`} style={{ fontSize: '0.68rem', padding: '0.1rem 0.45rem' }}>
                                 {trRel(c.next_hearing_relative)}
@@ -4738,7 +4738,7 @@ export default function App() {
                               setActiveTab('matrix');
                             }}
                             style={{
-                              background: '#09090b',
+                              background: '#070d1e',
                               color: 'white',
                               border: 'none',
                               padding: '0.35rem 0.65rem',
@@ -4753,7 +4753,7 @@ export default function App() {
                           <button 
                             onClick={() => loadCaseDossier(c.cnr_number)}
                             style={{
-                              background: '#f97316',
+                              background: '#d97706',
                               color: 'white',
                               border: 'none',
                               padding: '0.35rem 0.65rem',
@@ -4764,7 +4764,7 @@ export default function App() {
                               display: 'inline-flex',
                               alignItems: 'center',
                               gap: '0.25rem',
-                              boxShadow: '0 2px 6px rgba(249, 115, 22, 0.3)'
+                              boxShadow: '0 2px 6px rgba(217, 119, 6, 0.3)'
                             }}
                           >
                             <Search size={12} />
@@ -4784,8 +4784,8 @@ export default function App() {
         {activeTab === 'scheduler' && (
           <div className="court-card">
             <div style={{ marginBottom: '1.5rem' }}>
-              <h3 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#09090b', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <Calendar size={22} color="#f97316" />
+              <h3 style={{ fontSize: '1.2rem', fontWeight: 700, color: '#070d1e', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <Calendar size={22} color="#d97706" />
                 {tr('Cross-Courtroom Advocate Schedule Clash Detection Engine')}
               </h3>
               <p style={{ fontSize: '0.85rem', color: '#71717a' }}>
@@ -4900,9 +4900,9 @@ export default function App() {
                 onClick={handleCheckClash}
                 disabled={checkingClash}
                 style={{
-                  background: '#09090b',
+                  background: '#070d1e',
                   color: 'white',
-                  border: '1px solid #27272a',
+                  border: '1px solid #334155',
                   padding: '0.75rem 1.5rem',
                   borderRadius: '8px',
                   fontWeight: 700,
@@ -4922,7 +4922,7 @@ export default function App() {
                 onClick={handleBookSlot}
                 disabled={clashResult?.has_conflict}
                 style={{
-                  background: clashResult?.has_conflict ? '#d4d4d8' : '#f97316',
+                  background: clashResult?.has_conflict ? '#d4d4d8' : '#d97706',
                   color: 'white',
                   border: 'none',
                   padding: '0.75rem 1.5rem',
@@ -4930,7 +4930,7 @@ export default function App() {
                   fontWeight: 700,
                   fontSize: '0.9rem',
                   cursor: clashResult?.has_conflict ? 'not-allowed' : 'pointer',
-                  boxShadow: clashResult?.has_conflict ? 'none' : '0 4px 14px rgba(249, 115, 22, 0.35)'
+                  boxShadow: clashResult?.has_conflict ? 'none' : '0 4px 14px rgba(217, 119, 6, 0.35)'
                 }}
               >
                 {tr('2. Confirm Slot & Generate WebRTC Room')}
@@ -4974,9 +4974,9 @@ export default function App() {
           <div className="court-card" style={{ maxWidth: '800px', margin: '0 auto', border: '2px solid var(--theme-border)', boxShadow: '0 6px 24px rgba(0, 0, 0, 0.08)' }}>
             {/* Role-Specific Action Bar */}
             {currentRole === 'JUDGE' ? (
-              <div style={{ background: '#fff7ed', border: '1.5px solid #fed7aa', borderRadius: '8px', padding: '0.85rem 1.25rem', marginBottom: '1.25rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.75rem' }}>
+              <div style={{ background: '#fffbeb', border: '1.5px solid #fde68a', borderRadius: '8px', padding: '0.85rem 1.25rem', marginBottom: '1.25rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.75rem' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                  <Gavel size={18} color="#ea580c" />
+                  <Gavel size={18} color="#b45309" />
                   <div>
                     <div style={{ fontSize: '0.82rem', fontWeight: 800, color: '#9a3412' }}>{tr('Judicial Case Management Order Execution')}</div>
                     <div style={{ fontSize: '0.74rem', color: '#7c2d12' }}>{tr('Affix official Class-3 DSC cryptographic signature to finalize discovery timetable and framed issues.')}</div>
@@ -4987,7 +4987,7 @@ export default function App() {
                     type="button"
                     onClick={() => window.print()}
                     style={{
-                      background: '#18181b',
+                      background: '#1e293b',
                       color: '#f4f4f5',
                       border: '1px solid #3f3f46',
                       borderRadius: '6px',
@@ -5007,7 +5007,7 @@ export default function App() {
                     type="button"
                     onClick={() => alert('Judicial Order Signed! e-Mudhra Token 2048-bit RSA Certificate appended. Case Management Order is now legally binding under Order XV-A Rule 6 CPC.')}
                     style={{
-                      background: 'linear-gradient(135deg, #ea580c 0%, #c2410c 100%)',
+                      background: 'linear-gradient(135deg, #b45309 0%, #92400e 100%)',
                       color: '#ffffff',
                       border: 'none',
                       borderRadius: '6px',
@@ -5156,7 +5156,7 @@ export default function App() {
               <h2 className="serif-court" style={{ fontSize: '1.3rem', fontWeight: 800, textTransform: 'uppercase', color: 'var(--theme-text-primary)' }}>
                 {tr('In the Commercial Court of Indore, Madhya Pradesh')}
               </h2>
-              <div style={{ fontSize: '0.9rem', fontWeight: 700, color: '#ea580c', marginTop: '0.25rem' }}>
+              <div style={{ fontSize: '0.9rem', fontWeight: 700, color: '#b45309', marginTop: '0.25rem' }}>
                 {tr('Order Under Order XV-A, Rule 6 Code of Civil Procedure, 1908')}
               </div>
               <div className="mono" style={{ fontSize: '0.8rem', color: 'var(--theme-text-secondary)', marginTop: '0.2rem' }}>
@@ -5185,10 +5185,10 @@ export default function App() {
             </div>
 
             <div style={{ marginBottom: '1.5rem' }}>
-              <h4 style={{ fontSize: '0.9rem', fontWeight: 800, textTransform: 'uppercase', color: '#09090b', marginBottom: '0.4rem' }}>
+              <h4 style={{ fontSize: '0.9rem', fontWeight: 800, textTransform: 'uppercase', color: '#070d1e', marginBottom: '0.4rem' }}>
                 {tr('3. Mandatory Discovery Timetable:')}
               </h4>
-              <div style={{ fontSize: '0.85rem', color: '#18181b', background: '#fff7ed', borderLeft: '4px solid #f97316', padding: '0.75rem', borderRadius: '6px' }}>
+              <div style={{ fontSize: '0.85rem', color: '#1e293b', background: '#fffbeb', borderLeft: '4px solid #d97706', padding: '0.75rem', borderRadius: '6px' }}>
                 • {tr('Filing of witness affidavits:')} <strong>{tr('Within 15 days')}</strong> ({tr('Deadline:')} Oct 20, 2026)<br />
                 • {tr('Inspection of original documents:')} <strong>{tr('Within 15 days')}</strong> ({tr('Deadline:')} Nov 05, 2026)<br />
                 • {tr('Trial Commencement Date:')} <strong>Nov 25, 2026</strong>
@@ -5197,16 +5197,16 @@ export default function App() {
 
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', borderTop: '1px dashed #d4d4d8', paddingTop: '1.25rem' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                <QrCode size={48} color="#09090b" />
+                <QrCode size={48} color="#070d1e" />
                 <div style={{ fontSize: '0.75rem', color: '#71717a' }}>
-                  <div style={{ fontWeight: 700, color: '#09090b' }}>{tr('Digital Judicial Seal')}</div>
+                  <div style={{ fontWeight: 700, color: '#070d1e' }}>{tr('Digital Judicial Seal')}</div>
                   <div>SHA-256: 4a8f9b...e21c</div>
                   <div>{tr('Verified by e-Mudhra DSC')}</div>
                 </div>
               </div>
 
               <div style={{ textAlign: 'right' }}>
-                <div style={{ fontSize: '0.9rem', fontWeight: 700, color: '#09090b' }}>
+                <div style={{ fontSize: '0.9rem', fontWeight: 700, color: '#070d1e' }}>
                   ({lang === 'HI' ? "माननीय न्यायमूर्ति राजेश शर्मा" : "Hon'ble Justice Rajesh Sharma"})
                 </div>
                 <div style={{ fontSize: '0.75rem', color: '#64748b' }}>
@@ -5224,7 +5224,7 @@ export default function App() {
             <div className="cause-list-header">
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem' }}>
                 <div>
-                  <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', background: 'rgba(249, 115, 22, 0.15)', border: '1px solid #f97316', color: '#ea580c', padding: '0.2rem 0.65rem', borderRadius: '9999px', fontSize: '0.74rem', fontWeight: 800, textTransform: 'uppercase', marginBottom: '0.5rem' }}>
+                  <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', background: 'rgba(217, 119, 6, 0.15)', border: '1px solid #d97706', color: '#b45309', padding: '0.2rem 0.65rem', borderRadius: '9999px', fontSize: '0.74rem', fontWeight: 800, textTransform: 'uppercase', marginBottom: '0.5rem' }}>
                     <Calendar size={13} />
                     <span>{tr('High Court of Madhya Pradesh • Daily Hearing Board')}</span>
                   </div>
@@ -5439,7 +5439,7 @@ export default function App() {
                     .map((item) => (
                       <tr key={item.session_id}>
                         <td>
-                          <span style={{ fontWeight: 800, color: '#f97316' }}>#{item.item_number}</span>
+                          <span style={{ fontWeight: 800, color: '#d97706' }}>#{item.item_number}</span>
                         </td>
                         <td>
                           <div style={{ fontWeight: 700, color: 'var(--theme-text-primary)' }}>
@@ -5454,7 +5454,7 @@ export default function App() {
                             {item.case?.case_title || 'Commercial Suit'}
                           </div>
                           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginTop: '0.2rem' }}>
-                            <span className="mono" style={{ fontSize: '0.74rem', color: '#ea580c', fontWeight: 700 }}>
+                            <span className="mono" style={{ fontSize: '0.74rem', color: '#b45309', fontWeight: 700 }}>
                               {item.case?.cnr_number}
                             </span>
                             <span style={{ fontSize: '0.72rem', color: 'var(--theme-text-muted)' }}>
@@ -5463,7 +5463,7 @@ export default function App() {
                           </div>
                         </td>
                         <td>
-                          <span style={{ display: 'inline-block', background: 'rgba(249, 115, 22, 0.1)', color: '#ea580c', padding: '0.2rem 0.5rem', borderRadius: '4px', fontSize: '0.74rem', fontWeight: 700 }}>
+                          <span style={{ display: 'inline-block', background: 'rgba(217, 119, 6, 0.1)', color: '#b45309', padding: '0.2rem 0.5rem', borderRadius: '4px', fontSize: '0.74rem', fontWeight: 700 }}>
                             Order XV-A CMH Pre-Trial
                           </span>
                         </td>
@@ -5495,7 +5495,7 @@ export default function App() {
                               <span>Concluded</span>
                             </span>
                           ) : (
-                            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.3rem', background: 'rgba(249, 115, 22, 0.1)', color: '#f97316', padding: '0.2rem 0.5rem', borderRadius: '9999px', fontSize: '0.72rem', fontWeight: 700 }}>
+                            <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.3rem', background: 'rgba(217, 119, 6, 0.1)', color: '#d97706', padding: '0.2rem 0.5rem', borderRadius: '9999px', fontSize: '0.72rem', fontWeight: 700 }}>
                               <Clock size={12} />
                               <span>Scheduled</span>
                             </span>
@@ -5506,7 +5506,7 @@ export default function App() {
                             type="button"
                             onClick={() => handleOpenCourtroom(item)}
                             style={{
-                              background: 'linear-gradient(135deg, #ea580c 0%, #c2410c 100%)',
+                              background: 'linear-gradient(135deg, #b45309 0%, #92400e 100%)',
                               color: '#ffffff',
                               border: 'none',
                               borderRadius: '6px',
@@ -5548,7 +5548,7 @@ export default function App() {
             <div className="cause-list-header">
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem' }}>
                 <div>
-                  <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', background: 'rgba(249, 115, 22, 0.15)', border: '1px solid #f97316', color: '#ea580c', padding: '0.2rem 0.65rem', borderRadius: '9999px', fontSize: '0.74rem', fontWeight: 800, textTransform: 'uppercase', marginBottom: '0.5rem' }}>
+                  <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', background: 'rgba(217, 119, 6, 0.15)', border: '1px solid #d97706', color: '#b45309', padding: '0.2rem 0.65rem', borderRadius: '9999px', fontSize: '0.74rem', fontWeight: 800, textTransform: 'uppercase', marginBottom: '0.5rem' }}>
                     <Receipt size={13} />
                     <span>{tr('Government of Madhya Pradesh • Finance Dept')}</span>
                   </div>
@@ -5578,7 +5578,7 @@ export default function App() {
               {/* 1. Instant Statutory Fee Calculator */}
               <div className="treasury-card">
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.85rem' }}>
-                  <DollarSign size={20} color="#f97316" />
+                  <DollarSign size={20} color="#d97706" />
                   <h3 style={{ fontSize: '1rem', fontWeight: 800, margin: 0, color: 'var(--theme-text-primary)' }}>
                     {tr('Instant Statutory Fee Calculator')}
                   </h3>
@@ -5611,7 +5611,7 @@ export default function App() {
                       type="button"
                       onClick={() => handleCalculateFee(claimValInput)}
                       style={{
-                        background: '#f97316',
+                        background: '#d97706',
                         color: '#ffffff',
                         border: 'none',
                         borderRadius: '6px',
@@ -5641,8 +5641,8 @@ export default function App() {
                       <strong style={{ color: 'var(--theme-text-primary)' }}>₹{feeBreakdown.advocate_welfare_stamp.toLocaleString()}</strong>
                     </div>
                     <div style={{ borderTop: '1px solid var(--theme-border)', paddingTop: '0.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '0.5rem' }}>
-                      <span style={{ fontWeight: 800, color: '#f97316' }}>{tr('Total Statutory Payable Fee')}:</span>
-                      <span style={{ fontSize: '1.15rem', fontWeight: 800, color: '#f97316' }}>
+                      <span style={{ fontWeight: 800, color: '#d97706' }}>{tr('Total Statutory Payable Fee')}:</span>
+                      <span style={{ fontSize: '1.15rem', fontWeight: 800, color: '#d97706' }}>
                         ₹{feeBreakdown.total_payable_fee.toLocaleString()}
                       </span>
                     </div>
@@ -5653,7 +5653,7 @@ export default function App() {
               {/* 2. Generate Official e-Challan */}
               <div className="treasury-card">
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.85rem' }}>
-                  <CreditCard size={20} color="#f97316" />
+                  <CreditCard size={20} color="#d97706" />
                   <h3 style={{ fontSize: '1rem', fontWeight: 800, margin: 0, color: 'var(--theme-text-primary)' }}>
                     {tr('Generate Official e-Challan')}
                   </h3>
@@ -5752,7 +5752,7 @@ export default function App() {
                     type="button"
                     onClick={handleCreateChallan}
                     style={{
-                      background: 'linear-gradient(135deg, #f97316 0%, #ea580c 100%)',
+                      background: 'linear-gradient(135deg, #d97706 0%, #b45309 100%)',
                       color: '#ffffff',
                       border: 'none',
                       borderRadius: '6px',
@@ -5765,7 +5765,7 @@ export default function App() {
                       alignItems: 'center',
                       justifyContent: 'center',
                       gap: '0.4rem',
-                      boxShadow: '0 2px 8px rgba(249, 115, 22, 0.3)'
+                      boxShadow: '0 2px 8px rgba(217, 119, 6, 0.3)'
                     }}
                   >
                     <Plus size={15} />
@@ -5777,7 +5777,7 @@ export default function App() {
               {/* 3. Public e-Challan Verification */}
               <div className="treasury-card">
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.85rem' }}>
-                  <ShieldCheck size={20} color="#f97316" />
+                  <ShieldCheck size={20} color="#d97706" />
                   <h3 style={{ fontSize: '1rem', fontWeight: 800, margin: 0, color: 'var(--theme-text-primary)' }}>
                     {tr('Public e-Challan Verification')}
                   </h3>
@@ -5807,9 +5807,9 @@ export default function App() {
                       type="button"
                       onClick={handleVerifyChallan}
                       style={{
-                        background: '#18181b',
-                        color: '#f97316',
-                        border: '1px solid #f97316',
+                        background: '#1e293b',
+                        color: '#d97706',
+                        border: '1px solid #d97706',
                         borderRadius: '6px',
                         padding: '0.5rem 0.85rem',
                         fontSize: '0.8rem',
@@ -5850,9 +5850,9 @@ export default function App() {
               <div className="treasury-receipt-box">
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                    <QrCode size={52} color="#f97316" />
+                    <QrCode size={52} color="#d97706" />
                     <div>
-                      <div style={{ fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: '#ea580c', fontWeight: 800 }}>
+                      <div style={{ fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: '#b45309', fontWeight: 800 }}>
                         {tr('Treasury Payment Confirmed!')} • MP Cyber Treasury
                       </div>
                       <h3 style={{ fontSize: '1.2rem', fontWeight: 900, margin: '0.2rem 0' }}>
@@ -5884,7 +5884,7 @@ export default function App() {
                   </div>
                 </div>
 
-                <div style={{ marginTop: '0.75rem', paddingTop: '0.75rem', borderTop: '1px dashed #fed7aa', fontSize: '0.74rem' }}>
+                <div style={{ marginTop: '0.75rem', paddingTop: '0.75rem', borderTop: '1px dashed #fde68a', fontSize: '0.74rem' }}>
                   <div><strong>{tr('Receipt SHA-256 Digest:')}</strong></div>
                   <span className="hash-badge-mono">{challanSuccessReceipt.receipt_sha256 || 'Pending payment verification'}</span>
                 </div>
@@ -5919,7 +5919,7 @@ export default function App() {
                   {challanList.map((ch) => (
                     <tr key={ch.id}>
                       <td>
-                        <span className="mono" style={{ fontWeight: 800, color: '#f97316' }}>{ch.challan_number}</span>
+                        <span className="mono" style={{ fontWeight: 800, color: '#d97706' }}>{ch.challan_number}</span>
                         {ch.cnr_number && (
                           <div style={{ fontSize: '0.7rem', color: 'var(--theme-text-muted)' }}>CNR: {ch.cnr_number}</div>
                         )}
@@ -5946,7 +5946,7 @@ export default function App() {
                             <span>PAID</span>
                           </span>
                         ) : (
-                          <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.3rem', background: '#fff7ed', color: '#ea580c', padding: '0.2rem 0.55rem', borderRadius: '9999px', fontSize: '0.72rem', fontWeight: 800 }}>
+                          <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.3rem', background: '#fffbeb', color: '#b45309', padding: '0.2rem 0.55rem', borderRadius: '9999px', fontSize: '0.72rem', fontWeight: 800 }}>
                             <Clock size={12} />
                             <span>PENDING</span>
                           </span>
@@ -6016,10 +6016,10 @@ export default function App() {
         {activeTab === 'analytics' && (
           <div>
             {/* Hero Banner */}
-            <div className="search-hero" style={{ marginBottom: '1.5rem', background: 'linear-gradient(135deg, #09090b 0%, #1c1917 100%)', border: '1.5px solid #f97316' }}>
+            <div className="search-hero" style={{ marginBottom: '1.5rem', background: 'linear-gradient(135deg, #070d1e 0%, #1c1917 100%)', border: '1.5px solid #d97706' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
                 <div>
-                  <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', background: 'rgba(249, 115, 22, 0.25)', border: '1px solid #f97316', color: '#fb923c', padding: '0.2rem 0.6rem', borderRadius: '9999px', fontSize: '0.72rem', fontWeight: 800, textTransform: 'uppercase', marginBottom: '0.5rem' }}>
+                  <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', background: 'rgba(217, 119, 6, 0.25)', border: '1px solid #d97706', color: '#f59e0b', padding: '0.2rem 0.6rem', borderRadius: '9999px', fontSize: '0.72rem', fontWeight: 800, textTransform: 'uppercase', marginBottom: '0.5rem' }}>
                     <TrendingUp size={12} />
                     <span>NJDG Central Judicial Node • Real-Time KPI Telemetry</span>
                   </div>
@@ -6036,7 +6036,7 @@ export default function App() {
                     type="button"
                     onClick={() => window.print()}
                     style={{
-                      background: '#27272a',
+                      background: '#334155',
                       color: '#ffffff',
                       border: '1px solid #3f3f46',
                       borderRadius: '8px',
@@ -6073,14 +6073,14 @@ export default function App() {
                 </div>
               </div>
 
-              <div className="analytics-card" style={{ borderLeft: '4px solid #f97316' }}>
+              <div className="analytics-card" style={{ borderLeft: '4px solid #d97706' }}>
                 <div style={{ fontSize: '0.72rem', color: 'var(--theme-text-muted)', fontWeight: 800, textTransform: 'uppercase', marginBottom: '0.35rem' }}>
                   {tr("Admissions Consensus Ratio")}
                 </div>
-                <div style={{ fontSize: '2rem', fontWeight: 900, color: '#f97316' }}>
+                <div style={{ fontSize: '2rem', fontWeight: 900, color: '#d97706' }}>
                   76.4% <span style={{ fontSize: '1rem', fontWeight: 600, color: 'var(--theme-text-secondary)' }}>Factual Crystallization</span>
                 </div>
-                <div style={{ fontSize: '0.78rem', color: '#ea580c', fontWeight: 700, marginTop: '0.35rem' }}>
+                <div style={{ fontSize: '0.78rem', color: '#b45309', fontWeight: 700, marginTop: '0.35rem' }}>
                   ✓ Oral testimony eliminated on 340+ admitted averments
                 </div>
                 <div className="velocity-bar-track">
@@ -6229,10 +6229,10 @@ export default function App() {
                   <div>
                     <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', fontWeight: 700, marginBottom: '0.25rem' }}>
                       <span>Commercial Dispute / Supply Contracts</span>
-                      <span style={{ color: '#f97316' }}>44% (56 Cases)</span>
+                      <span style={{ color: '#d97706' }}>44% (56 Cases)</span>
                     </div>
                     <div className="velocity-bar-track">
-                      <div className="velocity-bar-fill" style={{ width: '44%', background: '#f97316' }}></div>
+                      <div className="velocity-bar-fill" style={{ width: '44%', background: '#d97706' }}></div>
                     </div>
                   </div>
 
@@ -6275,9 +6275,9 @@ export default function App() {
         {summonsModalOpen && summonsCase && (
           <div className="summons-overlay" onClick={() => setSummonsModalOpen(false)}>
             <div className="summons-card" onClick={(e) => e.stopPropagation()}>
-              <div className="courtroom-header" style={{ background: '#09090b', color: '#ffffff' }}>
+              <div className="courtroom-header" style={{ background: '#070d1e', color: '#ffffff' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
-                  <FileCheck size={20} color="#f97316" />
+                  <FileCheck size={20} color="#d97706" />
                   <span style={{ fontWeight: 800, fontSize: '0.95rem' }}>
                     Statutory Judicial e-Summons (Order V Rules 1 & 9 CPC)
                   </span>
@@ -6384,7 +6384,7 @@ export default function App() {
         <div className="mphc-footer-grid">
           <div className="footer-col">
             <h4>
-              <Landmark size={18} color="#f97316" />
+              <Landmark size={18} color="#d97706" />
               <span>{tr('High Court of Madhya Pradesh')}</span>
             </h4>
             <p style={{ marginBottom: '0.75rem' }}>
@@ -6400,7 +6400,7 @@ export default function App() {
 
           <div className="footer-col">
             <h4>
-              <FileCheck size={18} color="#f97316" />
+              <FileCheck size={18} color="#d97706" />
               <span>{tr('Judicial Services & Quick Portals')}</span>
             </h4>
             <ul>
@@ -6408,7 +6408,7 @@ export default function App() {
                 <button 
                   type="button" 
                   onClick={() => setActiveTab('search')}
-                  style={{ background: 'none', border: 'none', padding: 0, color: '#fb923c', cursor: 'pointer', textAlign: 'left', font: 'inherit', textDecoration: 'underline' }}
+                  style={{ background: 'none', border: 'none', padding: 0, color: '#f59e0b', cursor: 'pointer', textAlign: 'left', font: 'inherit', textDecoration: 'underline' }}
                 >
                   {tr('Universal CNR Case Search & Live Dossier')}
                 </button>
@@ -6417,7 +6417,7 @@ export default function App() {
                 <button 
                   type="button" 
                   onClick={() => setActiveTab('matrix')}
-                  style={{ background: 'none', border: 'none', padding: 0, color: '#fb923c', cursor: 'pointer', textAlign: 'left', font: 'inherit', textDecoration: 'underline' }}
+                  style={{ background: 'none', border: 'none', padding: 0, color: '#f59e0b', cursor: 'pointer', textAlign: 'left', font: 'inherit', textDecoration: 'underline' }}
                 >
                   {tr('Admissions & Denials Matrix (Rule 3 Compliance)')}
                 </button>
@@ -6426,7 +6426,7 @@ export default function App() {
                 <button 
                   type="button" 
                   onClick={() => setActiveTab('cases')}
-                  style={{ background: 'none', border: 'none', padding: 0, color: '#fb923c', cursor: 'pointer', textAlign: 'left', font: 'inherit', textDecoration: 'underline' }}
+                  style={{ background: 'none', border: 'none', padding: 0, color: '#f59e0b', cursor: 'pointer', textAlign: 'left', font: 'inherit', textDecoration: 'underline' }}
                 >
                   {tr('Commercial Suit Docket Register & e-Filing')}
                 </button>
@@ -6435,7 +6435,7 @@ export default function App() {
                 <button 
                   type="button" 
                   onClick={() => setActiveTab('scheduler')}
-                  style={{ background: 'none', border: 'none', padding: 0, color: '#fb923c', cursor: 'pointer', textAlign: 'left', font: 'inherit', textDecoration: 'underline' }}
+                  style={{ background: 'none', border: 'none', padding: 0, color: '#f59e0b', cursor: 'pointer', textAlign: 'left', font: 'inherit', textDecoration: 'underline' }}
                 >
                   {tr('Smart Clash-Free Judicial Hearing Allotment')}
                 </button>
@@ -6455,7 +6455,7 @@ export default function App() {
 
           <div className="footer-col">
             <h4>
-              <Building size={18} color="#f97316" />
+              <Building size={18} color="#d97706" />
               <span>{tr('Registry & Technical Helpdesk')}</span>
             </h4>
             <p style={{ marginBottom: '0.75rem' }}>
@@ -6476,7 +6476,7 @@ export default function App() {
               {tr('© 2026 High Court of Madhya Pradesh • Commercial Court Division • Built under Order XV-A CPC Guidelines')}
             </div>
             <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', fontSize: '0.72rem' }}>
-              <span>{tr('Theme: White, Orange & Obsidian Black')}</span>
+              <span>{tr('Theme: Classic MP High Court Navy & Saffron Gold')}</span>
               <span>•</span>
               <span>{tr('Content Managed by Commercial Division Registry')}</span>
             </div>
@@ -6494,7 +6494,7 @@ export default function App() {
                 <MpHcEmblem size={34} />
                 <div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                    <span style={{ fontWeight: 800, color: '#f97316', fontSize: '0.9rem' }}>
+                    <span style={{ fontWeight: 800, color: '#d97706', fontSize: '0.9rem' }}>
                       Commercial Courtroom Hall 04 • High Court of MP
                     </span>
                     <span className="courtroom-rec-pill">
@@ -6503,7 +6503,7 @@ export default function App() {
                     </span>
                   </div>
                   <div style={{ fontSize: '0.78rem', color: '#a1a1aa' }}>
-                    {activeCourtroomSession.case?.case_title || 'Commercial Hearing'} • CNR: <strong className="mono" style={{ color: '#ffffff' }}>{activeCourtroomSession.case?.cnr_number}</strong> • Room: <strong className="mono" style={{ color: '#fb923c' }}>{activeCourtroomSession.webrtc_room_id}</strong>
+                    {activeCourtroomSession.case?.case_title || 'Commercial Hearing'} • CNR: <strong className="mono" style={{ color: '#ffffff' }}>{activeCourtroomSession.case?.cnr_number}</strong> • Room: <strong className="mono" style={{ color: '#f59e0b' }}>{activeCourtroomSession.webrtc_room_id}</strong>
                   </div>
                 </div>
               </div>
@@ -6534,20 +6534,20 @@ export default function App() {
             <div className="courtroom-body">
               {/* Tile 1: Hon'ble Presiding Judge */}
               <div className="courtroom-tile judge-bench">
-                <div className="tile-avatar-halo" style={{ borderColor: '#f97316', background: 'rgba(249, 115, 22, 0.15)' }}>
+                <div className="tile-avatar-halo" style={{ borderColor: '#d97706', background: 'rgba(217, 119, 6, 0.15)' }}>
                   ⚖️
                 </div>
                 <div style={{ textAlign: 'center' }}>
                   <div style={{ fontWeight: 800, fontSize: '1rem', color: '#ffffff' }}>
                     {activeCourtroomSession.judge_name || "Hon'ble Justice Rajesh Sharma"}
                   </div>
-                  <div style={{ fontSize: '0.75rem', color: '#fb923c', fontWeight: 700 }}>
+                  <div style={{ fontSize: '0.75rem', color: '#f59e0b', fontWeight: 700 }}>
                     Presiding Judicial Officer (Bench at Indore)
                   </div>
                 </div>
                 <div className="tile-info-bar">
                   <span style={{ fontSize: '0.72rem', color: '#cbd5e1', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
-                    <Gavel size={12} color="#f97316" /> Order XV-A Judicial Authority
+                    <Gavel size={12} color="#d97706" /> Order XV-A Judicial Authority
                   </span>
                   <span style={{ fontSize: '0.7rem', color: '#34d399', fontWeight: 700 }}>● Live HD</span>
                 </div>
@@ -6593,35 +6593,35 @@ export default function App() {
 
               {/* Tile 4: Court Evidence Screen / Admissions Matrix */}
               <div className="courtroom-tile" style={{ padding: '1rem', background: '#121214', alignItems: 'stretch', justifyContent: 'flex-start' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #27272a', paddingBottom: '0.5rem', marginBottom: '0.75rem' }}>
-                  <div style={{ fontSize: '0.8rem', fontWeight: 800, color: '#f97316', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #334155', paddingBottom: '0.5rem', marginBottom: '0.75rem' }}>
+                  <div style={{ fontSize: '0.8rem', fontWeight: 800, color: '#d97706', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
                     <ShieldCheck size={14} />
                     <span>Cryptographic Evidence & Admissions Screen</span>
                   </div>
-                  <span style={{ fontSize: '0.68rem', color: '#94a3b8', background: '#27272a', padding: '0.15rem 0.45rem', borderRadius: '4px' }}>
+                  <span style={{ fontSize: '0.68rem', color: '#94a3b8', background: '#334155', padding: '0.15rem 0.45rem', borderRadius: '4px' }}>
                     SHA-256 Verified
                   </span>
                 </div>
 
                 <div style={{ flex: 1, overflowY: 'auto', fontSize: '0.78rem', color: '#d4d4d8' }}>
-                  <div style={{ background: '#18181b', border: '1px solid #27272a', borderRadius: '6px', padding: '0.65rem', marginBottom: '0.5rem' }}>
+                  <div style={{ background: '#1e293b', border: '1px solid #334155', borderRadius: '6px', padding: '0.65rem', marginBottom: '0.5rem' }}>
                     <div style={{ fontWeight: 700, color: '#ffffff', marginBottom: '0.2rem' }}>
                       Exhibit P-1: Commercial Service Agreement
                     </div>
                     <div style={{ fontSize: '0.7rem', color: '#a1a1aa' }}>
-                      Hash: <code className="mono" style={{ color: '#fb923c' }}>8a4e...710d</code> (Tamper-Proof)
+                      Hash: <code className="mono" style={{ color: '#f59e0b' }}>8a4e...710d</code> (Tamper-Proof)
                     </div>
                     <div style={{ marginTop: '0.35rem', color: '#10b981', fontWeight: 700, fontSize: '0.72rem' }}>
                       ✓ Defendant Stance: ADMITTED AS TO CONTENTS
                     </div>
                   </div>
 
-                  <div style={{ background: '#18181b', border: '1px solid #27272a', borderRadius: '6px', padding: '0.65rem', marginBottom: '0.5rem' }}>
+                  <div style={{ background: '#1e293b', border: '1px solid #334155', borderRadius: '6px', padding: '0.65rem', marginBottom: '0.5rem' }}>
                     <div style={{ fontWeight: 700, color: '#ffffff', marginBottom: '0.2rem' }}>
                       Exhibit P-2: Invoices & GST Electronic Tax Records
                     </div>
                     <div style={{ fontSize: '0.7rem', color: '#a1a1aa' }}>
-                      Hash: <code className="mono" style={{ color: '#fb923c' }}>3f9c...44a1</code> (65B IT Act Certified)
+                      Hash: <code className="mono" style={{ color: '#f59e0b' }}>3f9c...44a1</code> (65B IT Act Certified)
                     </div>
                     <div style={{ marginTop: '0.35rem', color: '#ef4444', fontWeight: 700, fontSize: '0.72rem' }}>
                       ✗ Defendant Stance: DENIED AS TO VALUATION
@@ -6680,7 +6680,7 @@ export default function App() {
                         alert('Hearing Concluded. Next step: Sign Case Management Order under Order XV-A Rule 6.');
                       }}
                       className="ctrl-btn"
-                      style={{ background: '#f97316', borderColor: '#ea580c', color: '#ffffff' }}
+                      style={{ background: '#d97706', borderColor: '#b45309', color: '#ffffff' }}
                     >
                       <CheckCircle2 size={15} />
                       <span>{tr('Mark Hearing Concluded')}</span>
