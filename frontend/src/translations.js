@@ -445,6 +445,8 @@ export const translations = {
   "Order XV-A Strict Admittance Rule: To preserve judicial decorum, Virtual Courtrooms are restricted and open strictly at their scheduled hearing times (admittance opens 15 minutes before the allotted slot). Early or unscheduled entry is prohibited for all participants.": "आदेश XV-A सख्त प्रवेश नियम: न्यायिक गरिमा बनाए रखने के लिए, आभासी न्यायालय कक्ष केवल निर्धारित सुनवाई समय पर ही खुलते हैं (आवंटित स्लॉट से 15 मिनट पहले प्रवेश प्रारंभ)। सभी प्रतिभागियों के लिए समय पूर्व अथवा अनिर्धारित प्रवेश प्रतिबंधित है।",
   "Acknowledge & Close": "स्वीकार करें एवं बंद करें",
   "View Cause Board": "दैनिक वाद सूची देखें",
+  "Order XV-A Strict Admittance Rule:": "आदेश XV-A सख्त प्रवेश नियम:",
+  "Virtual Courtrooms open strictly at scheduled hearing times (15 mins prior admittance). Unscheduled early entry is restricted for all participants.": "आभासी न्यायालय कक्ष केवल निर्धारित सुनवाई समय पर ही खुलते हैं (15 मिनट पूर्व प्रवेश प्रारंभ)। सभी प्रतिभागियों के लिए समय पूर्व अनिर्धारित प्रवेश प्रतिबंधित है।",
   "Live Courtroom": "लाइव न्यायालय कक्ष",
   "Awaiting Call": "प्रतीक्षारत",
   "In Session": "सुनवाई जारी",

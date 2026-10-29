@@ -465,7 +465,7 @@ export default function App() {
   });
 
   // Cause List (रोज़नामचा / Board) State
-  const [causeListDate, setCauseListDate] = useState('2026-10-28');
+  const [causeListDate, setCauseListDate] = useState('2026-10-29');
   const [causeListHall, setCauseListHall] = useState('ALL');
   const [causeListStatusFilter, setCauseListStatusFilter] = useState('ALL');
   const [causeListItems, setCauseListItems] = useState([]);
@@ -473,6 +473,7 @@ export default function App() {
 
   // WebRTC Virtual Courtroom State
   const [activeCourtroomSession, setActiveCourtroomSession] = useState(null);
+  const [admittanceNotice, setAdmittanceNotice] = useState(null);
   const [isMicMuted, setIsMicMuted] = useState(false);
   const [isVideoOff, setIsVideoOff] = useState(false);
   const [isSharingScreen, setIsSharingScreen] = useState(false);
@@ -1119,8 +1120,171 @@ export default function App() {
     }
   };
 
-  // Open WebRTC Virtual Courtroom
+  // Evaluates whether a virtual meeting / courtroom session is joinable right now under Order XV-A CPC
+  const checkSessionJoinStatus = (session) => {
+    if (!session) {
+      return {
+        is_joinable: false,
+        join_status: 'INVALID',
+        join_label: 'Unavailable',
+        join_message: 'Hearing session details are not available.'
+      };
+    }
+
+    // Interactive Demo / Guided Tour simulation
+    if (session.id === 'DEMO-TOUR-SESSION' || session.is_demo) {
+      return {
+        is_joinable: true,
+        join_status: 'IN_PROGRESS',
+        join_label: tr('Join Virtual Hearing'),
+        join_message: 'Simulated walkthrough hearing session.'
+      };
+    }
+
+    // Concluded proceedings
+    if (session.status === 'CONCLUDED') {
+      return {
+        is_joinable: false,
+        join_status: 'CONCLUDED',
+        join_label: tr('Hearing Concluded'),
+        join_message: 'This judicial hearing has concluded under Order XV-A Rule 6 CPC. The virtual courtroom record is closed.'
+      };
+    }
+
+    // Adjourned proceedings
+    if (session.status === 'ADJOURNED') {
+      return {
+        is_joinable: false,
+        join_status: 'ADJOURNED',
+        join_label: tr('Adjourned'),
+        join_message: 'This hearing has been adjourned to a future date by the Court.'
+      };
+    }
+
+    // Actively marked IN_PROGRESS by the Judge / Court Master
+    if (session.status === 'IN_PROGRESS') {
+      return {
+        is_joinable: true,
+        join_status: 'IN_PROGRESS',
+        join_label: tr('Join Live Hearing'),
+        join_message: 'Court is actively in session. You may enter the virtual hearing.'
+      };
+    }
+
+    // If backend already calculated joinability on this item
+    if (typeof session.is_joinable === 'boolean') {
+      return {
+        is_joinable: session.is_joinable,
+        join_status: session.join_status || (session.is_joinable ? 'LIVE_NOW' : 'UPCOMING'),
+        join_label: session.join_label || (session.is_joinable ? tr('Join Virtual Hearing') : tr('Locked • Scheduled')),
+        join_message: session.join_message || (session.is_joinable ? 'Scheduled hearing is active.' : 'Virtual courtroom is locked until scheduled time.')
+      };
+    }
+
+    // Dynamic date & time calculation
+    const hearingDateStr = session.hearing_date; // YYYY-MM-DD
+    const startTimeStr = session.start_time; // HH:MM or HH:MM:SS
+    const endTimeStr = session.end_time; // HH:MM or HH:MM:SS
+
+    if (!hearingDateStr || !startTimeStr) {
+      return {
+        is_joinable: false,
+        join_status: 'SCHEDULED',
+        join_label: tr('Locked • Scheduled'),
+        join_message: 'Hearing is scheduled but exact time is unconfirmed.'
+      };
+    }
+
+    const now = new Date();
+    const [y, m, d] = hearingDateStr.split('-').map(Number);
+    const [startH, startM] = startTimeStr.split(':').map(Number);
+    const [endH, endM] = (endTimeStr || '23:59').split(':').map(Number);
+
+    const startDt = new Date(y, m - 1, d, startH, startM, 0);
+    const endDt = new Date(y, m - 1, d, endH, endM, 0);
+    const earlyAdmittance = new Date(startDt.getTime() - 15 * 60 * 1000); // 15 mins before
+    const graceEnd = new Date(endDt.getTime() + 30 * 60 * 1000); // 30 mins after
+
+    const isFuture = (new Date(y, m - 1, d)).setHours(0,0,0,0) > (new Date(now.getFullYear(), now.getMonth(), now.getDate())).setHours(0,0,0,0);
+    const isPast = (new Date(y, m - 1, d)).setHours(0,0,0,0) < (new Date(now.getFullYear(), now.getMonth(), now.getDate())).setHours(0,0,0,0);
+
+    if (isFuture) {
+      const dateFormatted = `${d.toString().padStart(2, '0')} ${startDt.toLocaleString('en-US', { month: 'short' })}`;
+      return {
+        is_joinable: false,
+        join_status: 'UPCOMING',
+        join_label: `${tr('Locked • Scheduled')} (${dateFormatted})`,
+        join_message: `Virtual courtroom is locked. Scheduled for ${dateFormatted} at ${startTimeStr.slice(0, 5)}. Under Order XV-A CPC, participants may only join at the scheduled time.`
+      };
+    }
+
+    if (isPast) {
+      return {
+        is_joinable: false,
+        join_status: 'EXPIRED',
+        join_label: tr('Slot Ended'),
+        join_message: `The scheduled hearing date (${hearingDateStr}) has passed. Virtual courtroom access is closed.`
+      };
+    }
+
+    // It's today!
+    if (now < earlyAdmittance) {
+      const minsRemaining = Math.max(1, Math.round((earlyAdmittance - now) / 60000));
+      return {
+        is_joinable: false,
+        join_status: 'TOO_EARLY',
+        join_label: `Opens ${startTimeStr.slice(0, 5)}`,
+        join_message: `Virtual courtroom opens 15 minutes prior to scheduled start. Scheduled for ${startTimeStr.slice(0, 5)} (opens in ~${minsRemaining} min). Under Order XV-A CPC rules, participants may only join at the scheduled time.`
+      };
+    }
+
+    if (now > graceEnd) {
+      return {
+        is_joinable: false,
+        join_status: 'SLOT_PASSED',
+        join_label: tr('Slot Ended'),
+        join_message: `The scheduled time slot (${startTimeStr.slice(0, 5)} - ${endTimeStr.slice(0, 5)}) has ended. Access to this virtual courtroom is closed.`
+      };
+    }
+
+    // In active window
+    return {
+      is_joinable: true,
+      join_status: 'LIVE_NOW',
+      join_label: tr('Join Virtual Hearing'),
+      join_message: 'Scheduled hearing window is active. You may join the virtual hearing.'
+    };
+  };
+
+  // Open WebRTC Virtual Courtroom with strict Order XV-A admittance enforcement
   const handleOpenCourtroom = (session) => {
+    if (!session) return;
+
+    const joinEval = checkSessionJoinStatus(session);
+    if (!joinEval.is_joinable) {
+      setAdmittanceNotice({
+        session,
+        ...joinEval
+      });
+      return;
+    }
+
+    // Extra server verification check if session_id is available
+    if (session.session_id) {
+      fetch(`${API_BASE}/schedule/sessions/${session.session_id}/verify-join`)
+        .then(res => res.json())
+        .then(data => {
+          if (data && data.is_joinable === false) {
+            setAdmittanceNotice({
+              session,
+              ...data
+            });
+            setActiveCourtroomSession(null);
+          }
+        })
+        .catch(e => console.warn('Server join verification fallback:', e));
+    }
+
     setActiveCourtroomSession(session);
     setIsMicMuted(false);
     setIsVideoOff(false);
@@ -2090,10 +2254,13 @@ export default function App() {
                                     <button 
                                       type="button" 
                                       onClick={() => {
-                                        setActiveCourtroomSession({
+                                        handleOpenCourtroom({
                                           id: n.case_id || 'DEMO-SESSION',
                                           court_hall_id: n.court_hall_id || 'HALL_04',
                                           webrtc_room_id: n.webrtc_room_id,
+                                          hearing_date: causeListDate,
+                                          start_time: n.hearing_time || '10:30',
+                                          end_time: '11:15',
                                           case: { cnr_number: n.cnr_number, case_title: n.title }
                                         });
                                         setNotifDropdownOpen(false);
@@ -5234,6 +5401,10 @@ export default function App() {
                   <p style={{ fontSize: '0.825rem', color: 'var(--theme-text-secondary)', margin: 0 }}>
                     {tr('Statutory daily hearing list published under Order XV-A Rule 1 CPC for Indore, Jabalpur, and Gwalior Benches.')}
                   </p>
+                  <div style={{ marginTop: '0.65rem', display: 'inline-flex', alignItems: 'center', gap: '0.45rem', background: 'rgba(217, 119, 6, 0.08)', border: '1px solid rgba(217, 119, 6, 0.25)', borderRadius: '6px', padding: '0.3rem 0.65rem', fontSize: '0.74rem', color: '#b45309' }}>
+                    <ShieldCheck size={13} style={{ flexShrink: 0 }} />
+                    <span><strong>{tr('Order XV-A Strict Admittance Rule:')}</strong> {tr('Virtual Courtrooms open strictly at scheduled hearing times (15 mins prior admittance). Unscheduled early entry is restricted for all participants.')}</span>
+                  </div>
                 </div>
 
                 <button
@@ -5321,17 +5492,40 @@ export default function App() {
                   </select>
                 </div>
 
-                <div style={{ marginLeft: 'auto', display: 'flex', gap: '0.5rem', alignSelf: 'flex-end' }}>
+                <div style={{ marginLeft: 'auto', display: 'flex', gap: '0.5rem', alignSelf: 'flex-end', flexWrap: 'wrap' }}>
                   <button
                     type="button"
                     onClick={() => {
-                      setCauseListDate('2026-10-28');
-                      fetchDailyCauseList('2026-10-28', causeListHall);
+                      setCauseListDate('2026-10-29');
+                      fetchDailyCauseList('2026-10-29', causeListHall);
                     }}
-                    className="tag-btn"
-                    style={{ fontSize: '0.74rem', padding: '0.35rem 0.65rem' }}
+                    className={`tag-btn ${causeListDate === '2026-10-29' ? 'active' : ''}`}
+                    style={{
+                      fontSize: '0.74rem',
+                      padding: '0.35rem 0.65rem',
+                      background: causeListDate === '2026-10-29' ? '#d97706' : undefined,
+                      color: causeListDate === '2026-10-29' ? '#ffffff' : undefined,
+                      fontWeight: causeListDate === '2026-10-29' ? 700 : undefined
+                    }}
                   >
-                    28 Oct (Wed)
+                    Today: 29 Oct (Live)
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setCauseListDate('2026-10-30');
+                      fetchDailyCauseList('2026-10-30', causeListHall);
+                    }}
+                    className={`tag-btn ${causeListDate === '2026-10-30' ? 'active' : ''}`}
+                    style={{
+                      fontSize: '0.74rem',
+                      padding: '0.35rem 0.65rem',
+                      background: causeListDate === '2026-10-30' ? '#d97706' : undefined,
+                      color: causeListDate === '2026-10-30' ? '#ffffff' : undefined,
+                      fontWeight: causeListDate === '2026-10-30' ? 700 : undefined
+                    }}
+                  >
+                    Tomorrow: 30 Oct
                   </button>
                   <button
                     type="button"
@@ -5339,8 +5533,14 @@ export default function App() {
                       setCauseListDate('2026-11-03');
                       fetchDailyCauseList('2026-11-03', causeListHall);
                     }}
-                    className="tag-btn"
-                    style={{ fontSize: '0.74rem', padding: '0.35rem 0.65rem' }}
+                    className={`tag-btn ${causeListDate === '2026-11-03' ? 'active' : ''}`}
+                    style={{
+                      fontSize: '0.74rem',
+                      padding: '0.35rem 0.65rem',
+                      background: causeListDate === '2026-11-03' ? '#d97706' : undefined,
+                      color: causeListDate === '2026-11-03' ? '#ffffff' : undefined,
+                      fontWeight: causeListDate === '2026-11-03' ? 700 : undefined
+                    }}
                   >
                     03 Nov (Tue)
                   </button>
@@ -5350,8 +5550,14 @@ export default function App() {
                       setCauseListDate('2026-11-10');
                       fetchDailyCauseList('2026-11-10', causeListHall);
                     }}
-                    className="tag-btn"
-                    style={{ fontSize: '0.74rem', padding: '0.35rem 0.65rem' }}
+                    className={`tag-btn ${causeListDate === '2026-11-10' ? 'active' : ''}`}
+                    style={{
+                      fontSize: '0.74rem',
+                      padding: '0.35rem 0.65rem',
+                      background: causeListDate === '2026-11-10' ? '#d97706' : undefined,
+                      color: causeListDate === '2026-11-10' ? '#ffffff' : undefined,
+                      fontWeight: causeListDate === '2026-11-10' ? 700 : undefined
+                    }}
                   >
                     10 Nov (Tue)
                   </button>
@@ -5502,27 +5708,115 @@ export default function App() {
                           )}
                         </td>
                         <td style={{ textAlign: 'center' }}>
-                          <button
-                            type="button"
-                            onClick={() => handleOpenCourtroom(item)}
-                            style={{
-                              background: 'linear-gradient(135deg, #b45309 0%, #92400e 100%)',
-                              color: '#ffffff',
-                              border: 'none',
-                              borderRadius: '6px',
-                              padding: '0.4rem 0.85rem',
-                              fontSize: '0.76rem',
-                              fontWeight: 700,
-                              cursor: 'pointer',
-                              display: 'inline-flex',
-                              alignItems: 'center',
-                              gap: '0.4rem',
-                              boxShadow: '0 2px 6px rgba(234, 88, 12, 0.3)'
-                            }}
-                          >
-                            <Video size={13} />
-                            <span>{tr('Join Virtual Hearing')}</span>
-                          </button>
+                          {(() => {
+                            const joinInfo = checkSessionJoinStatus(item);
+                            if (joinInfo.is_joinable) {
+                              return (
+                                <button
+                                  type="button"
+                                  onClick={() => handleOpenCourtroom(item)}
+                                  title={tr('Active Hearing Window • Click to join virtual courtroom')}
+                                  style={{
+                                    background: 'linear-gradient(135deg, #059669 0%, #047857 100%)',
+                                    color: '#ffffff',
+                                    border: '1px solid #047857',
+                                    borderRadius: '6px',
+                                    padding: '0.4rem 0.85rem',
+                                    fontSize: '0.76rem',
+                                    fontWeight: 700,
+                                    cursor: 'pointer',
+                                    display: 'inline-flex',
+                                    alignItems: 'center',
+                                    gap: '0.4rem',
+                                    boxShadow: '0 2px 8px rgba(5, 150, 105, 0.4)'
+                                  }}
+                                >
+                                  <span style={{ display: 'inline-block', width: '7px', height: '7px', borderRadius: '50%', background: '#34d399', boxShadow: '0 0 6px #34d399' }}></span>
+                                  <Video size={13} />
+                                  <span>{tr('Join Virtual Hearing')}</span>
+                                </button>
+                              );
+                            }
+
+                            if (item.status === 'CONCLUDED' || joinInfo.join_status === 'CONCLUDED') {
+                              return (
+                                <button
+                                  type="button"
+                                  onClick={() => handleOpenCourtroom(item)}
+                                  title={joinInfo.join_message || 'Hearing Concluded'}
+                                  style={{
+                                    background: 'var(--theme-card-bg)',
+                                    color: 'var(--theme-text-muted)',
+                                    border: '1px solid var(--theme-border)',
+                                    borderRadius: '6px',
+                                    padding: '0.35rem 0.75rem',
+                                    fontSize: '0.74rem',
+                                    fontWeight: 600,
+                                    cursor: 'pointer',
+                                    display: 'inline-flex',
+                                    alignItems: 'center',
+                                    gap: '0.35rem',
+                                    opacity: 0.75
+                                  }}
+                                >
+                                  <CheckCircle2 size={12} color="#10b981" />
+                                  <span>{tr('Hearing Concluded')}</span>
+                                </button>
+                              );
+                            }
+
+                            if (joinInfo.join_status === 'SLOT_PASSED' || joinInfo.join_status === 'EXPIRED') {
+                              return (
+                                <button
+                                  type="button"
+                                  onClick={() => handleOpenCourtroom(item)}
+                                  title={joinInfo.join_message || 'Scheduled hearing slot has passed'}
+                                  style={{
+                                    background: 'var(--theme-card-bg)',
+                                    color: 'var(--theme-text-muted)',
+                                    border: '1px solid var(--theme-border)',
+                                    borderRadius: '6px',
+                                    padding: '0.35rem 0.75rem',
+                                    fontSize: '0.74rem',
+                                    fontWeight: 600,
+                                    cursor: 'pointer',
+                                    display: 'inline-flex',
+                                    alignItems: 'center',
+                                    gap: '0.35rem',
+                                    opacity: 0.8
+                                  }}
+                                >
+                                  <Clock size={12} color="#94a3b8" />
+                                  <span>{tr('Slot Ended')}</span>
+                                </button>
+                              );
+                            }
+
+                            return (
+                              <button
+                                type="button"
+                                onClick={() => handleOpenCourtroom(item)}
+                                title={joinInfo.join_message || 'Virtual courtroom is locked until scheduled time'}
+                                style={{
+                                  background: 'var(--theme-card-bg)',
+                                  color: '#b45309',
+                                  border: '1px solid #fde68a',
+                                  borderRadius: '6px',
+                                  padding: '0.35rem 0.75rem',
+                                  fontSize: '0.74rem',
+                                  fontWeight: 700,
+                                  cursor: 'pointer',
+                                  display: 'inline-flex',
+                                  alignItems: 'center',
+                                  gap: '0.35rem',
+                                  boxShadow: '0 1px 3px rgba(217, 119, 6, 0.1)'
+                                }}
+                              >
+                                <Lock size={12} color="#d97706" />
+                                <span>{joinInfo.join_label || tr('Locked • Scheduled')}</span>
+                              </button>
+                            );
+                          })()}
                         </td>
                       </tr>
                     ))}
