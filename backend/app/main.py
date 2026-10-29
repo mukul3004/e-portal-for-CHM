@@ -1,5 +1,7 @@
+import os
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from backend.app.config import settings
 from backend.app.database import engine, Base, SessionLocal
@@ -186,10 +188,12 @@ def root():
         "redoc_docs": "/redoc"
     }
 
-# Mount static frontend production build if present (for single-container all-in-one deployment)
-import os
-from fastapi.staticfiles import StaticFiles
+# Mount static storage for Pleadings, Exhibits, and Case Management Orders
+_storage_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "frontend", "public", "storage"))
+if os.path.exists(_storage_dir):
+    app.mount("/storage", StaticFiles(directory=_storage_dir), name="storage")
 
+# Mount static frontend production build if present (for single-container all-in-one deployment)
 _dist_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "frontend", "dist"))
 if os.path.exists(_dist_dir) and os.path.isdir(_dist_dir):
     app.mount("/portal", StaticFiles(directory=_dist_dir, html=True), name="portal_spa")
