@@ -13,18 +13,17 @@ from backend.app.models.admissions import AdmissionsChecklist
 from backend.app.models.schedule import CMHSession, SessionStatus
 from backend.app.models.order import CaseManagementOrder, DiscoveryDeadline, DeadlineStatus
 
-TODAY = date(2026, 10, 26)
+TODAY = date.today()
 
-# Next week business days (+2 to +11 days)
+# Upcoming business days (from today +1 to +10 days)
 NEXT_WEEK_DATES = [
-    date(2026, 10, 28), # Wed
-    date(2026, 10, 29), # Thu
-    date(2026, 10, 30), # Fri
-    date(2026, 11, 2),  # Mon
-    date(2026, 11, 3),  # Tue
-    date(2026, 11, 4),  # Wed
-    date(2026, 11, 5),  # Thu
-    date(2026, 11, 6),  # Fri
+    TODAY + timedelta(days=1),
+    TODAY + timedelta(days=2),
+    TODAY + timedelta(days=4),
+    TODAY + timedelta(days=5),
+    TODAY + timedelta(days=6),
+    TODAY + timedelta(days=7),
+    TODAY + timedelta(days=8),
 ]
 
 # Next month business days (+14 to +50 days)
@@ -82,24 +81,34 @@ def make_dates_live():
 
             # 2. Update filing date & session based on status
             if c.status == CaseStatus.CMH_SCHEDULED:
-                # Half in next week, half in next month
-                if cmh_sched_idx % 2 == 0:
+                if cmh_sched_idx == 0:
+                    hearing_date = TODAY
+                    sess_status = SessionStatus.IN_PROGRESS
+                    slot = TIME_SLOTS[0]
+                elif cmh_sched_idx == 1:
+                    hearing_date = TODAY
+                    sess_status = SessionStatus.SCHEDULED
+                    slot = TIME_SLOTS[0]
+                elif cmh_sched_idx % 2 == 0:
                     hearing_date = NEXT_WEEK_DATES[(cmh_sched_idx // 2) % len(NEXT_WEEK_DATES)]
+                    sess_status = SessionStatus.SCHEDULED
+                    slot = TIME_SLOTS[cmh_sched_idx % len(TIME_SLOTS)]
                 else:
                     hearing_date = NEXT_MONTH_DATES[(cmh_sched_idx // 2) % len(NEXT_MONTH_DATES)]
+                    sess_status = SessionStatus.SCHEDULED
+                    slot = TIME_SLOTS[cmh_sched_idx % len(TIME_SLOTS)]
                 
-                # Filing date 25-45 days before hearing
+                # Filing date 20-35 days before hearing
                 filing_days_ago = 20 + (cmh_sched_idx % 15)
                 c.filing_date = datetime.combine(TODAY - timedelta(days=filing_days_ago), time(10, 0))
 
                 # Update or create scheduled session
                 session = db.query(CMHSession).filter(CMHSession.case_id == c.id).first()
-                slot = TIME_SLOTS[cmh_sched_idx % len(TIME_SLOTS)]
                 if session:
                     session.hearing_date = hearing_date
                     session.start_time = slot[0]
                     session.end_time = slot[1]
-                    session.status = SessionStatus.SCHEDULED
+                    session.status = sess_status
                     session.webrtc_room_id = f"webrtc-cmh-{new_cnr.lower()}"
                 else:
                     session = CMHSession(
@@ -110,7 +119,7 @@ def make_dates_live():
                         hearing_date=hearing_date,
                         start_time=slot[0],
                         end_time=slot[1],
-                        status=SessionStatus.SCHEDULED,
+                        status=sess_status,
                         webrtc_room_id=f"webrtc-cmh-{new_cnr.lower()}"
                     )
                     db.add(session)

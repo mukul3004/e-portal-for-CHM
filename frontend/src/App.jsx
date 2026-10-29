@@ -6778,6 +6778,139 @@ export default function App() {
         </div>
       </footer>
 
+      {/* 6.5. ORDER XV-A CPC VIRTUAL COURTROOM ADMITTANCE NOTICE MODAL */}
+      {admittanceNotice && (
+        <div className="courtroom-overlay" style={{ zIndex: 9999 }}>
+          <div
+            className="court-card"
+            style={{
+              maxWidth: '540px',
+              width: '92%',
+              margin: 'auto',
+              background: 'var(--theme-card)',
+              border: '2px solid #d97706',
+              boxShadow: '0 20px 50px rgba(0,0,0,0.5)',
+              borderRadius: '12px',
+              padding: '1.75rem',
+              color: 'var(--theme-text-primary)',
+              position: 'relative'
+            }}
+          >
+            {/* Modal Header */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem', marginBottom: '1.25rem', borderBottom: '1px solid var(--theme-border)', paddingBottom: '0.85rem' }}>
+              <div style={{ width: '42px', height: '42px', borderRadius: '10px', background: 'rgba(217, 119, 6, 0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#d97706', flexShrink: 0 }}>
+                <Lock size={22} />
+              </div>
+              <div style={{ flex: 1 }}>
+                <div style={{ fontSize: '0.72rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em', color: '#d97706' }}>
+                  {tr('High Court of Madhya Pradesh • Order XV-A Rule 1 CPC')}
+                </div>
+                <h3 style={{ margin: '0.2rem 0 0 0', fontSize: '1.15rem', fontWeight: 800, color: 'var(--theme-text-primary)' }}>
+                  {tr('Virtual Courtroom Admittance Protocol')}
+                </h3>
+              </div>
+              <button
+                type="button"
+                onClick={() => setAdmittanceNotice(null)}
+                style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: 'var(--theme-text-muted)', padding: '0.25rem' }}
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            {/* Alert Status Pill */}
+            <div style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.4rem',
+              background: admittanceNotice.join_status === 'CONCLUDED' ? 'rgba(100, 116, 139, 0.15)' : 'rgba(217, 119, 6, 0.12)',
+              color: admittanceNotice.join_status === 'CONCLUDED' ? '#64748b' : '#b45309',
+              border: admittanceNotice.join_status === 'CONCLUDED' ? '1px solid #cbd5e1' : '1px solid #fde68a',
+              padding: '0.3rem 0.75rem',
+              borderRadius: '9999px',
+              fontSize: '0.74rem',
+              fontWeight: 800,
+              textTransform: 'uppercase',
+              marginBottom: '1rem'
+            }}>
+              <AlertCircle size={13} />
+              <span>
+                {admittanceNotice.join_status === 'CONCLUDED'
+                  ? 'Hearing Concluded • Record Closed'
+                  : (admittanceNotice.join_status === 'SLOT_PASSED' || admittanceNotice.join_status === 'EXPIRED')
+                    ? 'Time Slot Expired • Courtroom Closed'
+                    : 'Entry Restricted • Scheduled Time Only'}
+              </span>
+            </div>
+
+            {/* Main Explanation */}
+            <div style={{ fontSize: '0.85rem', lineHeight: '1.5', color: 'var(--theme-text-secondary)', marginBottom: '1.25rem' }}>
+              <p style={{ margin: '0 0 0.85rem 0', fontWeight: 600, color: 'var(--theme-text-primary)' }}>
+                {admittanceNotice.join_message || admittanceNotice.message}
+              </p>
+              <div style={{ background: 'var(--theme-bg)', border: '1px solid var(--theme-border)', borderRadius: '8px', padding: '0.85rem', fontSize: '0.78rem', display: 'flex', flexDirection: 'column', gap: '0.45rem' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', gap: '1rem' }}>
+                  <span style={{ color: 'var(--theme-text-muted)' }}>Case Matter:</span>
+                  <span style={{ fontWeight: 700, color: 'var(--theme-text-primary)', textAlign: 'right' }}>
+                    {admittanceNotice.session?.case?.case_title || admittanceNotice.session?.case?.cnr_number || 'Case Management Hearing'}
+                  </span>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <span style={{ color: 'var(--theme-text-muted)' }}>Scheduled Date:</span>
+                  <span style={{ fontWeight: 700, color: 'var(--theme-text-primary)' }}>
+                    {admittanceNotice.session?.hearing_date || 'N/A'}
+                  </span>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <span style={{ color: 'var(--theme-text-muted)' }}>Scheduled Time Slot:</span>
+                  <span style={{ fontWeight: 700, color: '#d97706' }}>
+                    {admittanceNotice.session?.start_time} - {admittanceNotice.session?.end_time}
+                  </span>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <span style={{ color: 'var(--theme-text-muted)' }}>Court Hall:</span>
+                  <span style={{ fontWeight: 700, color: 'var(--theme-text-primary)' }}>
+                    {admittanceNotice.session?.court_hall_id || 'Commercial Court Hall 04'}
+                  </span>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <span style={{ color: 'var(--theme-text-muted)' }}>Admittance Rule:</span>
+                  <span style={{ fontWeight: 600, color: '#059669' }}>
+                    Opens 15 mins prior to slot commencement
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Universal Admittance Note */}
+            <div style={{ fontSize: '0.74rem', color: 'var(--theme-text-muted)', background: 'rgba(217, 119, 6, 0.06)', borderLeft: '3px solid #d97706', padding: '0.5rem 0.75rem', marginBottom: '1.25rem', borderRadius: '0 6px 6px 0' }}>
+              <strong>Universal Admittance Protocol:</strong> Under High Court Order XV-A Practice Directions, this restriction applies universally to all participants (Judges, Advocates, Litigants, and Observers) to preserve judicial decorum and prevent unscheduled disruption.
+            </div>
+
+            {/* Actions */}
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.6rem' }}>
+              <button
+                type="button"
+                onClick={() => setAdmittanceNotice(null)}
+                style={{
+                  background: 'linear-gradient(135deg, #d97706 0%, #b45309 100%)',
+                  color: '#ffffff',
+                  border: 'none',
+                  borderRadius: '6px',
+                  padding: '0.5rem 1.25rem',
+                  fontSize: '0.825rem',
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                  boxShadow: '0 2px 8px rgba(217, 119, 6, 0.35)'
+                }}
+              >
+                {tr('Acknowledge & Close')}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* 7. WEBRTC VIRTUAL COURTROOM MODAL */}
       {activeCourtroomSession && (
         <div className="courtroom-overlay">
