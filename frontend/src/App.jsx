@@ -6495,6 +6495,7 @@ export default function App() {
             lang={lang}
             tr={tr}
             activeBench={activeBench}
+            apiBase={API_BASE}
             onNavigateToCauseList={(dateStr) => {
               setCauseListDate(dateStr);
               setActiveTab('causelist');

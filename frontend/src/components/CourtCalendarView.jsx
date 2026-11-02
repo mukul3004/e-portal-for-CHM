@@ -22,10 +22,12 @@ export default function CourtCalendarView({
   lang = 'EN', 
   tr = (k) => k,
   activeBench = 'INDORE',
+  apiBase,
   onSelectHearingDate,
   onNavigateToCauseList,
   onNavigateToScheduler
 }) {
+  const effectiveApiBase = apiBase || `${import.meta.env.VITE_API_URL || ''}/api/v1`;
   const [currentYear, setCurrentYear] = useState(2026);
   const [currentMonth, setCurrentMonth] = useState(11); // November default
   const [benchFilter, setBenchFilter] = useState(activeBench || 'ALL');
@@ -41,7 +43,7 @@ export default function CourtCalendarView({
     setLoading(true);
     try {
       const benchParam = bench && bench !== 'ALL' ? `&bench_id=${bench}` : '';
-      const res = await fetch(`/api/v1/schedule/calendar/month-overview?year=${year}&month=${month}${benchParam}`);
+      const res = await fetch(`${effectiveApiBase}/schedule/calendar/month-overview?year=${year}&month=${month}${benchParam}`);
       if (res.ok) {
         const data = await res.json();
         setMonthData(data);
@@ -61,7 +63,7 @@ export default function CourtCalendarView({
   const fetchAnnualOverview = async (year, bench) => {
     try {
       const benchParam = bench && bench !== 'ALL' ? `&bench_id=${bench}` : '';
-      const res = await fetch(`/api/v1/schedule/calendar/holidays?year=${year}${benchParam}`);
+      const res = await fetch(`${effectiveApiBase}/schedule/calendar/holidays?year=${year}${benchParam}`);
       if (res.ok) {
         const data = await res.json();
         setAnnualOverview(data);
