@@ -39,6 +39,17 @@ def generate_cnr_number() -> str:
     random_digits = "".join([str(random.randint(0, 9)) for _ in range(8)])
     return f"MPIN01{random_digits}2026"
 
+@router.post("/seed-dataset", status_code=status.HTTP_200_OK)
+@router.get("/seed-dataset", status_code=status.HTTP_200_OK)
+def trigger_seed_dataset(db: Session = Depends(get_db)):
+    """Seed or refresh the commercial dispute dataset from Excel."""
+    from scripts.seed_from_excel import seed_cases
+    from scripts.make_dates_live import make_dates_live
+    seed_cases()
+    make_dates_live()
+    count = db.query(Case).count()
+    return {"status": "SUCCESS", "message": f"Successfully seeded {count} cases into database."}
+
 @router.post("/", response_model=CaseResponse, status_code=status.HTTP_201_CREATED)
 def file_case(
     payload: CaseCreate,

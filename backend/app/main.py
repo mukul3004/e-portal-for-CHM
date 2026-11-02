@@ -5,7 +5,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 from backend.app.config import settings
 from backend.app.database import engine, Base, SessionLocal
-from backend.app.models import User, RoleType, CourtRoom
+from backend.app.models import User, RoleType, CourtRoom, Case
 from backend.app.security.hashing import hash_password
 from backend.app.routers import auth, cases, admissions, schedule, echallan, notifications, patterns
 
@@ -141,11 +141,32 @@ def seed_initial_users():
     finally:
         db.close()
 
+def seed_initial_cases():
+    """Auto-seeds commercial dispute cases from Excel dataset if database has 0 cases."""
+    db = SessionLocal()
+    try:
+        case_count = db.query(Case).count()
+        if case_count == 0:
+            print("[INFO] Database has 0 cases. Auto-seeding commercial cases from dataset...")
+            try:
+                from scripts.seed_from_excel import seed_cases
+                seed_cases()
+                from scripts.make_dates_live import make_dates_live
+                make_dates_live()
+                print("[INFO] Successfully auto-seeded commercial cases and live hearing dates!")
+            except Exception as e:
+                print(f"[WARN] Error seeding cases from excel: {e}")
+    except Exception as e:
+        print(f"[WARN] Error checking case count: {e}")
+    finally:
+        db.close()
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Initialize all database tables
     Base.metadata.create_all(bind=engine)
     seed_initial_users()
+    seed_initial_cases()
     yield
 
 app = FastAPI(
