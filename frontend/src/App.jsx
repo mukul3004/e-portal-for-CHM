@@ -455,6 +455,14 @@ export default function App() {
   const [clashResult, setClashResult] = useState(null);
   const [bookingSuccess, setBookingSuccess] = useState(null);
   const [checkingClash, setCheckingClash] = useState(false);
+
+  // Cause List (रोज़नामचा / Board) State
+  const [causeListDate, setCauseListDate] = useState('2026-10-29');
+  const [causeListHall, setCauseListHall] = useState('ALL');
+  const [causeListStatusFilter, setCauseListStatusFilter] = useState('ALL');
+  const [causeListItems, setCauseListItems] = useState([]);
+  const [loadingCauseList, setLoadingCauseList] = useState(false);
+
   const [schedHolidayInfo, setSchedHolidayInfo] = useState(null);
   const [causeListHolidayInfo, setCauseListHolidayInfo] = useState(null);
   const [tableRosterFilter, setTableRosterFilter] = useState('ALL');
@@ -537,12 +545,6 @@ export default function App() {
     return new Date(b.filing_date) - new Date(a.filing_date);
   });
 
-  // Cause List (रोज़नामचा / Board) State
-  const [causeListDate, setCauseListDate] = useState('2026-10-29');
-  const [causeListHall, setCauseListHall] = useState('ALL');
-  const [causeListStatusFilter, setCauseListStatusFilter] = useState('ALL');
-  const [causeListItems, setCauseListItems] = useState([]);
-  const [loadingCauseList, setLoadingCauseList] = useState(false);
 
   // WebRTC Virtual Courtroom State
   const [activeCourtroomSession, setActiveCourtroomSession] = useState(null);
