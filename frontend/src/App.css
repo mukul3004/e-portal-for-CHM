@@ -4529,3 +4529,56 @@ body.dark-theme,
   padding: 3px;
   gap: 2px;
 }
+
+/* =========================================================
+   MATERIAL CLOCK TIME PICKER (SMOOTH & DYNAMIC)
+   ========================================================= */
+@keyframes fadeInTimePicker {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes scaleInTimePicker {
+  from {
+    opacity: 0;
+    transform: scale(0.92) translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.material-timepicker-backdrop {
+  animation: fadeInTimePicker 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.material-timepicker-dialog {
+  animation: scaleInTimePicker 0.24s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.dark-theme .material-timepicker-dialog {
+  background: #1e293b !important;
+  color: #f8fafc !important;
+  border-color: #334155 !important;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6) !important;
+}
+
+.dark-theme .material-timepicker-dialog button.time-box-inactive {
+  background: #334155 !important;
+  color: #cbd5e1 !important;
+}
+
+.dark-theme .material-timepicker-dialog .clock-dial-disc {
+  background: #0f172a !important;
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.4) !important;
+}
+
+.dark-theme .material-timepicker-dialog .clock-num-inactive {
+  color: #94a3b8 !important;
+}
+

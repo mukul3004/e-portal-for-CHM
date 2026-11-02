@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './App.css';
 import QRCodeImage from './components/QRCodeImage';
 import CourtCalendarView from './components/CourtCalendarView';
+import MaterialTimePickerInput from './components/MaterialTimePicker';
 import { 
   Scale, 
   Gavel, 
@@ -5673,11 +5674,10 @@ export default function App() {
                 <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, color: 'var(--theme-text-secondary)', marginBottom: '0.35rem' }}>
                   {tr('Start Time (Slot)')}
                 </label>
-                <input 
-                  type="time" 
+                <MaterialTimePickerInput 
                   value={schedStartTime}
-                  onChange={(e) => setSchedStartTime(e.target.value)}
-                  style={{ width: '100%', padding: '0.6rem 0.8rem', border: '1px solid var(--theme-border)', borderRadius: '6px', background: 'var(--theme-card)', color: 'var(--theme-text-primary)' }}
+                  onChange={(val) => setSchedStartTime(val)}
+                  dialogTitle={tr('Start Time (Slot)')}
                 />
               </div>
 
@@ -5685,11 +5685,10 @@ export default function App() {
                 <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, color: 'var(--theme-text-secondary)', marginBottom: '0.35rem' }}>
                   {tr('End Time')}
                 </label>
-                <input 
-                  type="time" 
+                <MaterialTimePickerInput 
                   value={schedEndTime}
-                  onChange={(e) => setSchedEndTime(e.target.value)}
-                  style={{ width: '100%', padding: '0.6rem 0.8rem', border: '1px solid var(--theme-border)', borderRadius: '6px', background: 'var(--theme-card)', color: 'var(--theme-text-primary)' }}
+                  onChange={(val) => setSchedEndTime(val)}
+                  dialogTitle={tr('End Time')}
                 />
               </div>
 
