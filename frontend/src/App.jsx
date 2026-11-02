@@ -2495,7 +2495,7 @@ export default function App() {
                 <span style={{ color: '#ffffff', fontWeight: 700 }}>
                   {tr('Commercial Division (Order XV-A CPC Case Management e-Portal)')}
                 </span>
-                <span style={{ color: '#71717a' }}>•</span>
+                <span className="mphc-sub-division-separator" style={{ color: '#71717a' }}>•</span>
                 <span style={{ color: '#f59e0b', fontWeight: 600 }}>
                   {activeBench === 'INDORE' && tr('Active Jurisdiction: Bench at Indore (Malwa Region)')}
                   {activeBench === 'JABALPUR' && tr('Active Jurisdiction: Principal Seat at Jabalpur')}
@@ -2545,7 +2545,7 @@ export default function App() {
             </div>
 
             {/* Bottom Row: Bench Selector Ribbon & Statutory Badge */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'nowrap' }}>
+            <div className="mphc-bench-badge-row" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
               <div className="mphc-benches-ribbon" title={lang === 'HI' ? 'उच्च न्यायालय खंडपीठ बदलें' : 'Switch High Court Bench Jurisdiction'}>
                 <span style={{ fontSize: '0.7rem', color: '#a1a1aa', fontWeight: 700, paddingLeft: '0.2rem' }}>
                   {tr('Bench:')}
