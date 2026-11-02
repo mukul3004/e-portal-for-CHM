@@ -14,6 +14,7 @@ from backend.app.schemas.schedule import (
     RecommendSlotRequest
 )
 from backend.app.services.clash_detector import ClashDetectionEngine
+from backend.app.services.court_calendar import CourtCalendarService
 from backend.app.security.jwt_auth import get_current_user
 from backend.app.security.rbac import require_roles
 
@@ -108,6 +109,108 @@ def evaluate_session_joinability(session: CMHSession, ref_datetime: Optional[dat
         }
 
 
+@router.get("/calendar/holidays")
+def get_court_holidays(
+    year: int = 2026,
+    bench_id: Optional[str] = None
+):
+    """
+    [High Court Judicial Calendar 2026]
+    Returns authoritative High Court gazetted holidays, vacations, and annual statistics.
+    """
+    return CourtCalendarService.get_annual_overview(year=year, bench_id=bench_id)
+
+
+@router.get("/calendar/month-overview")
+def get_month_calendar_overview(
+    year: int = 2026,
+    month: int = 11,
+    bench_id: Optional[str] = None,
+    court_hall_id: Optional[str] = None,
+    db: Session = Depends(get_db)
+):
+    """
+    [High Court Monthly Interactive Roster & Calendar Grid]
+    Returns day-by-day status for the specified month, enriched with live CMH scheduled sessions.
+    """
+    import calendar
+    days = CourtCalendarService.get_month_calendar(year=year, month=month, bench_id=bench_id)
+
+    num_days = calendar.monthrange(year, month)[1]
+    start_d = date(year, month, 1)
+    end_d = date(year, month, num_days)
+
+    query = db.query(CMHSession).filter(
+        CMHSession.hearing_date >= start_d,
+        CMHSession.hearing_date <= end_d
+    )
+    if court_hall_id and court_hall_id != "ALL":
+        query = query.filter(CMHSession.court_hall_id == court_hall_id)
+
+    sessions = query.all()
+
+    sessions_by_date = {}
+    for s in sessions:
+        iso = s.hearing_date.isoformat()
+        if iso not in sessions_by_date:
+            sessions_by_date[iso] = []
+        sessions_by_date[iso].append({
+            "session_id": s.id,
+            "case_id": s.case_id,
+            "court_hall_id": s.court_hall_id,
+            "start_time": s.start_time.strftime("%H:%M"),
+            "end_time": s.end_time.strftime("%H:%M"),
+            "status": s.status.value if hasattr(s.status, 'value') else str(s.status),
+            "webrtc_room_id": s.webrtc_room_id
+        })
+
+    enriched_days = []
+    for d in days:
+        iso = d["date"]
+        sched = sessions_by_date.get(iso, [])
+        enriched_days.append({
+            **d,
+            "scheduled_sessions_count": len(sched),
+            "sessions": sched
+        })
+
+    return {
+        "year": year,
+        "month": month,
+        "bench_id": bench_id or "ALL",
+        "court_hall_id": court_hall_id or "ALL",
+        "total_days": len(enriched_days),
+        "days": enriched_days
+    }
+
+
+@router.get("/calendar/check-date")
+def check_court_date(
+    hearing_date: str,
+    bench_id: Optional[str] = None
+):
+    """
+    [Section 10 General Clauses Act / Court Sitting Verifier]
+    Validates whether a given date is an official working court day.
+    If holiday, closed Saturday, Sunday, or vacation, returns the next valid court sitting date.
+    """
+    try:
+        parsed_date = date.fromisoformat(hearing_date)
+    except ValueError:
+        raise HTTPException(status_code=400, detail="Invalid date format. Expected YYYY-MM-DD.")
+
+    st = CourtCalendarService.get_day_status(parsed_date, bench_id)
+    next_working = None
+    if not st["is_working_day"]:
+        next_working = CourtCalendarService.get_next_working_day(parsed_date, bench_id).isoformat()
+
+    return {
+        **st,
+        "next_working_day": next_working,
+        "statutory_note": "Under Section 10 of General Clauses Act, if any statutory Order XV-A limitation expires on a non-working day, the act is considered done in due time if performed on the next working court day."
+    }
+
+
 @router.post("/check-clash", response_model=ClashCheckResponse)
 def check_advocate_clash(
     payload: SlotClashCheckRequest,
@@ -116,8 +219,14 @@ def check_advocate_clash(
 ):
     """
     [CMH-205] Validates advocate availability across all courtrooms for proposed slot.
-    Flags instant red collision alerts if any advocate is double-booked.
+    Flags instant red collision alerts if any advocate is double-booked, or if the date
+    is an official Court Holiday, Vacation, or Closed Saturday/Sunday.
     """
+    day_status = CourtCalendarService.get_day_status(payload.hearing_date)
+    is_holiday = not day_status["is_working_day"]
+    holiday_name = day_status["label_en"] if is_holiday else None
+    next_working_day = CourtCalendarService.get_next_working_day(payload.hearing_date).isoformat() if is_holiday else None
+
     has_conflict, msg, counsel_bar_id, hall = ClashDetectionEngine.check_conflict(
         db=db,
         advocate_bar_ids=payload.advocate_bar_ids,
@@ -127,11 +236,20 @@ def check_advocate_clash(
         court_hall_id=payload.court_hall_id
     )
 
+    if is_holiday and not has_conflict:
+        has_conflict = True
+        msg = f"Court is CLOSED on {payload.hearing_date.strftime('%d %b %Y')} ({day_status['label_en']} / {day_status['label_hi']}). Regular commercial hearings cannot be scheduled on holidays/vacations. Next available court sitting day is {next_working_day}."
+    elif is_holiday and has_conflict:
+        msg = f"{msg} Additionally, court is CLOSED on {payload.hearing_date.strftime('%d %b %Y')} ({day_status['label_en']}). Next court sitting day: {next_working_day}."
+
     return ClashCheckResponse(
         has_conflict=has_conflict,
         conflict_message=msg,
         conflicting_counsel_bar_id=counsel_bar_id,
-        conflicting_court_hall=hall
+        conflicting_court_hall=hall,
+        is_court_holiday=is_holiday,
+        holiday_name=holiday_name,
+        suggested_next_working_date=next_working_day
     )
 
 @router.post("/book", response_model=CMHSessionResponse, status_code=status.HTTP_201_CREATED)

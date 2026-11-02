@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 import QRCodeImage from './components/QRCodeImage';
+import CourtCalendarView from './components/CourtCalendarView';
 import { 
   Scale, 
   Gavel, 
@@ -454,8 +455,44 @@ export default function App() {
   const [clashResult, setClashResult] = useState(null);
   const [bookingSuccess, setBookingSuccess] = useState(null);
   const [checkingClash, setCheckingClash] = useState(false);
+  const [schedHolidayInfo, setSchedHolidayInfo] = useState(null);
+  const [causeListHolidayInfo, setCauseListHolidayInfo] = useState(null);
   const [tableRosterFilter, setTableRosterFilter] = useState('ALL');
   const [caseSortBy, setCaseSortBy] = useState('DEFAULT');
+
+  // Verify Scheduler Date Status with Official Court Calendar
+  useEffect(() => {
+    if (!schedDate) return;
+    const checkSchedDate = async () => {
+      try {
+        const res = await fetch(`${API_BASE}/schedule/calendar/check-date?hearing_date=${schedDate}&bench_id=${activeBench}`);
+        if (res.ok) {
+          const data = await res.json();
+          setSchedHolidayInfo(data);
+        }
+      } catch (err) {
+        console.warn('Could not verify sched date status', err);
+      }
+    };
+    checkSchedDate();
+  }, [schedDate, activeBench]);
+
+  // Verify Cause List Date Status with Official Court Calendar
+  useEffect(() => {
+    if (!causeListDate) return;
+    const checkCauseDate = async () => {
+      try {
+        const res = await fetch(`${API_BASE}/schedule/calendar/check-date?hearing_date=${causeListDate}&bench_id=${activeBench}`);
+        if (res.ok) {
+          const data = await res.json();
+          setCauseListHolidayInfo(data);
+        }
+      } catch (err) {
+        console.warn('Could not verify cause list date status', err);
+      }
+    };
+    checkCauseDate();
+  }, [causeListDate, activeBench]);
 
   // Live Roster Statistics & Verdict Counts
   const nextWeekCount = cases.filter(c => c.next_hearing_relative && c.next_hearing_relative.includes('Next Week')).length;
@@ -3316,6 +3353,15 @@ export default function App() {
             <span>{tr('Daily Cause List (रोज़नामचा / Board)')}</span>
           </button>
 
+          {/* High Court Calendar & Holidays (न्यायालयीन कैलेंडर) Tab */}
+          <button 
+            className={`tab-btn ${activeTab === 'calendar' ? 'active' : ''}`}
+            onClick={() => setActiveTab('calendar')}
+          >
+            <Calendar size={18} />
+            <span>{tr('High Court Calendar & Holidays')}</span>
+          </button>
+
           <button 
             className={`tab-btn ${activeTab === 'matrix' ? 'active' : ''}`}
             onClick={() => setActiveTab('matrix')}
@@ -5590,6 +5636,35 @@ export default function App() {
                   onChange={(e) => setSchedDate(e.target.value)}
                   style={{ width: '100%', padding: '0.6rem 0.8rem', border: '1px solid var(--theme-border)', borderRadius: '6px', background: 'var(--theme-card)', color: 'var(--theme-text-primary)' }}
                 />
+                {schedHolidayInfo && (
+                  <div style={{ marginTop: '0.4rem', fontSize: '0.74rem' }}>
+                    {schedHolidayInfo.is_working_day ? (
+                      <span style={{ color: '#16a34a', fontWeight: 700, display: 'inline-flex', alignItems: 'center', gap: '0.3rem' }}>
+                        <CheckCircle2 size={13} />
+                        <span>{tr('Sitting Day')}: {lang === 'HI' ? schedHolidayInfo.label_hi : schedHolidayInfo.label_en}</span>
+                      </span>
+                    ) : (
+                      <div style={{ background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.35)', borderRadius: '6px', padding: '0.35rem 0.6rem', color: '#b91c1c' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', fontWeight: 700 }}>
+                          <AlertTriangle size={13} />
+                          <span>{tr('Court Closed')}: {lang === 'HI' ? schedHolidayInfo.label_hi : schedHolidayInfo.label_en}</span>
+                        </div>
+                        {schedHolidayInfo.next_working_day && (
+                          <div style={{ marginTop: '0.3rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.4rem', flexWrap: 'wrap' }}>
+                            <span>{tr('Next Available Working Day')}: <strong>{schedHolidayInfo.next_working_day}</strong></span>
+                            <button
+                              type="button"
+                              onClick={() => setSchedDate(schedHolidayInfo.next_working_day)}
+                              style={{ background: '#b91c1c', color: 'white', border: 'none', borderRadius: '4px', padding: '0.2rem 0.5rem', fontSize: '0.68rem', fontWeight: 700, cursor: 'pointer' }}
+                            >
+                              {tr('Switch to Next Working Day')}
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
 
               <div>
@@ -6039,6 +6114,13 @@ export default function App() {
                   </select>
                 </div>
 
+                {causeListHolidayInfo && !causeListHolidayInfo.is_working_day && (
+                  <div style={{ gridColumn: '1 / -1', marginTop: '0.35rem', background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.35)', borderRadius: '6px', padding: '0.45rem 0.75rem', fontSize: '0.78rem', color: '#b91c1c', display: 'flex', alignItems: 'center', gap: '0.45rem' }}>
+                    <AlertTriangle size={15} style={{ flexShrink: 0 }} />
+                    <span><strong>{tr('Court Closed')}: </strong>{lang === 'HI' ? causeListHolidayInfo.label_hi : causeListHolidayInfo.label_en} ({causeListHolidayInfo.description}). {lang === 'HI' ? 'नियमित वाणिज्यिक अदालत कक्ष स्थगित हैं (केवल आपातकालीन अवकाश पीठ उपलब्ध)।' : 'Regular commercial bench sittings suspended (Vacation Bench emergency motions only).'}</span>
+                  </div>
+                )}
+
                 <div>
                   <label style={{ display: 'block', fontSize: '0.72rem', fontWeight: 700, color: 'var(--theme-text-muted)', marginBottom: '0.25rem', textTransform: 'uppercase' }}>
                     {tr('Session Status')}
@@ -6403,6 +6485,24 @@ export default function App() {
               </table>
             </div>
           </div>
+        )}
+
+        {/* TAB: HIGH COURT JUDICIAL CALENDAR & HOLIDAYS */}
+        {activeTab === 'calendar' && (
+          <CourtCalendarView 
+            lang={lang}
+            tr={tr}
+            activeBench={activeBench}
+            onNavigateToCauseList={(dateStr) => {
+              setCauseListDate(dateStr);
+              setActiveTab('causelist');
+              fetchDailyCauseList(dateStr, causeListHall);
+            }}
+            onNavigateToScheduler={(dateStr) => {
+              setSchedDate(dateStr);
+              setActiveTab('scheduler');
+            }}
+          />
         )}
 
         {/* TAB: E-CHALLAN & COURT FEES (CYBER TREASURY) */}

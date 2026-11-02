@@ -4506,4 +4506,26 @@ body.dark-theme,
     padding: 0.35rem 0.5rem;
     font-size: 0.72rem;
   }
+
+  .view-mode-pill-bar {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* =========================================================
+   HIGH COURT JUDICIAL CALENDAR & HOLIDAYS STYLING
+   ========================================================= */
+.court-calendar-container {
+  animation: fadeIn 0.25s ease-in-out;
+}
+
+.view-mode-pill-bar {
+  display: flex;
+  background: var(--theme-card-bg);
+  border: 1px solid var(--theme-border);
+  border-radius: 8px;
+  padding: 3px;
+  gap: 2px;
 }

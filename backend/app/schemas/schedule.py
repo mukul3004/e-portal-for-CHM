@@ -15,6 +15,9 @@ class ClashCheckResponse(BaseModel):
     conflict_message: Optional[str] = None
     conflicting_counsel_bar_id: Optional[str] = None
     conflicting_court_hall: Optional[str] = None
+    is_court_holiday: Optional[bool] = False
+    holiday_name: Optional[str] = None
+    suggested_next_working_date: Optional[str] = None
 
 class BookSlotRequest(BaseModel):
     case_id: str
