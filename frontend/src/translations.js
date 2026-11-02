@@ -95,7 +95,6 @@ export const translations = {
   "Advocates": "अधिवक्ता",
   "Clerks": "क्लर्क / वाचक",
   "Clients": "वादकारी",
-  "Citizen": "नागरिक",
   "• Active": "• सक्रिय",
 
   // e-Display Board & Cause List
@@ -111,6 +110,14 @@ export const translations = {
   "Court Clerk Action: Case Item #03 marked completed. Calling Item #04 (Apex Infotech vs Horizon Logistics) to Hall 04 podium. Digital cause board synchronized.": "न्यायालय वाचक कार्यवाही: प्रकरण #०३ पूर्ण। प्रकरण #०४ (एपेक्स इन्फोटेक बनाम हॉराइजन लॉजिस्टिक्स) को न्यायालय कक्ष ०४ में पुकारा गया। डिजिटल बोर्ड अद्यतन।",
 
   // Navigation Tabs
+  "Case search": "वाद खोज",
+  "Daily cause list": "दैनिक वाद सूची",
+  "Admissions and denials": "स्वीकृति एवं अस्वीकृति",
+  "Dockets and e-Filing": "प्रकरण एवं ई-फाइलिंग",
+  "More": "अधिक",
+  "Smart Scheduler": "स्मार्ट शेड्यूलर",
+  "e-Challan & Fees": "ई-चालान एवं शुल्क",
+  "Judicial Analytics": "न्यायिक विश्लेषण",
   "Public Case Search & Complete Dossier": "सार्वजनिक वाद खोज एवं संपूर्ण डोसीयर",
   "My Case Dossier & Live Tracking": "मेरा वाद विवरण एवं लाइव स्थिति",
   "Universal Case Search & Complete Dossier": "सार्वभौमिक वाद खोज एवं संपूर्ण डोसीयर",
@@ -126,6 +133,31 @@ export const translations = {
   "Certified Case Management Order (Public Copy)": "प्रमाणित वाद प्रबंधन आदेश (सार्वजनिक प्रति)",
   "Certified Case Management Order (CMO)": "प्रमाणित वाद प्रबंधन आदेश (CMO)",
   "Case Management Order (CMO)": "वाद प्रबंधन आदेश (CMO)",
+
+  // Minimalist Search & Hearings Dashboard
+  "Search case and judicial history": "वाद एवं न्यायिक इतिहास खोजें",
+  "Find docket details, presiding bench, counsel, hearing history, sealed pleadings and signed case management orders.": "वाद विवरण, पीठासीन न्यायापीठ, अधिवक्ता, सुनवाई इतिहास, सीलबंद याचिकाएं एवं हस्ताक्षरित सीएमओ आदेश प्राप्त करें।",
+  "Enter 16-digit CNR, case title or party name, e.g. MPIN01791316742026": "१६-अंकीय सीएनआर, वाद शीर्षक या पक्षकार का नाम दर्ज करें (उदा. MPIN01791316742026)",
+  "Search dossier": "डोसीयर खोजें",
+  "Upcoming hearings": "आगामी सुनवाई",
+  "View all": "सभी देखें",
+  "Case": "प्रकरण",
+  "CNR": "सीएनआर",
+  "Next date": "अगली तिथि",
+  "All dockets": "कुल वाद",
+  "Next week": "अगले सप्ताह",
+  "Next month": "अगले माह",
+  "Unread alerts": "अपठित अलर्ट",
+  "Court directive": "न्यायालय निर्देश",
+  "Pre-trial case management hearing is mandatory for commercial claims above ₹3,00,000.": "₹३,००,००० से अधिक के वाणिज्यिक दावों हेतु विचारण-पूर्व वाद प्रबंधन सुनवाई अनिवार्य है।",
+  "File statements of admission and denial before the first hearing.": "प्रथम सुनवाई से पूर्व स्वीकृति एवं अस्वीकृति के कथन प्रस्तुत करें।",
+  "Status key": "स्थिति संकेतक",
+  "Urgent or hearing today": "अति आवश्यक / आज सुनवाई",
+  "Upcoming": "आगामी",
+  "Pending or adjourned": "लंबित / स्थगित",
+  "Completed": "पूर्ण",
+  "Urgent": "अति आवश्यक",
+  "Pending": "लंबित",
 
   // Hero Banners (Citizen & Litigant)
   "Open Courts Citizen Portal • Art. 145(4) Constitution of India": "खुली अदालत जनसाधारण पोर्टल • अनुच्छेद १४५(४) भारतीय संविधान",
@@ -211,6 +243,15 @@ export const translations = {
   "Registry Audit": "रजिस्ट्री ऑडिट",
   "Admit": "स्वीकार (Admit)",
   "Deny": "अस्वीकार (Deny)",
+  "Admitted": "स्वीकृत (Admitted)",
+  "Denied": "अस्वीकृत (Denied)",
+  "Change to Deny": "अस्वीकार में बदलें",
+  "Change to Admit": "स्वीकार में बदलें",
+  "Refreshing...": "ताज़ा किया जा रहा है...",
+  "Matrix refreshed successfully": "मैट्रिक्स सफलतापूर्वक ताज़ा किया गया",
+  "Refresh admissions and case data": "स्वीकृति व वाद डेटा ताज़ा करें",
+  "Stance Recorded": "रुख दर्ज किया गया",
+  "Modify Stance": "रुख संशोधित करें",
   "UNDISPUTED FACT": "निर्विवाद तथ्य",
   "CONTESTED ISSUE": "विवादित विषय",
   "PENDING OVERLAP": "लंबित रुख",
@@ -221,6 +262,8 @@ export const translations = {
   "Denial Justification:": "अस्वीकृति का वैधानिक कारण:",
 
   // Tab 3: Case Dockets & e-Filing
+  "Statutory E-Filing Portal": "सांविधिक ई-फाइलिंग पोर्टल",
+  "Generates instant 16-digit CNR, initiates digital docket and triggers statutory summons schedule under Order XV-A.": "त्वरित 16-अंकीय सीएनआर जारी करता है, डिजिटल वाद पंजी प्रारंभ करता है एवं आदेश XV-A के तहत सम्मन समय-सारणी निर्धारित करता है।",
   "New Case e-Filing (CNR Intake)": "नवीन वाद ई-फाइलिंग (सीएनआर intake)",
   "Order XV-A statutory filing under Commercial Courts Act, 2015.": "वाणिज्यिक न्यायालय अधिनियम २०१५ के अंतर्गत आदेश XV-A सांविधिक ई-फाइलिंग।",
   "Case Title / Parties": "वाद शीर्षक / पक्षकार",
@@ -384,6 +427,8 @@ export const translations = {
   "Copied to clipboard!": "क्लिपबोर्ड में कॉपी किया गया!",
   "Matching Judicial Records Found": "न्यायिक अभिलेख प्राप्त हुए",
   "Dismiss": "बंद करें",
+  "Final Judgment & Decree / Disposed": "अंतिम निर्णय एवं डिक्री / वाद निराकृत",
+  "DISPOSED": "निराकृत (Disposed)",
 
   // Tab 2: Fact Matrix Metrics & Guidance
   "Fact Checklist": "तथ्य सूची",
@@ -553,6 +598,7 @@ export const translations = {
   "Project Identifier:": "परियोजना पहचानकर्ता:",
   "Architecture:": "तकनीकी संरचना:",
   "© 2026 High Court of Madhya Pradesh • Commercial Court Division • Built under Order XV-A CPC Guidelines": "© २०२६ मध्य प्रदेश उच्च न्यायालय • वाणिज्यिक न्यायालय प्रभाग • आदेश XV-A सीपीसी के तहत निर्मित",
+  "Theme: Deep Navy & Antique Gold Hearing Portal": "थीम: गहरा नेवी एवं एंटीक गोल्ड विधिक पटल",
   "Theme: White, Orange & Obsidian Black": "थीम: श्वेत, नारंगी एवं ओब्सीडियन ब्लैक",
   "Content Managed by Commercial Division Registry": "सामग्री प्रबंधन: वाणिज्यिक प्रभाग रजिस्ट्री",
 

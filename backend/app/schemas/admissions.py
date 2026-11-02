@@ -12,6 +12,7 @@ class AdmissionItemUpdate(BaseModel):
     item_id: str
     stance: StanceType
     statutory_denial_reason: Optional[str] = None
+    party: Optional[str] = None
 
 class AdmissionItemResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)

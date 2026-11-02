@@ -152,3 +152,14 @@ def list_challans(
     if cnr:
         q = q.filter(EChallan.cnr_number.ilike(f"%{cnr}%"))
     return q.order_by(EChallan.created_at.desc()).limit(limit).all()
+
+@router.get("/{challan_id}", response_model=EChallanResponse)
+def get_challan(challan_id: str, db: Session = Depends(get_db)):
+    """Retrieves an official e-Challan by its UUID or Challan Number."""
+    challan = db.query(EChallan).filter(
+        (EChallan.id == challan_id) | (EChallan.challan_number == challan_id)
+    ).first()
+    if not challan:
+        raise HTTPException(status_code=404, detail="e-Challan not found.")
+    return challan
+

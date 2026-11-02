@@ -55,16 +55,31 @@ def test_file_case_and_admissions(client):
     matrix_data = matrix_resp.json()
     assert len(matrix_data["items"]) == 3
 
-    # Mark admission on item 1
+    # Mark admission on item 1 as plaintiff
     item_id = matrix_data["items"][0]["id"]
     put_resp = client.put(
         f"/api/v1/admissions/items/{item_id}",
         headers=headers,
-        json={"item_id": item_id, "stance": "ADMIT_CONTENTS"}
+        json={"item_id": item_id, "stance": "ADMIT_CONTENTS", "party": "PLAINTIFF"}
     )
     assert put_resp.status_code == 200
     updated_item = put_resp.json()
     assert updated_item["plaintiff_stance"] == "ADMIT_CONTENTS"
+
+    # Mark admission on item 1 as defendant
+    put_resp2 = client.put(
+        f"/api/v1/admissions/items/{item_id}",
+        headers=headers,
+        json={"item_id": item_id, "stance": "ADMIT_CONTENTS", "party": "DEFENDANT"}
+    )
+    assert put_resp2.status_code == 200
+    updated_item2 = put_resp2.json()
+    assert updated_item2["defendant_stance"] == "ADMIT_CONTENTS"
+    assert updated_item2["resolution_status"] == "UNDISPUTED_FACT"
+
+    # Anonymous / public citizen matrix fetch without headers
+    anon_resp = client.get(f"/api/v1/admissions/{case_id}")
+    assert anon_resp.status_code == 200
 
 def test_daily_cause_list(client):
     response = client.get("/api/v1/schedule/cause-list")
@@ -116,6 +131,15 @@ def test_echallan_lifecycle(client):
     assert verify_resp.status_code == 200
     verified = verify_resp.json()
     assert verified["challan_number"] == challan["challan_number"]
+
+    # 5. Retrieve e-Challan directly by ID and by Challan Number
+    get_by_id_resp = client.get(f"/api/v1/echallan/{challan_id}")
+    assert get_by_id_resp.status_code == 200
+    assert get_by_id_resp.json()["status"] == "PAID"
+
+    get_by_num_resp = client.get(f"/api/v1/echallan/{challan['challan_number']}")
+    assert get_by_num_resp.status_code == 200
+    assert get_by_num_resp.json()["id"] == challan_id
 
 def test_notifications_dispatch(client):
     # 1. Trigger notification dispatch

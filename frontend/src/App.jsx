@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
+import QRCodeImage from './components/QRCodeImage';
 import { 
   Scale, 
   Gavel, 
@@ -454,14 +455,49 @@ export default function App() {
   const [bookingSuccess, setBookingSuccess] = useState(null);
   const [checkingClash, setCheckingClash] = useState(false);
   const [tableRosterFilter, setTableRosterFilter] = useState('ALL');
+  const [caseSortBy, setCaseSortBy] = useState('DEFAULT');
 
-  // Live Roster Statistics
+  // Live Roster Statistics & Verdict Counts
   const nextWeekCount = cases.filter(c => c.next_hearing_relative && c.next_hearing_relative.includes('Next Week')).length;
   const nextMonthCount = cases.filter(c => c.next_hearing_relative && c.next_hearing_relative.includes('Next Month')).length;
+  const disposedCasesCount = cases.filter(c => c.status === 'DISPOSED' || c.verdict).length;
+  const plaintiffWonCount = cases.filter(c => c.verdict?.verdict_type === 'DECREED_FOR_PLAINTIFF').length;
+  const adrSettledCount = cases.filter(c => c.verdict?.verdict_type === 'SETTLED_VIA_ADR').length;
+  const defendantWonCount = cases.filter(c => c.verdict?.verdict_type === 'SUIT_DISMISSED').length;
+  const activeTrialCount = cases.filter(c => c.status !== 'DISPOSED').length;
+
   const displayedCases = cases.filter(c => {
     if (tableRosterFilter === 'NEXT_WEEK') return c.next_hearing_relative && c.next_hearing_relative.includes('Next Week');
     if (tableRosterFilter === 'NEXT_MONTH') return c.next_hearing_relative && c.next_hearing_relative.includes('Next Month');
+    if (tableRosterFilter === 'VERDICT_OUT') return c.status === 'DISPOSED' || c.verdict;
+    if (tableRosterFilter === 'WIN_PLAINTIFF') return c.verdict?.verdict_type === 'DECREED_FOR_PLAINTIFF';
+    if (tableRosterFilter === 'WIN_ADR') return c.verdict?.verdict_type === 'SETTLED_VIA_ADR';
+    if (tableRosterFilter === 'WIN_DEFENDANT') return c.verdict?.verdict_type === 'SUIT_DISMISSED';
+    if (tableRosterFilter === 'ACTIVE_TRIAL') return c.status !== 'DISPOSED';
     return true;
+  }).sort((a, b) => {
+    if (caseSortBy === 'VERDICT_FIRST') {
+      const aDisp = (a.status === 'DISPOSED' || a.verdict) ? 1 : 0;
+      const bDisp = (b.status === 'DISPOSED' || b.verdict) ? 1 : 0;
+      if (aDisp !== bDisp) return bDisp - aDisp;
+    } else if (caseSortBy === 'WINNER_PLAINTIFF') {
+      const aP = a.verdict?.verdict_type === 'DECREED_FOR_PLAINTIFF' ? 1 : 0;
+      const bP = b.verdict?.verdict_type === 'DECREED_FOR_PLAINTIFF' ? 1 : 0;
+      if (aP !== bP) return bP - aP;
+    } else if (caseSortBy === 'WINNER_ADR') {
+      const aA = a.verdict?.verdict_type === 'SETTLED_VIA_ADR' ? 1 : 0;
+      const bA = b.verdict?.verdict_type === 'SETTLED_VIA_ADR' ? 1 : 0;
+      if (aA !== bA) return bA - aA;
+    } else if (caseSortBy === 'WINNER_DEFENDANT') {
+      const aD = a.verdict?.verdict_type === 'SUIT_DISMISSED' ? 1 : 0;
+      const bD = b.verdict?.verdict_type === 'SUIT_DISMISSED' ? 1 : 0;
+      if (aD !== bD) return bD - aD;
+    } else if (caseSortBy === 'VALUATION_DESC') {
+      return parseFloat(b.claim_valuation || 0) - parseFloat(a.claim_valuation || 0);
+    } else if (caseSortBy === 'VALUATION_ASC') {
+      return parseFloat(a.claim_valuation || 0) - parseFloat(b.claim_valuation || 0);
+    }
+    return new Date(b.filing_date) - new Date(a.filing_date);
   });
 
   // Cause List (रोज़नामचा / Board) State
@@ -636,6 +672,14 @@ export default function App() {
     navigator.clipboard.writeText(cnr);
     setCopiedCnr(true);
     setTimeout(() => setCopiedCnr(false), 2000);
+  };
+
+  // Print Full Judicial Case Dossier
+  const handlePrintDossier = () => {
+    setDossierSubTab('all');
+    setTimeout(() => {
+      window.print();
+    }, 120);
   };
 
   // Switch Login Role Tab & Prefill Default Credentials
@@ -1667,7 +1711,7 @@ export default function App() {
                             ? 'भारत के संविधान एवं ई-कोर्ट्स राष्ट्रीय पहल चरण III के तहत, न्याय आम जनता के लिए खुला है। नागरिक, पत्रकार, शोधकर्ता या छात्र के रूप में, सार्वजनिक वाद अभिलेख देखने के लिए आपको किसी पासवर्ड की आवश्यकता नहीं है।'
                             : 'Under the Constitution of India and e-Courts National Initiative Phase III, justice is open to the public. As a citizen, journalist, researcher, or student, you do not require login credentials or a password to view public case records.'}
                         </p>
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem', fontSize: '0.75rem' }}>
+                        <div className="login-citizen-features" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem', fontSize: '0.75rem' }}>
                           <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', color: '#0d9488', fontWeight: 600 }}>
                             <CheckCircle2 size={13} />
                             <span>{lang === 'HI' ? 'सार्वभौमिक १६-अंकीय सीएनआर खोज' : 'Universal 16-Digit CNR Lookup'}</span>
@@ -2987,6 +3031,18 @@ export default function App() {
             >
               {lang === 'HI' ? `📅 अगला माह (${nextMonthCount})` : `📅 Next Month (${nextMonthCount})`}
             </button>
+            <button 
+              className={`roster-filter-btn ${tableRosterFilter === 'VERDICT_OUT' ? 'active' : ''}`}
+              onClick={() => { setTableRosterFilter('VERDICT_OUT'); setCaseSortBy('VERDICT_FIRST'); setActiveTab('cases'); }}
+              style={{
+                background: tableRosterFilter === 'VERDICT_OUT' ? '#047857' : '#ecfdf5',
+                color: tableRosterFilter === 'VERDICT_OUT' ? '#ffffff' : '#047857',
+                borderColor: '#a7f3d0',
+                fontWeight: 700
+              }}
+            >
+              🏆 {lang === 'HI' ? `अंतिम निर्णय घोषित (${disposedCasesCount})` : `Verdict Out / Won (${disposedCasesCount})`}
+            </button>
           </div>
         </div>
 
@@ -3272,20 +3328,22 @@ export default function App() {
                 : tr('Admissions & Denials Matrix (Order XV-A)'))}
           </button>
           
-          {/* Case Dockets & e-Filing Tab (Hidden for Litigants & Citizens) */}
-          {currentRole !== 'LITIGANT' && currentRole !== 'CITIZEN' && (
-            <button 
-              className={`tab-btn ${activeTab === 'cases' ? 'active' : ''}`}
-              onClick={() => setActiveTab('cases')}
-            >
-              <Scale size={18} />
-              {currentRole === 'JUDGE' 
-                ? tr('Bench Dockets & Cause List')
-                : (currentRole === 'CLERK' 
-                  ? tr('Registry Scrutiny & Cause Lists')
-                  : tr('Case Dockets & e-Filing'))}
-            </button>
-          )}
+          {/* Case Dockets & Verdicts Registry */}
+          <button 
+            className={`tab-btn ${activeTab === 'cases' ? 'active' : ''}`}
+            onClick={() => setActiveTab('cases')}
+          >
+            <Scale size={18} />
+            {currentRole === 'CITIZEN'
+              ? tr('Case Dockets & Verdicts Registry')
+              : (currentRole === 'LITIGANT'
+                ? tr('Commercial Dockets & Verdicts')
+                : (currentRole === 'JUDGE' 
+                  ? tr('Bench Dockets & Cause List')
+                  : (currentRole === 'CLERK' 
+                    ? tr('Registry Scrutiny & Cause Lists')
+                    : tr('Case Dockets & e-Filing'))))}
+          </button>
 
           <button 
             className={`tab-btn ${activeTab === 'scheduler' ? 'active' : ''}`}
@@ -3454,38 +3512,106 @@ export default function App() {
                   ));
                 })()}
               </div>
+
+              {/* Filter & Sort Cases By Final Verdict / Winner */}
+              <div style={{ marginTop: '0.85rem', paddingTop: '0.85rem', borderTop: '1px solid rgba(255, 255, 255, 0.12)', display: 'flex', alignItems: 'center', gap: '0.45rem', flexWrap: 'wrap' }}>
+                <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#fef08a', textTransform: 'uppercase', letterSpacing: '0.04em', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+                  <Award size={14} color="#fef08a" />
+                  {tr('Filter Cases By Outcome / Win:')}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const wonCases = cases.filter(c => c.status === 'DISPOSED' || c.verdict);
+                    setSearchResults(wonCases);
+                  }}
+                  className="quick-search-chip"
+                  style={{ background: 'rgba(5, 150, 105, 0.3)', border: '1px solid #10b981', color: '#a7f3d0', fontWeight: 700 }}
+                >
+                  🏆 {tr('All Verdicts Declared')} ({disposedCasesCount})
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const pWon = cases.filter(c => c.verdict?.verdict_type === 'DECREED_FOR_PLAINTIFF');
+                    setSearchResults(pWon);
+                  }}
+                  className="quick-search-chip"
+                  style={{ background: 'rgba(16, 185, 129, 0.25)', border: '1px solid #34d399', color: '#6ee7b7', fontWeight: 600 }}
+                >
+                  🟢 {tr('Plaintiff Won (Decreed)')} ({plaintiffWonCount})
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const adr = cases.filter(c => c.verdict?.verdict_type === 'SETTLED_VIA_ADR');
+                    setSearchResults(adr);
+                  }}
+                  className="quick-search-chip"
+                  style={{ background: 'rgba(59, 130, 246, 0.25)', border: '1px solid #60a5fa', color: '#93c5fd', fontWeight: 600 }}
+                >
+                  🤝 {tr('ADR Settled')} ({adrSettledCount})
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const dWon = cases.filter(c => c.verdict?.verdict_type === 'SUIT_DISMISSED');
+                    setSearchResults(dWon);
+                  }}
+                  className="quick-search-chip"
+                  style={{ background: 'rgba(239, 68, 68, 0.25)', border: '1px solid #f87171', color: '#fca5a5', fontWeight: 600 }}
+                >
+                  🔴 {tr('Defendant Won (Dismissed)')} ({defendantWonCount})
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const activeCases = cases.filter(c => c.status !== 'DISPOSED');
+                    setSearchResults(activeCases.slice(0, 30));
+                  }}
+                  className="quick-search-chip"
+                  style={{ background: 'rgba(255, 255, 255, 0.1)', border: '1px solid rgba(255,255,255,0.2)', color: '#cbd5e1' }}
+                >
+                  ⚖️ {tr('Active Trials (Pending)')} ({activeTrialCount})
+                </button>
+              </div>
             </div>
 
             {/* Live Autocomplete / Matching Results Grid */}
             {searchResults.length > 0 && (
               <div className="court-card" style={{ marginBottom: '1.5rem', background: '#f8fafc', borderColor: '#cbd5e1' }}>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.75rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.75rem', flexWrap: 'wrap', gap: '0.5rem' }}>
                   <span style={{ fontSize: '0.85rem', fontWeight: 700, color: '#334155' }}>
                     {tr('Matching Judicial Records Found')} ({searchResults.length}):
                   </span>
-                  <button 
-                    onClick={() => setSearchResults([])} 
-                    style={{ background: 'none', border: 'none', fontSize: '0.75rem', color: '#64748b', cursor: 'pointer' }}
-                  >
-                    {tr('Dismiss')}
-                  </button>
+                  <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                    <button 
+                      onClick={() => setSearchResults([])} 
+                      style={{ background: 'none', border: 'none', fontSize: '0.75rem', color: '#64748b', cursor: 'pointer' }}
+                    >
+                      {tr('Dismiss')}
+                    </button>
+                  </div>
                 </div>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '0.75rem' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))', gap: '0.75rem' }}>
                   {searchResults.map((res) => (
                     <div 
                       key={res.id}
                       onClick={() => {
                         loadCaseDossier(res.cnr_number);
+                        if (res.status === 'DISPOSED' || res.verdict) {
+                          setDossierSubTab('verdict');
+                        }
                         setSearchResults([]);
                       }}
                       style={{
                         background: '#ffffff',
-                        border: '1px solid #e2e8f0',
+                        border: (res.status === 'DISPOSED' || res.verdict) ? '1.5px solid #86efac' : '1px solid #e2e8f0',
                         borderRadius: '8px',
                         padding: '0.85rem 1rem',
                         cursor: 'pointer',
                         transition: 'all 0.15s ease',
-                        boxShadow: '0 1px 3px rgba(0,0,0,0.03)'
+                        boxShadow: (res.status === 'DISPOSED' || res.verdict) ? '0 2px 8px rgba(16, 185, 129, 0.15)' : '0 1px 3px rgba(0,0,0,0.03)'
                       }}
                     >
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.35rem' }}>
@@ -3498,25 +3624,54 @@ export default function App() {
                               {trRel(res.next_hearing_relative)}
                             </span>
                           )}
-                          <span className="badge badge-pending" style={{ fontSize: '0.7rem' }}>
-                            {trStat(res.status)}
+                          <span className={`badge ${res.status === 'DISPOSED' ? 'badge-undisputed' : 'badge-pending'}`} style={{ fontSize: '0.7rem' }}>
+                            {res.status === 'DISPOSED' ? '🏆 DISPOSED' : trStat(res.status)}
                           </span>
                         </div>
                       </div>
                       <div style={{ fontWeight: 700, fontSize: '0.9rem', color: 'var(--theme-text-primary)', marginBottom: '0.35rem' }}>
                         {res.case_title}
                       </div>
+
+                      {/* Prominent Winner Callout for Disposed Cases */}
+                      {(res.status === 'DISPOSED' || res.verdict) && (
+                        <div style={{
+                          marginBottom: '0.45rem',
+                          background: '#ecfdf5',
+                          border: '1px solid #a7f3d0',
+                          padding: '0.4rem 0.6rem',
+                          borderRadius: '6px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'space-between',
+                          gap: '0.5rem',
+                          flexWrap: 'wrap'
+                        }}>
+                          <span style={{ fontSize: '0.78rem', fontWeight: 800, color: '#065f46' }}>
+                            🏆 {tr('Winner:')} <span style={{ color: '#047857', textDecoration: 'underline' }}>{res.verdict?.winning_party || 'Plaintiff (Decreed)'}</span>
+                          </span>
+                          <span style={{ fontSize: '0.72rem', color: '#059669', fontWeight: 700 }}>
+                            ₹ {parseFloat(res.verdict?.decree_amount || res.claim_valuation).toLocaleString('en-IN')}
+                          </span>
+                        </div>
+                      )}
+
                       <div style={{ fontSize: '0.75rem', color: 'var(--theme-text-muted)', display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
                         <span>{tr('Valuation:')} ₹ {parseFloat(res.claim_valuation).toLocaleString('en-IN')}</span>
                         <span>•</span>
                         <span>{tr('Hall:')} {res.court_hall_id}</span>
-                        {res.next_hearing_formatted && (
+                        {res.next_hearing_formatted && res.next_hearing_formatted !== 'Disposed / Concluded' && (
                           <>
                             <span>•</span>
                             <span style={{ color: '#b45309', fontWeight: 700 }}>
-                              {tr('📅 Next Hearing:')} {res.next_hearing_formatted} ({res.next_hearing_purpose ? tr(res.next_hearing_purpose) : tr('Order XV-A CMH')})
+                              {tr('📅 Next Hearing:')} {res.next_hearing_formatted}
                             </span>
                           </>
+                        )}
+                        {(res.status === 'DISPOSED' || res.verdict) && (
+                          <span style={{ color: '#059669', fontWeight: 700 }}>
+                            • <em>{tr('Click to View Order XX Verdict & Decree →')}</em>
+                          </span>
                         )}
                       </div>
                     </div>
@@ -3553,7 +3708,26 @@ export default function App() {
 
             {/* COMPLETE DOSSIER DISPLAY */}
             {dossier && !loadingDossier && (
-              <div>
+              <div className="printable-dossier">
+                {/* Official Judicial Authentication Header for Dossier Print */}
+                <div className="dossier-print-header">
+                  <div className="print-header-seal">
+                    <MpHcEmblem size={55} />
+                  </div>
+                  <div className="print-header-text">
+                    <div className="print-gov-title">{lang === 'HI' ? 'मध्य प्रदेश उच्च न्यायालय • खण्डपीठ इन्दौर' : 'HIGH COURT OF MADHYA PRADESH • INDORE BENCH'}</div>
+                    <div className="print-court-title">{lang === 'HI' ? 'वाणिज्यिक प्रभाग • ई-कोर्ट्स वाद प्रबंधन डोसीयर' : 'COMMERCIAL DIVISION • ELECTRONIC CASE MANAGEMENT DOSSIER'}</div>
+                    <div className="print-statute-sub">{lang === 'HI' ? 'सिविल प्रक्रिया संहिता, १९०८ का आदेश १५-क एवं वाणिज्यिक न्यायालय अधिनियम, २०१५' : 'Under Order XV-A of Code of Civil Procedure, 1908 & The Commercial Courts Act, 2015'}</div>
+                  </div>
+                  <div className="print-header-qr">
+                    <QRCodeImage
+                      value={`MPHC:IND:COMM:${dossier.cnr_number}:${dossier.status}`}
+                      size={52}
+                      alt="Registry Dossier QR"
+                    />
+                  </div>
+                </div>
+
                 {/* 1. Case Masthead Header */}
                 <div className="dossier-masthead">
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem', marginBottom: '1.25rem' }}>
@@ -3612,9 +3786,9 @@ export default function App() {
                     </div>
 
                     {/* Header Action Buttons */}
-                    <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                    <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }} className="no-print">
                       <button 
-                        onClick={() => window.print()}
+                        onClick={handlePrintDossier}
                         style={{
                           background: 'var(--theme-card)',
                           border: '1px solid var(--theme-border)',
@@ -3685,8 +3859,8 @@ export default function App() {
                     </div>
                   </div>
 
-                  {/* Live Next Hearing Card in Masthead */}
-                  {dossier.next_hearing_formatted && dossier.next_hearing_formatted !== 'Disposed / Concluded' && (
+                  {/* Live Next Hearing Card in Masthead OR Final Verdict Pronounced Banner */}
+                  {dossier.next_hearing_formatted && dossier.next_hearing_formatted !== 'Disposed / Concluded' ? (
                     <div className="dossier-next-hearing-banner" style={{ marginBottom: '1.25rem' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '0.9rem' }}>
                         <div className="next-hearing-icon-box">
@@ -3716,7 +3890,7 @@ export default function App() {
                         </div>
                       </div>
 
-                      <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                      <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }} className="no-print">
                         <button 
                           onClick={() => {
                             if (dossier.next_hearing_date) setSchedDate(dossier.next_hearing_date);
@@ -3729,7 +3903,85 @@ export default function App() {
                         </button>
                       </div>
                     </div>
-                  )}
+                  ) : (dossier.status === 'DISPOSED' || dossier.verdict) ? (
+                    <div className="dossier-verdict-banner" style={{
+                      marginBottom: '1.25rem',
+                      background: 'linear-gradient(135deg, #064e3b 0%, #065f46 60%, #047857 100%)',
+                      color: '#ffffff',
+                      borderRadius: '12px',
+                      padding: '1.1rem 1.4rem',
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      boxShadow: '0 4px 16px rgba(5, 150, 105, 0.25)',
+                      border: '1px solid #10b981',
+                      flexWrap: 'wrap',
+                      gap: '1rem'
+                    }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                        <div style={{
+                          width: '48px',
+                          height: '48px',
+                          borderRadius: '10px',
+                          background: 'rgba(255,255,255,0.18)',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          color: '#fef08a',
+                          flexShrink: 0
+                        }}>
+                          <Award size={28} />
+                        </div>
+                        <div>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem', flexWrap: 'wrap' }}>
+                            <span style={{ fontSize: '0.72rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', color: '#a7f3d0' }}>
+                              ⚖️ {tr('Final Verdict & Operative Decree Pronounced (Order XX CPC)')}
+                            </span>
+                            <span style={{ fontSize: '0.72rem', fontWeight: 700, padding: '0.15rem 0.6rem', borderRadius: '20px', background: '#059669', color: '#ffffff' }}>
+                              {tr('DISPOSED & CONCLUDED')}
+                            </span>
+                          </div>
+                          <div style={{ fontSize: '1.2rem', fontWeight: 800, color: '#ffffff', display: 'flex', alignItems: 'center', gap: '0.65rem', flexWrap: 'wrap' }}>
+                            <span>🏆 {tr('Winner:')} <span style={{ color: '#fef08a' }}>{dossier.verdict?.winning_party || dossier.case_title?.split(' vs.')[0]}</span></span>
+                            {dossier.verdict?.decree_amount && (
+                              <span style={{ fontSize: '0.95rem', fontWeight: 600, color: '#e2e8f0' }}>
+                                • {tr('Decree:')} ₹ {parseFloat(dossier.verdict.decree_amount).toLocaleString('en-IN')}
+                              </span>
+                            )}
+                          </div>
+                          <div style={{ fontSize: '0.825rem', color: '#d1fae5', marginTop: '0.25rem' }}>
+                            <strong>{tr('Outcome:')}</strong> {dossier.verdict?.verdict_title || 'Commercial Suit Decreed in Full with Interest and Taxable Costs'} • <em>{tr('Judgment Date:')} {dossier.verdict?.judgment_date || 'Concluded'}</em>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="no-print">
+                        <button
+                          onClick={() => {
+                            setDossierSubTab('verdict');
+                            const el = document.getElementById('section-verdict');
+                            if (el) el.scrollIntoView({ behavior: 'smooth' });
+                          }}
+                          style={{
+                            background: '#ffffff',
+                            color: '#065f46',
+                            border: 'none',
+                            padding: '0.65rem 1.2rem',
+                            borderRadius: '8px',
+                            fontWeight: 700,
+                            fontSize: '0.85rem',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '0.45rem',
+                            cursor: 'pointer',
+                            boxShadow: '0 2px 8px rgba(0,0,0,0.15)'
+                          }}
+                        >
+                          <Gavel size={15} />
+                          {tr('View Verdict & Decree (Why Won?)')}
+                        </button>
+                      </div>
+                    </div>
+                  ) : null}
 
                   {/* 2. Stakeholders & Bench Row */}
                   <div className="stakeholders-row">
@@ -3801,7 +4053,7 @@ export default function App() {
                   </div>
 
                   {/* 3. Dossier Sub-Navigation Pills */}
-                  <div className="dossier-subnav">
+                  <div className="dossier-subnav no-print">
                     <button 
                       className={`dossier-subnav-btn ${dossierSubTab === 'all' ? 'active' : ''}`}
                       onClick={() => setDossierSubTab('all')}
@@ -3844,57 +4096,64 @@ export default function App() {
                       <Gavel size={14} />
                       {tr('Case Management Order (CMO)')}
                     </button>
+                    {(dossier.verdict || dossier.status === 'DISPOSED') && (
+                      <button 
+                        className={`dossier-subnav-btn ${dossierSubTab === 'verdict' ? 'active' : ''}`}
+                        onClick={() => setDossierSubTab('verdict')}
+                        style={dossierSubTab === 'verdict' ? { background: '#047857', color: '#ffffff', borderColor: '#047857' } : { color: '#047857', borderColor: '#10b981', fontWeight: 700 }}
+                      >
+                        <Award size={14} />
+                        {tr('Final Verdict & Decree (Order XX)')}
+                      </button>
+                    )}
                   </div>
                 </div>
 
                 {/* SECTION A: CHRONOLOGICAL LIFECYCLE TIMELINE */}
-                {(dossierSubTab === 'all' || dossierSubTab === 'timeline') && (
-                  <div className="court-card">
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem' }}>
-                      <h3 style={{ fontSize: '1.15rem', fontWeight: 700, margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--theme-text-primary)' }}>
-                        <History size={18} color="#d97706" />
-                        {tr('Comprehensive Case Journey & Milestone History')}
-                      </h3>
-                      <span style={{ fontSize: '0.8rem', color: 'var(--theme-text-muted)' }}>
-                        {tr('Real-time audit log under High Court e-Governance Framework')}
-                      </span>
-                    </div>
+                <div className={`court-card dossier-section ${dossierSubTab === 'all' || dossierSubTab === 'timeline' ? '' : 'dossier-tab-screen-hidden'}`}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem' }}>
+                    <h3 style={{ fontSize: '1.15rem', fontWeight: 700, margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--theme-text-primary)' }}>
+                      <History size={18} color="#d97706" />
+                      {tr('Comprehensive Case Journey & Milestone History')}
+                    </h3>
+                    <span style={{ fontSize: '0.8rem', color: 'var(--theme-text-muted)' }}>
+                      {tr('Real-time audit log under High Court e-Governance Framework')}
+                    </span>
+                  </div>
 
-                    <div className="timeline-track">
-                      {dossier.timeline && dossier.timeline.map((step, idx) => (
-                        <div key={idx} className="timeline-node">
-                          <div className={`timeline-bullet ${step.status === 'COMPLETED' ? 'completed' : (step.status === 'ACTIVE' ? 'active' : 'pending')}`} />
-                          <div className="timeline-content-card">
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'gap', gap: '0.5rem', marginBottom: '0.4rem' }}>
-                              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                                <span style={{ fontSize: '0.75rem', fontWeight: 700, background: 'var(--theme-card)', border: '1px solid var(--theme-border)', color: 'var(--theme-text-secondary)', padding: '0.2rem 0.5rem', borderRadius: '4px' }}>
-                                  {step.date}
-                                </span>
-                                <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#b45309', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
-                                  [{tr(step.stage)}]
-                                </span>
-                              </div>
-                              <span className={`badge ${step.status === 'COMPLETED' ? 'badge-undisputed' : (step.status === 'ACTIVE' ? 'badge-contested' : 'badge-pending')}`}>
-                                {trStat(step.status)}
+                  <div className="timeline-track">
+                    {dossier.timeline && dossier.timeline.map((step, idx) => (
+                      <div key={idx} className="timeline-node">
+                        <div className={`timeline-bullet ${step.status === 'COMPLETED' ? 'completed' : (step.status === 'ACTIVE' ? 'active' : 'pending')}`} />
+                        <div className="timeline-content-card">
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'gap', gap: '0.5rem', marginBottom: '0.4rem' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                              <span style={{ fontSize: '0.75rem', fontWeight: 700, background: 'var(--theme-card)', border: '1px solid var(--theme-border)', color: 'var(--theme-text-secondary)', padding: '0.2rem 0.5rem', borderRadius: '4px' }}>
+                                {step.date}
+                              </span>
+                              <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#b45309', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                                [{tr(step.stage)}]
                               </span>
                             </div>
-                            <h4 style={{ fontSize: '0.95rem', fontWeight: 700, color: 'var(--theme-text-primary)', margin: '0 0 0.35rem 0' }}>
-                              {tr(step.title)}
-                            </h4>
-                            <p style={{ fontSize: '0.85rem', color: 'var(--theme-text-secondary)', margin: 0, lineHeight: 1.5 }}>
-                              {tr(step.description)}
-                            </p>
+                            <span className={`badge ${step.status === 'COMPLETED' ? 'badge-undisputed' : (step.status === 'ACTIVE' ? 'badge-contested' : 'badge-pending')}`}>
+                              {trStat(step.status)}
+                            </span>
                           </div>
+                          <h4 style={{ fontSize: '0.95rem', fontWeight: 700, color: 'var(--theme-text-primary)', margin: '0 0 0.35rem 0' }}>
+                            {tr(step.title)}
+                          </h4>
+                          <p style={{ fontSize: '0.85rem', color: 'var(--theme-text-secondary)', margin: 0, lineHeight: 1.5 }}>
+                            {tr(step.description)}
+                          </p>
                         </div>
-                      ))}
-                    </div>
+                      </div>
+                    ))}
                   </div>
-                )}
+                </div>
 
                 {/* SECTION B: HEARINGS & COURTROOM PROCEEDINGS */}
-                {(dossierSubTab === 'all' || dossierSubTab === 'hearings') && (
-                  <div className="court-card">
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem' }}>
+                <div className={`court-card dossier-section ${dossierSubTab === 'all' || dossierSubTab === 'hearings' ? '' : 'dossier-tab-screen-hidden'}`}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem' }}>
                       <div>
                         <h3 style={{ fontSize: '1.15rem', fontWeight: 700, margin: '0 0 0.25rem 0', display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--theme-text-primary)' }}>
                           <Calendar size={18} color="#d97706" />
@@ -3910,7 +4169,7 @@ export default function App() {
                     </div>
 
                     {dossier.hearings && dossier.hearings.length > 0 ? (
-                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '1rem' }}>
+                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))', gap: '1rem' }}>
                         {dossier.hearings.map((h, i) => (
                           <div key={h.id || i} style={{
                             background: h.is_upcoming ? 'var(--theme-orange-tint)' : 'var(--theme-card)',
@@ -3994,12 +4253,10 @@ export default function App() {
                       </div>
                     )}
                   </div>
-                )}
 
                 {/* SECTION C: PLEADINGS & EXHIBITS */}
-                {(dossierSubTab === 'all' || dossierSubTab === 'pleadings') && (
-                  <div className="court-card">
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem' }}>
+                <div className={`court-card dossier-section ${dossierSubTab === 'all' || dossierSubTab === 'pleadings' ? '' : 'dossier-tab-screen-hidden'}`}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem' }}>
                       <div>
                         <h3 style={{ fontSize: '1.15rem', fontWeight: 700, margin: '0 0 0.25rem 0', display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--theme-text-primary)' }}>
                           <FileCheck size={18} color="#d97706" />
@@ -4096,12 +4353,10 @@ export default function App() {
                       </div>
                     )}
                   </div>
-                )}
 
                 {/* SECTION D: ORDER XV-A ADMISSIONS MATRIX */}
-                {(dossierSubTab === 'all' || dossierSubTab === 'matrix') && (
-                  <div className="court-card">
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem', marginBottom: '1.25rem' }}>
+                <div className={`court-card dossier-section ${dossierSubTab === 'all' || dossierSubTab === 'matrix' ? '' : 'dossier-tab-screen-hidden'}`}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem', marginBottom: '1.25rem' }}>
                       <div>
                         <h3 style={{ fontSize: '1.15rem', fontWeight: 700, margin: '0 0 0.25rem 0', display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#070d1e' }}>
                           <FileText size={18} color="#d97706" />
@@ -4126,60 +4381,60 @@ export default function App() {
                     </div>
 
                     {dossier.checklist?.items && dossier.checklist.items.length > 0 ? (
-                      <table className="court-table">
-                        <thead>
-                          <tr>
-                            <th style={{ width: '50px' }}>#</th>
-                            <th>{tr('Factual Averment')}</th>
-                            <th style={{ width: '130px' }}>{tr('Plaintiff Stance')}</th>
-                            <th style={{ width: '130px' }}>{tr('Defendant Stance')}</th>
-                            <th>{tr('Statutory Justification / Denial Note')}</th>
-                            <th style={{ width: '140px' }}>{tr('Resolution')}</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {dossier.checklist.items.map((it) => (
-                            <tr key={it.id}>
-                              <td className="mono" style={{ fontWeight: 700, color: '#71717a' }}>
-                                #{it.statement_index}
-                              </td>
-                              <td style={{ fontWeight: 500, color: '#070d1e' }}>
-                                {it.factual_statement}
-                              </td>
-                              <td>
-                                <span className={`badge ${it.plaintiff_stance?.includes('ADMIT') ? 'badge-undisputed' : (it.plaintiff_stance === 'DENY' ? 'badge-contested' : 'badge-pending')}`}>
-                                  {trStn(it.plaintiff_stance)}
-                                </span>
-                              </td>
-                              <td>
-                                <span className={`badge ${it.defendant_stance?.includes('ADMIT') ? 'badge-undisputed' : (it.defendant_stance === 'DENY' ? 'badge-contested' : 'badge-pending')}`}>
-                                  {trStn(it.defendant_stance)}
-                                </span>
-                              </td>
-                              <td style={{ fontSize: '0.8rem', color: it.statutory_denial_reason ? '#dc2626' : '#a1a1aa' }}>
-                                {it.statutory_denial_reason || tr('— None —')}
-                              </td>
-                              <td>
-                                <span className={`badge ${it.resolution_status === 'UNDISPUTED_FACT' ? 'badge-undisputed' : (it.resolution_status === 'CONTESTED_ISSUE' ? 'badge-contested' : 'badge-pending')}`}>
-                                  {trStn(it.resolution_status)}
-                                </span>
-                              </td>
+                      <div className="court-table-container">
+                        <table className="court-table">
+                          <thead>
+                            <tr>
+                              <th style={{ width: '50px' }}>#</th>
+                              <th>{tr('Factual Averment')}</th>
+                              <th style={{ width: '130px' }}>{tr('Plaintiff Stance')}</th>
+                              <th style={{ width: '130px' }}>{tr('Defendant Stance')}</th>
+                              <th>{tr('Statutory Justification / Denial Note')}</th>
+                              <th style={{ width: '140px' }}>{tr('Resolution')}</th>
                             </tr>
-                          ))}
-                        </tbody>
-                      </table>
+                          </thead>
+                          <tbody>
+                            {dossier.checklist.items.map((it) => (
+                              <tr key={it.id}>
+                                <td className="mono" style={{ fontWeight: 700, color: '#71717a' }}>
+                                  #{it.statement_index}
+                                </td>
+                                <td style={{ fontWeight: 500, color: '#070d1e' }}>
+                                  {it.factual_statement}
+                                </td>
+                                <td>
+                                  <span className={`badge ${it.plaintiff_stance?.includes('ADMIT') ? 'badge-undisputed' : (it.plaintiff_stance === 'DENY' ? 'badge-contested' : 'badge-pending')}`}>
+                                    {trStn(it.plaintiff_stance)}
+                                  </span>
+                                </td>
+                                <td>
+                                  <span className={`badge ${it.defendant_stance?.includes('ADMIT') ? 'badge-undisputed' : (it.defendant_stance === 'DENY' ? 'badge-contested' : 'badge-pending')}`}>
+                                    {trStn(it.defendant_stance)}
+                                  </span>
+                                </td>
+                                <td style={{ fontSize: '0.8rem', color: it.statutory_denial_reason ? '#dc2626' : '#a1a1aa' }}>
+                                  {it.statutory_denial_reason || tr('— None —')}
+                                </td>
+                                <td>
+                                  <span className={`badge ${it.resolution_status === 'UNDISPUTED_FACT' ? 'badge-undisputed' : (it.resolution_status === 'CONTESTED_ISSUE' ? 'badge-contested' : 'badge-pending')}`}>
+                                    {trStn(it.resolution_status)}
+                                  </span>
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
                     ) : (
                       <div style={{ textAlign: 'center', padding: '2rem', background: '#f8fafc', borderRadius: '8px', color: '#71717a' }}>
                         <p style={{ margin: 0, fontSize: '0.875rem' }}>{tr('No admissions checklist items found.')}</p>
                       </div>
                     )}
                   </div>
-                )}
 
                 {/* SECTION E: CASE MANAGEMENT ORDER (CMO) */}
-                {(dossierSubTab === 'all' || dossierSubTab === 'cmo') && (
-                  <div className="court-card" style={{ border: '2px solid #070d1e', background: '#ffffff', boxShadow: '0 4px 20px rgba(0,0,0,0.06)' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem', borderBottom: '2px solid #e4e4e7', paddingBottom: '1rem', marginBottom: '1.25rem' }}>
+                <div className={`court-card dossier-section ${dossierSubTab === 'all' || dossierSubTab === 'cmo' ? '' : 'dossier-tab-screen-hidden'}`} style={{ border: '2px solid #070d1e', background: '#ffffff', boxShadow: '0 4px 20px rgba(0,0,0,0.06)' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem', borderBottom: '2px solid #e4e4e7', paddingBottom: '1rem', marginBottom: '1.25rem' }}>
                       <div>
                         <div style={{ fontSize: '0.75rem', fontWeight: 800, color: '#b45309', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.25rem' }}>
                           {tr('Form 4 • Commercial Courts Act, 2015')}
@@ -4315,7 +4570,197 @@ export default function App() {
                       </div>
                     )}
                   </div>
+
+                {/* SECTION F: FINAL JUDICIAL VERDICT & OPERATIVE DECREE (ORDER XX CPC) */}
+                {(dossier.verdict || dossier.status === 'DISPOSED') && (
+                  <div
+                    id="section-verdict"
+                    className={`court-card dossier-section ${dossierSubTab === 'all' || dossierSubTab === 'verdict' ? '' : 'dossier-tab-screen-hidden'}`}
+                    style={{ border: '2px solid #059669', background: '#ffffff', boxShadow: '0 4px 24px rgba(5, 150, 105, 0.1)' }}
+                  >
+                    {/* Official Heading */}
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '2px solid #059669', paddingBottom: '1rem', marginBottom: '1.25rem', flexWrap: 'wrap', gap: '0.75rem' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                        <div style={{ background: '#ecfdf5', color: '#047857', padding: '0.65rem', borderRadius: '8px', border: '1px solid #a7f3d0' }}>
+                          <Award size={26} />
+                        </div>
+                        <div>
+                          <div style={{ fontSize: '0.72rem', fontWeight: 800, textTransform: 'uppercase', color: '#047857', letterSpacing: '0.08em' }}>
+                            {tr('Judicial Pronouncement under Order XX Rules 6 & 7 CPC')}
+                          </div>
+                          <h3 style={{ fontSize: '1.25rem', fontWeight: 800, margin: '0.15rem 0', color: '#0f172a' }}>
+                            {dossier.verdict?.verdict_title || tr('Final Judgment & Operative Decree')}
+                          </h3>
+                          <div style={{ fontSize: '0.8rem', color: '#64748b' }}>
+                            {dossier.verdict?.court_bench || 'High Court of Madhya Pradesh, Indore Commercial Bench'} • {tr('Pronounced on:')} <strong>{dossier.verdict?.judgment_date || 'Concluded'}</strong>
+                          </div>
+                        </div>
+                      </div>
+                      <div style={{ textAlign: 'right' }}>
+                        <span style={{ background: '#059669', color: '#ffffff', padding: '0.35rem 0.85rem', borderRadius: '20px', fontSize: '0.75rem', fontWeight: 800, letterSpacing: '0.05em' }}>
+                          {dossier.verdict?.verdict_type || 'DECREED'}
+                        </span>
+                        <div style={{ fontSize: '0.75rem', color: '#64748b', marginTop: '0.3rem' }}>
+                          {tr('Certified Final Judicial Record')}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Winner & Loser Decision Matrix */}
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1rem', marginBottom: '1.5rem' }}>
+                      <div style={{ background: '#f0fdf4', border: '1.5px solid #86efac', borderRadius: '10px', padding: '1.1rem' }}>
+                        <div style={{ fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', color: '#166534', letterSpacing: '0.05em', marginBottom: '0.4rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                          🏆 {tr('Winning Party (Decree Holder)')}
+                        </div>
+                        <div style={{ fontSize: '1.15rem', fontWeight: 800, color: '#14532d' }}>
+                          {dossier.verdict?.winning_party || dossier.case_title?.split(' vs.')[0]}
+                        </div>
+                        <div style={{ fontSize: '0.8rem', color: '#15803d', marginTop: '0.35rem' }}>
+                          ✓ {tr('Commercial Claim Decreed in Full. Entitled to recover decreed debt and execution of decree.')}
+                        </div>
+                      </div>
+
+                      <div style={{ background: '#fef2f2', border: '1.5px solid #fca5a5', borderRadius: '10px', padding: '1.1rem' }}>
+                        <div style={{ fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', color: '#991b1b', letterSpacing: '0.05em', marginBottom: '0.4rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                          ⚖️ {tr('Defeated Party (Judgment Debtor)')}
+                        </div>
+                        <div style={{ fontSize: '1.15rem', fontWeight: 800, color: '#7f1d1d' }}>
+                          {dossier.verdict?.losing_party || (dossier.case_title?.includes(' vs.') ? dossier.case_title.split(' vs.')[1].trim() : 'Defendant')}
+                        </div>
+                        <div style={{ fontSize: '0.8rem', color: '#b91c1c', marginTop: '0.35rem' }}>
+                          ⚠️ {tr('Held liable under Operative Decree. Directed to satisfy judgment debt within 60 days.')}
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Financial Terms & Relief Awarded */}
+                    {dossier.verdict?.decree_amount && (
+                      <div style={{ background: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '10px', padding: '1.25rem', marginBottom: '1.5rem' }}>
+                        <div style={{ fontSize: '0.8rem', fontWeight: 800, textTransform: 'uppercase', color: '#334155', letterSpacing: '0.05em', marginBottom: '0.75rem' }}>
+                          💰 {tr('Judicially Awarded Relief & Monetary Satisfaction')}
+                        </div>
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1.25rem' }}>
+                          <div>
+                            <div style={{ fontSize: '0.75rem', color: '#64748b' }}>{tr('Principal Decreed Sum')}</div>
+                            <div style={{ fontSize: '1.35rem', fontWeight: 800, color: '#047857' }}>
+                              ₹ {parseFloat(dossier.verdict.decree_amount).toLocaleString('en-IN')}
+                            </div>
+                          </div>
+                          <div>
+                            <div style={{ fontSize: '0.75rem', color: '#64748b' }}>{tr('Commercial Interest Rate')}</div>
+                            <div style={{ fontSize: '0.85rem', fontWeight: 700, color: '#1e293b', marginTop: '0.2rem' }}>
+                              {dossier.verdict.interest_rate}
+                            </div>
+                          </div>
+                          <div>
+                            <div style={{ fontSize: '0.75rem', color: '#64748b' }}>{tr('Taxable Litigation Costs')}</div>
+                            <div style={{ fontSize: '0.85rem', fontWeight: 700, color: '#1e293b', marginTop: '0.2rem' }}>
+                              {dossier.verdict.costs_awarded}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* "Why?" - Judicial Grounds & Reasoning */}
+                    <div style={{ marginBottom: '1.5rem' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.75rem' }}>
+                        <h4 style={{ fontSize: '0.95rem', fontWeight: 800, color: '#0f172a', textTransform: 'uppercase', letterSpacing: '0.05em', margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                          <FileCheck size={18} color="#059669" />
+                          {tr('Why? Judicial Grounds & Findings on Triable Issues')}
+                        </h4>
+                        <span style={{ fontSize: '0.75rem', color: '#64748b', fontWeight: 600 }}>
+                          Order XX Rule 5 CPC Findings
+                        </span>
+                      </div>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                        {dossier.verdict?.judicial_reasoning && dossier.verdict.judicial_reasoning.map((ground, gIdx) => (
+                          <div key={gIdx} style={{ display: 'flex', gap: '0.85rem', background: '#f8fafc', padding: '0.9rem 1.1rem', borderRadius: '8px', borderLeft: '4px solid #059669' }}>
+                            <div style={{ minWidth: '24px', height: '24px', borderRadius: '50%', background: '#059669', color: '#ffffff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.75rem', fontWeight: 800 }}>
+                              {gIdx + 1}
+                            </div>
+                            <div style={{ fontSize: '0.875rem', color: '#334155', lineHeight: 1.55 }}>
+                              {ground}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Operative Order Formal Text */}
+                    <div style={{ background: '#fdfbf7', border: '1.5px solid #fef3c7', borderRadius: '8px', padding: '1.25rem', marginBottom: '1.5rem' }}>
+                      <div style={{ fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', color: '#92400e', letterSpacing: '0.05em', marginBottom: '0.4rem' }}>
+                        📜 {tr('Operative Direction & Judicial Order')}
+                      </div>
+                      <div style={{ fontSize: '0.925rem', fontStyle: 'italic', color: '#1e293b', lineHeight: 1.6, paddingLeft: '0.5rem' }}>
+                        "{dossier.verdict?.operative_order}"
+                      </div>
+                      <div style={{ fontSize: '0.75rem', color: '#78350f', marginTop: '0.6rem', fontWeight: 600 }}>
+                        {tr('Statutory Basis:')} {dossier.verdict?.statutory_law}
+                      </div>
+                    </div>
+
+                    {/* Official Digital Seal & Signature Block */}
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', borderTop: '1px dashed #cbd5e1', paddingTop: '1.25rem', flexWrap: 'wrap', gap: '1rem' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                        <QRCodeImage
+                          value={[
+                            `🏛️ MP HIGH COURT - FINAL JUDICIAL DECREE`,
+                            `STATUS: CERTIFIED FINAL OPERATIVE ORDER`,
+                            `CNR: ${dossier.cnr_number}`,
+                            `VERDICT: ${dossier.verdict?.verdict_type}`,
+                            `WINNER: ${dossier.verdict?.winning_party}`,
+                            `DECREE AMOUNT: ₹ ${dossier.verdict?.decree_amount || 'N/A'}`,
+                            `JUDGE: ${dossier.verdict?.pronouncing_judge || "Hon'ble Justice Rajesh Sharma"}`,
+                            `SHA-256: ${dossier.verdict?.sha256_digest || 'VERIFIED'}`,
+                            `Sec. 65B Indian Evidence Act Certified True Copy`
+                          ].join('\n')}
+                          size={54}
+                          alt="National Judicial Decree QR Seal"
+                        />
+                        <div style={{ fontSize: '0.75rem', color: '#64748b' }}>
+                          <div style={{ fontWeight: 700, color: '#0f172a' }}>{tr('Certified True Copy Decree (Order XX CPC)')}</div>
+                          <div>{tr('QR Verification:')} <span className="mono">{dossier.verdict?.qr_verification_code || `DECREE_ORDER_XX_${dossier.cnr_number?.substring(0, 8)}`}</span></div>
+                          <div>{tr('Digital Digest:')} <span className="mono">{dossier.verdict?.sha256_digest ? dossier.verdict.sha256_digest.substring(0, 24) + '...' : 'Verified'}</span></div>
+                        </div>
+                      </div>
+
+                      <div style={{ textAlign: 'right' }}>
+                        <div style={{ fontSize: '0.9rem', fontWeight: 700, color: '#0f172a' }}>
+                          ({dossier.verdict?.pronouncing_judge || dossier.judge?.full_name || "Hon'ble Justice Rajesh Sharma"})
+                        </div>
+                        <div style={{ fontSize: '0.75rem', color: '#64748b' }}>
+                          {tr('Presiding Judicial Officer, Commercial Bench')}
+                        </div>
+                        <div style={{ fontSize: '0.7rem', color: '#059669', fontWeight: 600, marginTop: '0.2rem' }}>
+                          ✓ {tr('Digitally Signed with Judicial e-Token')}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 )}
+
+                {/* Official Judicial Authentication Footer for Dossier Print */}
+                <div className="dossier-print-footer">
+                  <div className="print-footer-left">
+                    <div className="print-cert-title">{lang === 'HI' ? 'मध्य प्रदेश उच्च न्यायालय • ई-गवर्नेंस एवं अभिलेख सेल' : 'HIGH COURT OF MADHYA PRADESH • E-GOVERNANCE CELL'}</div>
+                    <p className="print-cert-text">
+                      {lang === 'HI'
+                        ? 'यह वाद डोसीयर वाणिज्यिक न्यायालय अधिनियम, २०१५ तथा सिविल प्रक्रिया संहिता, १९०८ के आदेश १५-क के अंतर्गत जनरेट किया गया आधिकारिक इलेक्ट्रॉनिक न्यायिक अभिलेख है। भारतीय साक्ष्य अधिनियम, १८७२ की धारा ६५-ख के तहत प्रमाणित।'
+                        : 'This case dossier is an authentic electronic judicial record generated under Order XV-A CPC and the Commercial Courts Act, 2015. Certified as admissible electronic evidence under Section 65B of the Indian Evidence Act, 1872.'}
+                    </p>
+                    <div className="print-cert-meta">
+                      CNR: <strong>{dossier.cnr_number}</strong> • {lang === 'HI' ? 'रजिस्ट्री प्रमाणीकरण कोड:' : 'Registry Verification:'} <strong>MPHC-IND-COMM-{dossier.id || '2026'}</strong>
+                    </div>
+                  </div>
+                  <div className="print-footer-right">
+                    <div className="print-sign-box">
+                      <div className="print-sign-line"></div>
+                      <div className="print-sign-title">{lang === 'HI' ? 'रजिस्ट्रार (न्यायिक) / वाणिज्यिक पीठ प्रभारी' : 'Registrar (Judicial) / Bench Officer'}</div>
+                      <div className="print-sign-sub">{lang === 'HI' ? 'उच्च न्यायालय मध्य प्रदेश, इन्दौर खंडपीठ' : 'High Court of Madhya Pradesh, Indore Bench'}</div>
+                    </div>
+                  </div>
+                </div>
               </div>
             )}
           </div>
@@ -4595,7 +5040,8 @@ export default function App() {
                 </div>
               </div>
 
-              <table className="court-table">
+              <div className="court-table-container">
+                <table className="court-table">
                 <thead>
                   <tr>
                     <th style={{ width: '40px' }}>#</th>
@@ -4703,13 +5149,14 @@ export default function App() {
                   ))}
                 </tbody>
               </table>
+              </div>
             </div>
           </div>
         )}
 
         {/* TAB 2: CASE DOCKETS & E-FILING */}
         {activeTab === 'cases' && (
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '1.5rem' }}>
+          <div className="cases-dockets-layout">
             {currentRole === 'JUDGE' ? (
               <div className="court-card">
                 <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', background: 'rgba(245, 158, 11, 0.15)', border: '1px solid #f59e0b', color: '#d97706', padding: '0.2rem 0.55rem', borderRadius: '9999px', fontSize: '0.72rem', fontWeight: 800, textTransform: 'uppercase', marginBottom: '0.6rem' }}>
@@ -4823,22 +5270,83 @@ export default function App() {
             )}
 
             <div className="court-card">
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem', flexWrap: 'wrap', gap: '0.5rem' }}>
-                <div>
-                  <h3 style={{ fontSize: '1.1rem', fontWeight: 700, margin: 0, color: '#070d1e' }}>
-                    {tr('Active Commercial Court Dockets')} ({displayedCases.length})
-                  </h3>
-                  <p style={{ fontSize: '0.8rem', color: '#71717a', margin: '0.2rem 0 0 0' }}>
-                    {tr('Select any case below to switch the active Admissions Matrix and scheduling view.')}
-                  </p>
+              <div style={{ marginBottom: '1.25rem' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem', flexWrap: 'wrap', gap: '0.75rem' }}>
+                  <div>
+                    <h3 style={{ fontSize: '1.15rem', fontWeight: 800, margin: 0, color: '#070d1e' }}>
+                      {tr('Active Commercial Court Dockets')} ({displayedCases.length})
+                    </h3>
+                    <p style={{ fontSize: '0.8rem', color: '#71717a', margin: '0.2rem 0 0 0' }}>
+                      {tr('Filter and sort cases by final verdict outcome, who won, or court schedule.')}
+                    </p>
+                  </div>
+
+                  {/* Sort Cases Dropdown */}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <span style={{ fontSize: '0.8rem', fontWeight: 700, color: '#334155' }}>
+                      {tr('Sort By:')}
+                    </span>
+                    <select
+                      value={caseSortBy}
+                      onChange={(e) => setCaseSortBy(e.target.value)}
+                      style={{
+                        padding: '0.45rem 0.8rem',
+                        borderRadius: '6px',
+                        border: '1.5px solid #cbd5e1',
+                        fontSize: '0.82rem',
+                        fontWeight: 600,
+                        color: '#0f172a',
+                        background: '#ffffff',
+                        cursor: 'pointer'
+                      }}
+                    >
+                      <option value="DEFAULT">📅 {tr('Filing Date (Newest First)')}</option>
+                      <option value="VERDICT_FIRST">🏆 {tr('Verdict Declared First (Disposed)')}</option>
+                      <option value="WINNER_PLAINTIFF">🟢 {tr('Winner: Plaintiff Won First')}</option>
+                      <option value="WINNER_ADR">🤝 {tr('Winner: ADR Settled First')}</option>
+                      <option value="WINNER_DEFENDANT">🔴 {tr('Winner: Defendant Won First')}</option>
+                      <option value="VALUATION_DESC">💰 {tr('Valuation: High to Low')}</option>
+                      <option value="VALUATION_ASC">💰 {tr('Valuation: Low to High')}</option>
+                    </select>
+                  </div>
                 </div>
-                <div style={{ display: 'flex', gap: '0.4rem' }}>
+
+                {/* Filter Chips Bar */}
+                <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap', alignItems: 'center' }}>
                   <button 
                     onClick={() => setTableRosterFilter('ALL')}
                     className={`roster-filter-btn ${tableRosterFilter === 'ALL' ? 'active' : ''}`}
                     style={{ background: tableRosterFilter === 'ALL' ? '#070d1e' : '#f4f4f5', color: tableRosterFilter === 'ALL' ? '#ffffff' : '#3f3f46', borderColor: '#d4d4d8' }}
                   >
                     {tr('All')} ({cases.length})
+                  </button>
+                  <button 
+                    onClick={() => { setTableRosterFilter('VERDICT_OUT'); setCaseSortBy('VERDICT_FIRST'); }}
+                    className={`roster-filter-btn ${tableRosterFilter === 'VERDICT_OUT' ? 'active' : ''}`}
+                    style={{ background: tableRosterFilter === 'VERDICT_OUT' ? '#047857' : '#ecfdf5', color: tableRosterFilter === 'VERDICT_OUT' ? '#ffffff' : '#047857', borderColor: '#a7f3d0', fontWeight: 700 }}
+                  >
+                    🏆 {tr('Verdict Out / Won')} ({disposedCasesCount})
+                  </button>
+                  <button 
+                    onClick={() => { setTableRosterFilter('WIN_PLAINTIFF'); setCaseSortBy('WINNER_PLAINTIFF'); }}
+                    className={`roster-filter-btn ${tableRosterFilter === 'WIN_PLAINTIFF' ? 'active' : ''}`}
+                    style={{ background: tableRosterFilter === 'WIN_PLAINTIFF' ? '#166534' : '#f0fdf4', color: tableRosterFilter === 'WIN_PLAINTIFF' ? '#ffffff' : '#15803d', borderColor: '#86efac', fontWeight: 600 }}
+                  >
+                    🟢 {tr('Plaintiff Won')} ({plaintiffWonCount})
+                  </button>
+                  <button 
+                    onClick={() => { setTableRosterFilter('WIN_ADR'); setCaseSortBy('WINNER_ADR'); }}
+                    className={`roster-filter-btn ${tableRosterFilter === 'WIN_ADR' ? 'active' : ''}`}
+                    style={{ background: tableRosterFilter === 'WIN_ADR' ? '#1e40af' : '#eff6ff', color: tableRosterFilter === 'WIN_ADR' ? '#ffffff' : '#1d4ed8', borderColor: '#bfdbfe', fontWeight: 600 }}
+                  >
+                    🤝 {tr('ADR Settled')} ({adrSettledCount})
+                  </button>
+                  <button 
+                    onClick={() => { setTableRosterFilter('WIN_DEFENDANT'); setCaseSortBy('WINNER_DEFENDANT'); }}
+                    className={`roster-filter-btn ${tableRosterFilter === 'WIN_DEFENDANT' ? 'active' : ''}`}
+                    style={{ background: tableRosterFilter === 'WIN_DEFENDANT' ? '#991b1b' : '#fef2f2', color: tableRosterFilter === 'WIN_DEFENDANT' ? '#ffffff' : '#b91c1c', borderColor: '#fca5a5', fontWeight: 600 }}
+                  >
+                    🔴 {tr('Defendant Won')} ({defendantWonCount})
                   </button>
                   <button 
                     onClick={() => setTableRosterFilter('NEXT_WEEK')}
@@ -4854,17 +5362,25 @@ export default function App() {
                   >
                     📅 {tr('Next Month')} ({nextMonthCount})
                   </button>
+                  <button 
+                    onClick={() => setTableRosterFilter('ACTIVE_TRIAL')}
+                    className={`roster-filter-btn ${tableRosterFilter === 'ACTIVE_TRIAL' ? 'active' : ''}`}
+                    style={{ background: tableRosterFilter === 'ACTIVE_TRIAL' ? '#334155' : '#f8fafc', color: tableRosterFilter === 'ACTIVE_TRIAL' ? '#ffffff' : '#475569', borderColor: '#cbd5e1' }}
+                  >
+                    ⚖️ {tr('Active Trials')} ({activeTrialCount})
+                  </button>
                 </div>
               </div>
 
-              <table className="court-table">
+              <div className="court-table-container">
+                <table className="court-table">
                 <thead>
                   <tr>
                     <th>{tr('16-Digit CNR')}</th>
                     <th>{tr('Case Title')}</th>
                     <th>{tr('Valuation')}</th>
-                    <th>{tr('Status')}</th>
-                    <th>{tr('Next Hearing & Purpose')}</th>
+                    <th>{tr('Status & Winner')}</th>
+                    <th>{tr('Next Hearing / Resolution')}</th>
                     <th>{tr('Action')}</th>
                   </tr>
                 </thead>
@@ -4881,44 +5397,97 @@ export default function App() {
                         ₹ {parseFloat(c.claim_valuation).toLocaleString('en-IN')}
                       </td>
                       <td>
-                        <span className="badge badge-pending">{trStat(c.status)}</span>
-                      </td>
-                      <td>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.2rem' }}>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                            <strong style={{ fontSize: '0.85rem', color: '#070d1e' }}>{c.next_hearing_formatted ? trRel(c.next_hearing_formatted) : tr('Pending')}</strong>
-                            {c.next_hearing_relative && (
-                              <span className={`hearing-pill-badge ${c.next_hearing_relative.includes('Next Week') ? 'pill-next-week' : (c.next_hearing_relative.includes('Next Month') ? 'pill-next-month' : 'pill-standard')}`} style={{ fontSize: '0.68rem', padding: '0.1rem 0.45rem' }}>
-                                {trRel(c.next_hearing_relative)}
-                              </span>
-                            )}
+                        {(c.status === 'DISPOSED' || c.verdict) ? (
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.2rem' }}>
+                            <span className="badge badge-undisputed" style={{ fontSize: '0.72rem', alignSelf: 'flex-start' }}>
+                              🏆 {c.verdict?.verdict_type === 'DECREED_FOR_PLAINTIFF' ? 'DECREED (WON)' : (c.verdict?.verdict_type === 'SETTLED_VIA_ADR' ? 'ADR COMPROMISE' : 'DISMISSED')}
+                            </span>
+                            <span style={{ fontSize: '0.78rem', fontWeight: 800, color: '#047857' }}>
+                              Winner: {c.verdict?.winning_party?.split(' (')[0] || 'Plaintiff'}
+                            </span>
                           </div>
-                          <span style={{ fontSize: '0.72rem', color: '#71717a' }}>{c.next_hearing_purpose ? tr(c.next_hearing_purpose) : tr('Order XV-A CMH')}</span>
-                        </div>
+                        ) : (
+                          <span className="badge badge-pending">{trStat(c.status)}</span>
+                        )}
                       </td>
                       <td>
-                        <div style={{ display: 'flex', gap: '0.4rem' }}>
+                        {(c.status === 'DISPOSED' || c.verdict) ? (
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.15rem' }}>
+                            <strong style={{ fontSize: '0.85rem', color: '#047857' }}>
+                              ⚖️ {c.verdict?.judgment_date || 'Concluded'}
+                            </strong>
+                            <span style={{ fontSize: '0.72rem', color: '#475569' }}>
+                              {c.verdict?.verdict_title || 'Operative Decree Pronounced'}
+                            </span>
+                          </div>
+                        ) : (
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.2rem' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                              <strong style={{ fontSize: '0.85rem', color: '#070d1e' }}>{c.next_hearing_formatted ? trRel(c.next_hearing_formatted) : tr('Pending')}</strong>
+                              {c.next_hearing_relative && (
+                                <span className={`hearing-pill-badge ${c.next_hearing_relative.includes('Next Week') ? 'pill-next-week' : (c.next_hearing_relative.includes('Next Month') ? 'pill-next-month' : 'pill-standard')}`} style={{ fontSize: '0.68rem', padding: '0.1rem 0.45rem' }}>
+                                  {trRel(c.next_hearing_relative)}
+                                </span>
+                              )}
+                            </div>
+                            <span style={{ fontSize: '0.72rem', color: '#71717a' }}>{c.next_hearing_purpose ? tr(c.next_hearing_purpose) : tr('Order XV-A CMH')}</span>
+                          </div>
+                        )}
+                      </td>
+                      <td>
+                        <div style={{ display: 'flex', gap: '0.35rem', flexWrap: 'wrap' }}>
+                          {(c.status === 'DISPOSED' || c.verdict) ? (
+                            <button 
+                              onClick={() => {
+                                loadCaseDossier(c.cnr_number);
+                                setDossierSubTab('verdict');
+                                setActiveTab('search');
+                              }}
+                              style={{
+                                background: '#047857',
+                                color: 'white',
+                                border: 'none',
+                                padding: '0.35rem 0.65rem',
+                                borderRadius: '6px',
+                                fontSize: '0.75rem',
+                                fontWeight: 700,
+                                cursor: 'pointer',
+                                display: 'inline-flex',
+                                alignItems: 'center',
+                                gap: '0.25rem',
+                                boxShadow: '0 2px 6px rgba(4, 120, 87, 0.3)'
+                              }}
+                            >
+                              <Award size={12} />
+                              {tr('View Verdict')}
+                            </button>
+                          ) : (
+                            <button 
+                              onClick={() => {
+                                setActiveCase(c);
+                                loadMatrix(c.id);
+                                setActiveTab('matrix');
+                              }}
+                              style={{
+                                background: '#070d1e',
+                                color: 'white',
+                                border: 'none',
+                                padding: '0.35rem 0.65rem',
+                                borderRadius: '6px',
+                                fontSize: '0.75rem',
+                                fontWeight: 600,
+                                cursor: 'pointer'
+                              }}
+                            >
+                              {tr('Open Matrix')}
+                            </button>
+                          )}
                           <button 
                             onClick={() => {
-                              setActiveCase(c);
-                              loadMatrix(c.id);
-                              setActiveTab('matrix');
+                              loadCaseDossier(c.cnr_number);
+                              setDossierSubTab('all');
+                              setActiveTab('search');
                             }}
-                            style={{
-                              background: '#070d1e',
-                              color: 'white',
-                              border: 'none',
-                              padding: '0.35rem 0.65rem',
-                              borderRadius: '6px',
-                              fontSize: '0.75rem',
-                              fontWeight: 600,
-                              cursor: 'pointer'
-                            }}
-                          >
-                            {tr('Open Matrix')}
-                          </button>
-                          <button 
-                            onClick={() => loadCaseDossier(c.cnr_number)}
                             style={{
                               background: '#d97706',
                               color: 'white',
@@ -4935,7 +5504,7 @@ export default function App() {
                             }}
                           >
                             <Search size={12} />
-                            {tr('Full Dossier')}
+                            {tr('Dossier')}
                           </button>
                         </div>
                       </td>
@@ -4943,6 +5512,7 @@ export default function App() {
                   ))}
                 </tbody>
               </table>
+              </div>
             </div>
           </div>
         )}
@@ -5009,7 +5579,7 @@ export default function App() {
               </div>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1rem', marginBottom: '1.5rem' }}>
+            <div className="scheduler-inputs-grid">
               <div>
                 <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, color: 'var(--theme-text-secondary)', marginBottom: '0.35rem' }}>
                   {tr('Target Hearing Date')}
@@ -5062,7 +5632,7 @@ export default function App() {
               </div>
             </div>
 
-            <div style={{ display: 'flex', gap: '1rem' }}>
+            <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
               <button 
                 onClick={handleCheckClash}
                 disabled={checkingClash}
@@ -5362,7 +5932,7 @@ export default function App() {
               </div>
             </div>
 
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', borderTop: '1px dashed #d4d4d8', paddingTop: '1.25rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', borderTop: '1px dashed #d4d4d8', paddingTop: '1.25rem', flexWrap: 'wrap', gap: '1rem' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                 <QrCode size={48} color="#070d1e" />
                 <div style={{ fontSize: '0.75rem', color: '#71717a' }}>
@@ -6475,7 +7045,7 @@ export default function App() {
             </div>
 
             {/* Court Hall Workload & Dispute Distribution Grid */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))', gap: '1.25rem' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))', gap: '1.25rem' }}>
               <div className="court-card">
                 <h4 style={{ fontSize: '1rem', fontWeight: 800, margin: '0 0 1rem 0', color: 'var(--theme-text-primary)' }}>
                   🏛️ Court Hall Active Load & Disposal Efficiency

@@ -38,6 +38,23 @@ class PleadingResponse(BaseModel):
     submitted_at: datetime
     exhibits: List[ExhibitResponse] = []
 
+class FinalVerdictRecord(BaseModel):
+    verdict_type: str  # "DECREED_FOR_PLAINTIFF", "SUIT_DISMISSED", "SETTLED_VIA_ADR"
+    verdict_title: str
+    winning_party: str
+    losing_party: str
+    decree_amount: Optional[Decimal] = None
+    interest_rate: Optional[str] = None
+    costs_awarded: Optional[str] = None
+    judgment_date: str
+    pronouncing_judge: str
+    court_bench: str
+    operative_order: str
+    judicial_reasoning: List[str] = []
+    statutory_law: str
+    sha256_digest: Optional[str] = None
+    qr_verification_code: Optional[str] = None
+
 class CaseResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
@@ -59,6 +76,7 @@ class CaseResponse(BaseModel):
     next_hearing_relative: Optional[str] = None
     next_hearing_time: Optional[str] = None
     next_hearing_hall: Optional[str] = None
+    verdict: Optional[FinalVerdictRecord] = None
 
 class StakeholderSummary(BaseModel):
     model_config = ConfigDict(from_attributes=True)
@@ -136,6 +154,7 @@ class CaseDetailResponse(BaseModel):
     hearings: List[HearingRecord] = []
     cmo: Optional[CMORecord] = None
     timeline: List[TimelineMilestone] = []
+    verdict: Optional[FinalVerdictRecord] = None
 
     next_hearing_date: Optional[str] = None
     next_hearing_formatted: Optional[str] = None
@@ -161,3 +180,4 @@ class CaseSearchResult(BaseModel):
     next_hearing_relative: Optional[str] = None
     next_hearing_time: Optional[str] = None
     next_hearing_hall: Optional[str] = None
+    verdict: Optional[FinalVerdictRecord] = None

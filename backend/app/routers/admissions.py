@@ -12,7 +12,7 @@ from backend.app.security.jwt_auth import get_current_user
 router = APIRouter(prefix="/admissions", tags=["Order XV-A Admissions & Denials Matrix"])
 
 @router.get("/{case_id}", response_model=AdmissionsChecklistResponse)
-def get_admissions_matrix(case_id: str, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+def get_admissions_matrix(case_id: str, db: Session = Depends(get_db)):
     """[CMH-203, CMH-204] Fetch live pre-trial Admissions & Denials Matrix for a case."""
     checklist = db.query(AdmissionsChecklist).filter(AdmissionsChecklist.case_id == case_id).first()
     if not checklist:
@@ -39,20 +39,27 @@ def submit_stance(
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Admissions matrix is already locked by the Court.")
 
     case = checklist.case
-    # Check if current user is plaintiff counsel or defendant counsel
-    is_plaintiff = (current_user.id == case.plaintiff_counsel_id) or (current_user.role == RoleType.JUDGE)
-    is_defendant = (current_user.id == case.defendant_counsel_id) or (current_user.role == RoleType.JUDGE)
-
-    if is_plaintiff and not is_defendant:
-        item.plaintiff_stance = payload.stance
-        checklist.plaintiff_submitted_at = datetime.utcnow()
-    elif is_defendant and not is_plaintiff:
+    if payload.party == "DEFENDANT":
         item.defendant_stance = payload.stance
         checklist.defendant_submitted_at = datetime.utcnow()
-    else:
-        # Default fallback for testing or judge review
+    elif payload.party == "PLAINTIFF":
         item.plaintiff_stance = payload.stance
-        item.defendant_stance = payload.stance
+        checklist.plaintiff_submitted_at = datetime.utcnow()
+    else:
+        # Check if current user is plaintiff counsel or defendant counsel
+        is_plaintiff = (current_user.id == case.plaintiff_counsel_id) or (current_user.role == RoleType.JUDGE)
+        is_defendant = (current_user.id == case.defendant_counsel_id) or (current_user.role == RoleType.JUDGE)
+
+        if is_plaintiff and not is_defendant:
+            item.plaintiff_stance = payload.stance
+            checklist.plaintiff_submitted_at = datetime.utcnow()
+        elif is_defendant and not is_plaintiff:
+            item.defendant_stance = payload.stance
+            checklist.defendant_submitted_at = datetime.utcnow()
+        else:
+            # Default fallback for testing or judge review
+            item.plaintiff_stance = payload.stance
+            item.defendant_stance = payload.stance
 
     if payload.statutory_denial_reason:
         item.statutory_denial_reason = payload.statutory_denial_reason

@@ -1,131 +1,165 @@
-@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Inter:wght@300;400;500;600;700;800&family=Merriweather:wght@400;700;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
 
 :root,
 body.light-theme,
 [data-theme="light"],
 .light-theme {
   /* =========================================================
-     CLASSIC MP HIGH COURT NAVY & SAFFRON GOLD (LIGHT MODE)
+     LEGAL CASE HEARING PORTAL THEME:
+     Deep Navy (#1B2A41), Antique Gold (#B8903D), Clean Neutrals
      ========================================================= */
   
   /* Primary Judicial Navy Palette */
-  --theme-navy: #0f172a;
-  --theme-navy-deep: #070d1e;
-  --theme-navy-mid: #1e3a8a;
-  --theme-navy-surface: #1e293b;
-  --theme-navy-border: #334155;
-  --theme-navy-light: #2563eb;
-  --theme-navy-tint: #f0f4fc;
+  --theme-navy: #1B2A41;
+  --theme-navy-deep: #121C2B;
+  --theme-navy-mid: #253852;
+  --theme-navy-surface: #2E3F59;
+  --theme-navy-border: #D9D6CE;
+  --theme-navy-light: #2F5D8C;
+  --theme-navy-tint: #EEF3F8;
 
-  /* Regal Court Saffron Gold Palette */
-  --theme-gold: #d97706;
-  --theme-gold-hover: #b45309;
-  --theme-gold-deep: #92400e;
-  --theme-gold-light: #f59e0b;
-  --theme-gold-tint: #fffbeb;
-  --theme-gold-border: #fde68a;
-  --theme-gold-glow: rgba(217, 119, 6, 0.28);
+  /* Antique Gold Palette (Highlights, Thin Accent Line, Active States) */
+  --theme-gold: #B8903D;
+  --theme-gold-hover: #A07D33;
+  --theme-gold-deep: #8C6A24;
+  --theme-gold-light: #C9A04C;
+  --theme-gold-tint: #FAF6EC;
+  --theme-gold-border: #E8D8B0;
+  --theme-gold-glow: rgba(184, 144, 61, 0.25);
 
   /* Full Compatibility Aliases (theme-orange / theme-black) */
-  --theme-orange: #d97706;
-  --theme-orange-hover: #b45309;
-  --theme-orange-deep: #92400e;
-  --theme-orange-light: #f59e0b;
-  --theme-orange-tint: #fffbeb;
-  --theme-orange-border: #fde68a;
-  --theme-orange-glow: rgba(217, 119, 6, 0.28);
+  --theme-orange: #B8903D;
+  --theme-orange-hover: #A07D33;
+  --theme-orange-deep: #8C6A24;
+  --theme-orange-light: #C9A04C;
+  --theme-orange-tint: #FAF6EC;
+  --theme-orange-border: #E8D8B0;
+  --theme-orange-glow: rgba(184, 144, 61, 0.25);
 
-  --theme-black: #0f172a;
-  --theme-black-elevated: #1e293b;
-  --theme-dark-surface: #0f172a;
-  --theme-dark-border: #1e3a8a;
+  --theme-black: #1B2A41;
+  --theme-black-elevated: #253852;
+  --theme-dark-surface: #1B2A41;
+  --theme-dark-border: #2E3F59;
 
-  /* Surfaces & Typography */
-  --theme-white: #ffffff;
-  --theme-bg: #f8fafc;
-  --theme-card: #ffffff;
-  --theme-card-bg: #ffffff;
-  --theme-border: #e2e8f0;
+  /* Surfaces & Typography (Clean Neutrals) */
+  --theme-white: #FFFFFF;
+  --theme-bg: #F7F6F2;
+  --theme-card: #FFFFFF;
+  --theme-card-bg: #FFFFFF;
+  --theme-border: #D9D6CE;
   
-  --theme-text-primary: #0f172a;
-  --theme-text-secondary: #334155;
-  --theme-text-muted: #64748b;
+  --theme-text-primary: #2B2B2B;
+  --theme-text-secondary: #4A5568;
+  --theme-text-muted: #718096;
+
+  /* Hearing Status Colors */
+  --status-scheduled: #2F5D8C;
+  --status-scheduled-bg: #EEF4FA;
+  --status-scheduled-border: #BCD0E3;
+
+  --status-completed: #2E7D4F;
+  --status-completed-bg: #EAF5EE;
+  --status-completed-border: #B2D8C0;
+
+  --status-pending: #C98A1B;
+  --status-pending-bg: #FDF6E8;
+  --status-pending-border: #F3DCAC;
+
+  --status-cancelled: #A33A3A;
+  --status-cancelled-bg: #FBF0F0;
+  --status-cancelled-border: #E7BDBD;
 
   /* Legacy variable mapping to ensure 100% theme consistency */
-  --primary-navy: #0f172a;
-  --primary-dark: #070d1e;
-  --court-gold: #d97706;
-  --court-gold-light: #fffbeb;
-  --accent-blue: #1e3a8a;
-  --accent-blue-light: #eff6ff;
-  --emerald-green: #059669;
-  --emerald-light: #ecfdf5;
-  --danger-red: #ef4444;
-  --danger-light: #fef2f2;
-  --bg-slate: #f8fafc;
-  --bg-card: #ffffff;
-  --border-slate: #e2e8f0;
-  --text-main: #0f172a;
-  --text-muted: #64748b;
+  --primary-navy: #1B2A41;
+  --primary-dark: #121C2B;
+  --court-gold: #B8903D;
+  --court-gold-light: #FAF6EC;
+  --accent-blue: #2F5D8C;
+  --accent-blue-light: #EEF4FA;
+  --emerald-green: #2E7D4F;
+  --emerald-light: #EAF5EE;
+  --danger-red: #A33A3A;
+  --danger-light: #FBF0F0;
+  --bg-slate: #F7F6F2;
+  --bg-card: #FFFFFF;
+  --border-slate: #D9D6CE;
+  --text-main: #2B2B2B;
+  --text-muted: #718096;
 
   /* Precision Judicial Shadows */
-  --shadow-sm: 0 1px 3px 0 rgba(15, 23, 42, 0.06);
-  --shadow-md: 0 4px 10px -1px rgba(15, 23, 42, 0.08), 0 2px 4px -2px rgba(15, 23, 42, 0.04);
-  --shadow-lg: 0 12px 24px -4px rgba(15, 23, 42, 0.12), 0 4px 8px -4px rgba(15, 23, 42, 0.04);
-  --shadow-orange: 0 8px 24px -4px rgba(217, 119, 6, 0.35);
-  --shadow-gold: 0 8px 24px -4px rgba(217, 119, 6, 0.35);
-  --shadow-black: 0 10px 30px -5px rgba(7, 13, 30, 0.45);
+  --shadow-sm: 0 1px 3px 0 rgba(27, 42, 65, 0.05);
+  --shadow-md: 0 4px 10px -1px rgba(27, 42, 65, 0.07), 0 2px 4px -2px rgba(27, 42, 65, 0.03);
+  --shadow-lg: 0 12px 24px -4px rgba(27, 42, 65, 0.10), 0 4px 8px -4px rgba(27, 42, 65, 0.03);
+  --shadow-orange: 0 8px 24px -4px rgba(184, 144, 61, 0.28);
+  --shadow-gold: 0 8px 24px -4px rgba(184, 144, 61, 0.28);
+  --shadow-black: 0 10px 30px -5px rgba(18, 28, 43, 0.35);
 }
 
 /* =========================================================
-   CLASSIC MP HIGH COURT NAVY & SAFFRON GOLD (DARK THEME)
+   LEGAL CASE HEARING PORTAL THEME (DARK MODE)
    ========================================================= */
 body.dark-theme,
 [data-theme="dark"],
 .dark-theme {
-  --theme-navy: #070d1e;
-  --theme-navy-deep: #030712;
-  --theme-navy-mid: #1e3a8a;
-  --theme-navy-surface: #0f172a;
-  --theme-navy-border: #1e3a8a;
-  --theme-navy-light: #3b82f6;
-  --theme-navy-tint: rgba(30, 58, 138, 0.2);
+  --theme-navy: #0E1724;
+  --theme-navy-deep: #080D15;
+  --theme-navy-mid: #1B2A41;
+  --theme-navy-surface: #1B2A41;
+  --theme-navy-border: #2E3F59;
+  --theme-navy-light: #416E9B;
+  --theme-navy-tint: rgba(47, 93, 140, 0.2);
 
-  --theme-gold: #f59e0b;
-  --theme-gold-hover: #fbbf24;
-  --theme-gold-deep: #d97706;
-  --theme-gold-light: #fde047;
-  --theme-gold-tint: rgba(245, 158, 11, 0.16);
-  --theme-gold-border: rgba(245, 158, 11, 0.4);
-  --theme-gold-glow: rgba(245, 158, 11, 0.35);
+  --theme-gold: #CBA34E;
+  --theme-gold-hover: #D8B363;
+  --theme-gold-deep: #B8903D;
+  --theme-gold-light: #E4C67D;
+  --theme-gold-tint: rgba(184, 144, 61, 0.18);
+  --theme-gold-border: rgba(203, 163, 78, 0.45);
+  --theme-gold-glow: rgba(203, 163, 78, 0.35);
 
-  --theme-orange: #f59e0b;
-  --theme-orange-hover: #fbbf24;
-  --theme-orange-deep: #d97706;
-  --theme-orange-light: #fde047;
-  --theme-orange-tint: rgba(245, 158, 11, 0.16);
-  --theme-orange-border: rgba(245, 158, 11, 0.4);
-  --theme-orange-glow: rgba(245, 158, 11, 0.35);
+  --theme-orange: #CBA34E;
+  --theme-orange-hover: #D8B363;
+  --theme-orange-deep: #B8903D;
+  --theme-orange-light: #E4C67D;
+  --theme-orange-tint: rgba(184, 144, 61, 0.18);
+  --theme-orange-border: rgba(203, 163, 78, 0.45);
+  --theme-orange-glow: rgba(203, 163, 78, 0.35);
 
-  --theme-bg: #070d1e;
-  --theme-card: #0f172a;
-  --theme-card-bg: #0f172a;
-  --theme-border: #1e293b;
+  --theme-bg: #0E1724;
+  --theme-card: #1B2A41;
+  --theme-card-bg: #1B2A41;
+  --theme-border: #2E3F59;
   
-  --theme-black: #070d1e;
-  --theme-black-elevated: #0f172a;
-  --theme-dark-surface: #0f172a;
-  --theme-dark-border: #1e3a8a;
+  --theme-black: #0E1724;
+  --theme-black-elevated: #1B2A41;
+  --theme-dark-surface: #1B2A41;
+  --theme-dark-border: #2E3F59;
 
-  --theme-text-primary: #f8fafc;
-  --theme-text-secondary: #cbd5e1;
-  --theme-text-muted: #94a3b8;
+  --theme-text-primary: #F7F6F2;
+  --theme-text-secondary: #D9D6CE;
+  --theme-text-muted: #94A3B8;
 
-  --bg-slate: #070d1e;
-  --bg-card: #0f172a;
-  --border-slate: #1e293b;
-  --text-main: #f8fafc;
-  --text-muted: #94a3b8;
+  --status-scheduled: #5A87B6;
+  --status-scheduled-bg: rgba(47, 93, 140, 0.25);
+  --status-scheduled-border: rgba(90, 135, 182, 0.5);
+
+  --status-completed: #4EAA73;
+  --status-completed-bg: rgba(46, 125, 79, 0.25);
+  --status-completed-border: rgba(78, 170, 115, 0.5);
+
+  --status-pending: #E0A638;
+  --status-pending-bg: rgba(201, 138, 27, 0.25);
+  --status-pending-border: rgba(224, 166, 56, 0.5);
+
+  --status-cancelled: #C95A5A;
+  --status-cancelled-bg: rgba(163, 58, 58, 0.25);
+  --status-cancelled-border: rgba(201, 90, 90, 0.5);
+
+  --bg-slate: #0E1724;
+  --bg-card: #1B2A41;
+  --border-slate: #2E3F59;
+  --text-main: #F7F6F2;
+  --text-muted: #94A3B8;
 
   --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.5);
   --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.6);
@@ -138,9 +172,19 @@ body.dark-theme,
   padding: 0;
 }
 
+html, body {
+  max-width: 100vw;
+  overflow-x: hidden;
+  -webkit-text-size-adjust: 100%;
+}
+
 html {
   font-size: 100%;
   transition: font-size 0.2s ease;
+}
+
+img, svg {
+  max-width: 100%;
 }
 
 html[data-font-size="small"] {
@@ -195,6 +239,28 @@ body {
   font-family: 'JetBrains Mono', 'Fira Code', monospace;
 }
 
-.serif-court {
-  font-family: 'Cinzel', Georgia, serif;
+h1, h2, h3, .serif-court {
+  font-family: 'Merriweather', 'Cinzel', Georgia, serif;
+}
+
+@media (max-width: 860px) {
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="search"],
+  input[type="date"],
+  input[type="time"],
+  input[type="number"],
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
+
+  button, 
+  [role="button"],
+  .tab-btn,
+  .role-pill,
+  .bench-pill {
+    touch-action: manipulation;
+  }
 }
