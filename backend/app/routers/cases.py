@@ -3,7 +3,7 @@ import hashlib
 from decimal import Decimal
 from typing import List, Optional
 from datetime import datetime, date, timedelta
-from fastapi import APIRouter, Depends, HTTPException, status, Query
+from fastapi import APIRouter, Depends, HTTPException, status, Query, Response
 from sqlalchemy import or_
 from sqlalchemy.orm import Session
 from backend.app.database import get_db
@@ -1061,4 +1061,115 @@ def generate_cmo_order(
     decree_bundle["sha256_digest"] = sha256_seal
     decree_bundle["vault_id"] = vault.vault_id
     return decree_bundle
+
+@router.get("/{identifier}/export-ics", summary="Export Case Management Order compliance deadlines as .ics iCalendar file")
+def export_cmo_deadlines_ics(identifier: str, db: Session = Depends(get_db)):
+    """
+    Exports the statutory compliance deadlines and discovery timetable
+    for the specified case in RFC 5545 iCalendar (.ics) format.
+    Allows advocates to synchronize court deadlines directly into Google Calendar,
+    Apple Calendar, Microsoft Outlook, or digital legal diaries.
+    """
+    clean_id = identifier.strip()
+    case = db.query(Case).filter(
+        or_(
+            Case.cnr_number == clean_id,
+            Case.id == clean_id,
+            Case.cnr_number.ilike(f"%{clean_id}%"),
+            Case.case_title.ilike(f"%{clean_id}%")
+        )
+    ).first()
+
+    if not case:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Case record with identifier '{clean_id}' was not found in the court system."
+        )
+
+    cmo = db.query(CaseManagementOrder).filter(CaseManagementOrder.case_id == case.id).first()
+    
+    events = []
+    base_date = cmo.order_date.date() if (cmo and cmo.order_date) else (case.filing_date.date() if case.filing_date else date.today())
+    
+    if cmo and cmo.deadlines:
+        for idx, d in enumerate(cmo.deadlines):
+            due = d.due_date if isinstance(d.due_date, (date, datetime)) else date.fromisoformat(str(d.due_date))
+            next_day = due + timedelta(days=1)
+            status_str = d.status.value if hasattr(d.status, 'value') else str(d.status)
+            events.append({
+                "uid": f"cmo-dl-{d.id}@{case.cnr_number}.mphc.gov.in",
+                "summary": f"[Court Deadline] {d.task_description} - {case.cnr_number}",
+                "description": f"Mandatory compliance deadline under Order XV-A Rule 6 CPC for {case.case_title} (CNR: {case.cnr_number}). Task: {d.task_description}. Status: {status_str}. Presiding Judge: Hon'ble Justice Rajesh Sharma, Commercial Court Bench at Indore.",
+                "dtstart": due.strftime("%Y%m%d"),
+                "dtend": next_day.strftime("%Y%m%d")
+            })
+    else:
+        # Statutory standard discovery schedule under Order XV-A CPC
+        d1 = base_date + timedelta(days=15)
+        d2 = base_date + timedelta(days=30)
+        d3 = base_date + timedelta(days=45)
+        events = [
+            {
+                "uid": f"cmo-stat-1-{case.cnr_number}@mphc.gov.in",
+                "summary": f"[Court Deadline] Filing of Witness Affidavits - {case.cnr_number}",
+                "description": f"Mandatory submission of witness affidavits in lieu of examination-in-chief pursuant to Order XV-A Rule 6 CPC for {case.case_title} (CNR: {case.cnr_number}). Bench: Court Hall 04, Indore Bench.",
+                "dtstart": d1.strftime("%Y%m%d"),
+                "dtend": (d1 + timedelta(days=1)).strftime("%Y%m%d")
+            },
+            {
+                "uid": f"cmo-stat-2-{case.cnr_number}@mphc.gov.in",
+                "summary": f"[Court Deadline] Inspection of Original Documents - {case.cnr_number}",
+                "description": f"Mandatory physical & electronic inspection of original discovery documents under Order XV-A Rule 3 CPC for {case.case_title} (CNR: {case.cnr_number}). Bench: Court Hall 04, Indore Bench.",
+                "dtstart": d2.strftime("%Y%m%d"),
+                "dtend": (d2 + timedelta(days=1)).strftime("%Y%m%d")
+            },
+            {
+                "uid": f"cmo-stat-3-{case.cnr_number}@mphc.gov.in",
+                "summary": f"[Court Hearing] Trial Commencement Date - {case.cnr_number}",
+                "description": f"Commencement of Trial and Oral Examination of Witnesses under Order XV-A Rule 7 CPC for {case.case_title} (CNR: {case.cnr_number}). Presiding Judge: Hon'ble Justice Rajesh Sharma, Court Hall 04, Indore Bench.",
+                "dtstart": d3.strftime("%Y%m%d"),
+                "dtend": (d3 + timedelta(days=1)).strftime("%Y%m%d")
+            }
+        ]
+
+    now_utc = datetime.utcnow().strftime("%Y%m%dT%H%M%SZ")
+    lines = [
+        "BEGIN:VCALENDAR",
+        "VERSION:2.0",
+        "PRODID:-//High Court of Madhya Pradesh//Commercial Case Management System//EN",
+        "CALSCALE:GREGORIAN",
+        "METHOD:PUBLISH",
+        f"X-WR-CALNAME:CMO Deadlines - {case.cnr_number}",
+        "X-WR-TIMEZONE:Asia/Kolkata"
+    ]
+    for ev in events:
+        lines.extend([
+            "BEGIN:VEVENT",
+            f"UID:{ev['uid']}",
+            f"DTSTAMP:{now_utc}",
+            f"DTSTART;VALUE=DATE:{ev['dtstart']}",
+            f"DTEND;VALUE=DATE:{ev['dtend']}",
+            f"SUMMARY:{ev['summary']}",
+            f"DESCRIPTION:{ev['description']}",
+            "LOCATION:Commercial Court Hall 04, Indore Bench, High Court of Madhya Pradesh",
+            "STATUS:CONFIRMED",
+            "CATEGORIES:COURT_DEADLINE,LEGAL,COMPLIANCE",
+            "BEGIN:VALARM",
+            "TRIGGER:-P1D",
+            "ACTION:DISPLAY",
+            f"DESCRIPTION:Court Compliance Deadline Reminder: {ev['summary']}",
+            "END:VALARM",
+            "END:VEVENT"
+        ])
+    lines.append("END:VCALENDAR")
+    ics_text = "\r\n".join(lines) + "\r\n"
+
+    return Response(
+        content=ics_text,
+        media_type="text/calendar; charset=utf-8",
+        headers={
+            "Content-Disposition": f'attachment; filename="CMO_Compliance_Deadlines_{case.cnr_number}.ics"'
+        }
+    )
+
 

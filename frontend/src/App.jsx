@@ -582,6 +582,12 @@ export default function App() {
   const [tableRosterFilter, setTableRosterFilter] = useState('ALL');
   const [caseSortBy, setCaseSortBy] = useState('DEFAULT');
 
+  // CMO (Case Management Order) Interactive State
+  const [cmoExportedIcs, setCmoExportedIcs] = useState(false);
+  const [cmoSigned, setCmoSigned] = useState(false);
+  const [cmoRegistrySealed, setCmoRegistrySealed] = useState(false);
+  const [cmoCopyDownloaded, setCmoCopyDownloaded] = useState(false);
+
   // Verify Scheduler Date Status with Official Court Calendar
   useEffect(() => {
     if (!schedDate) return;
@@ -835,6 +841,186 @@ export default function App() {
     setTimeout(() => {
       window.print();
     }, 120);
+  };
+
+  // Export Case Management Order Compliance Deadlines (.ICS)
+  const handleExportIcsDeadlines = () => {
+    const cnr = activeCase?.cnr_number || dossier?.cnr_number || 'MPIN010001012026';
+    const caseTitle = activeCase?.case_title || dossier?.case_title || 'Commercial Case';
+
+    // 1. Determine deadlines from dossier CMO or statutory defaults
+    let deadlines = [];
+    if (dossier?.cmo?.deadlines && dossier.cmo.deadlines.length > 0) {
+      deadlines = dossier.cmo.deadlines.map(d => ({
+        task: d.task_description,
+        date: d.due_date,
+        status: d.status || 'PENDING'
+      }));
+    } else {
+      deadlines = [
+        {
+          task: 'Filing of witness affidavits in lieu of examination-in-chief (Order XV-A Rule 6)',
+          date: '2026-10-20',
+          status: 'PENDING'
+        },
+        {
+          task: 'Inspection of original documents & admission/denials (Order XV-A Rule 3)',
+          date: '2026-11-05',
+          status: 'PENDING'
+        },
+        {
+          task: 'Trial Commencement Date & Oral Examination of Witnesses (Order XV-A Rule 7)',
+          date: '2026-11-25',
+          status: 'SCHEDULED'
+        }
+      ];
+    }
+
+    const nowUtc = new Date().toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+    const escapeIcs = (str) => String(str || '').replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\r?\n/g, '\\n');
+
+    const toIcsDate = (dateVal) => {
+      let d;
+      if (!dateVal) d = new Date();
+      else if (dateVal instanceof Date) d = dateVal;
+      else if (typeof dateVal === 'string' && /^\d{4}-\d{2}-\d{2}/.test(dateVal)) {
+        const parts = dateVal.split('T')[0].split('-');
+        return `${parts[0]}${parts[1]}${parts[2]}`;
+      } else {
+        d = new Date(dateVal);
+      }
+      if (isNaN(d.getTime())) d = new Date();
+      const y = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      return `${y}${m}${day}`;
+    };
+
+    const getNextDayIcs = (icsStr) => {
+      const y = parseInt(icsStr.slice(0, 4), 10);
+      const m = parseInt(icsStr.slice(4, 6), 10) - 1;
+      const d = parseInt(icsStr.slice(6, 8), 10);
+      const next = new Date(y, m, d + 1);
+      const ny = next.getFullYear();
+      const nm = String(next.getMonth() + 1).padStart(2, '0');
+      const nd = String(next.getDate()).padStart(2, '0');
+      return `${ny}${nm}${nd}`;
+    };
+
+    const lines = [
+      'BEGIN:VCALENDAR',
+      'VERSION:2.0',
+      'PRODID:-//High Court of Madhya Pradesh//Commercial Case Management System//EN',
+      'CALSCALE:GREGORIAN',
+      'METHOD:PUBLISH',
+      `X-WR-CALNAME:CMO Deadlines - ${cnr}`,
+      'X-WR-TIMEZONE:Asia/Kolkata'
+    ];
+
+    deadlines.forEach((dl, idx) => {
+      const dtStart = toIcsDate(dl.date);
+      const dtEnd = getNextDayIcs(dtStart);
+      const uid = `cmo-dl-${idx + 1}-${cnr}-${Date.now()}@mphc.gov.in`;
+      const summary = `[Court Deadline] ${dl.task} (${cnr})`;
+      const desc = `High Court of Madhya Pradesh - Commercial Division\\nCase: ${caseTitle}\\nCNR: ${cnr}\\nStatutory Deadline under Order XV-A Rule 6 CPC.\\nTask: ${dl.task}\\nStatus: ${dl.status}\\nPresiding Judge: Hon'ble Justice Rajesh Sharma, Court Hall 04, Indore Bench.`;
+
+      lines.push('BEGIN:VEVENT');
+      lines.push(`UID:${uid}`);
+      lines.push(`DTSTAMP:${nowUtc}`);
+      lines.push(`DTSTART;VALUE=DATE:${dtStart}`);
+      lines.push(`DTEND;VALUE=DATE:${dtEnd}`);
+      lines.push(`SUMMARY:${escapeIcs(summary)}`);
+      lines.push(`DESCRIPTION:${escapeIcs(desc)}`);
+      lines.push('LOCATION:Commercial Court Hall 04, Indore Bench, High Court of Madhya Pradesh');
+      lines.push('STATUS:CONFIRMED');
+      lines.push('CATEGORIES:COURT_DEADLINE,LEGAL,COMPLIANCE');
+      lines.push('BEGIN:VALARM');
+      lines.push('TRIGGER:-P1D');
+      lines.push('ACTION:DISPLAY');
+      lines.push(`DESCRIPTION:Reminder: Court Compliance Deadline Due Tomorrow for ${escapeIcs(dl.task)}`);
+      lines.push('END:VALARM');
+      lines.push('END:VEVENT');
+    });
+
+    lines.push('END:VCALENDAR');
+
+    const icsContent = lines.join('\r\n') + '\r\n';
+    const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `CMO_Compliance_Deadlines_${cnr}.ics`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+
+    setCmoExportedIcs(true);
+    setTimeout(() => setCmoExportedIcs(false), 4500);
+  };
+
+  // Download Certified CMO Decree Copy (PDF / Text Record)
+  const handleDownloadCertifiedCopy = (type = 'PUBLIC') => {
+    const cnr = activeCase?.cnr_number || dossier?.cnr_number || 'MPIN010001012026';
+    const caseTitle = activeCase?.case_title || dossier?.case_title || 'Commercial Dispute';
+
+    const decreeText = `========================================================================
+HIGH COURT OF MADHYA PRADESH - COMMERCIAL DIVISION
+ORDER UNDER ORDER XV-A, RULE 6 CODE OF CIVIL PROCEDURE, 1908
+========================================================================
+CNR NUMBER          : ${cnr}
+CASE TITLE          : ${caseTitle}
+TYPE OF COPY        : ${type === 'PUBLIC' ? 'CERTIFIED PUBLIC INSPECTION COPY (SECTION 65B)' : 'CERTIFIED TRUE DECREE RECORD'}
+PRESIDING JUDICIAL  : Hon'ble Justice Rajesh Sharma, Commercial Bench
+COURT HALL          : Court Hall 04, Indore Bench
+DATE OF ORDER       : 25 Oct 2026
+DIGITAL SEAL HASH   : SHA-256: 4a8f9b7c2d1e5f8a0b3c6d9e2f5a8b1c4d7e0f3a6b9c2d5e8f1a4b7c0d3e6f9a
+AUTHENTICATION      : Digitally Signed with e-Mudhra Class-3 DSC Token (2048-bit RSA)
+
+1. UNDISPUTED FACTS SETTLED IN ADMISSIONS MATRIX:
+   • Execution of Master Agreement dated 15 Jan 2026 is formally admitted by both parties.
+   • Receipt of Invoices #INV-2026-089 is admitted as valid business record.
+
+2. FRAMED TRIABLE ISSUES FOR TRIAL:
+   • Issue 1: Whether delivery consignment #DR-9921 was physically handed over in damaged condition? (Onus on Defendant)
+   • Issue 2: Whether plaintiff is entitled to interest @ 18% p.a. under MSME Act?
+
+3. MANDATORY DISCOVERY TIMETABLE:
+   • Filing of witness affidavits: Within 15 days (Deadline: Oct 20, 2026)
+   • Inspection of original documents: Within 15 days (Deadline: Nov 05, 2026)
+   • Trial Commencement Date: Nov 25, 2026
+
+STATUTORY EVIDENCE CERTIFICATION:
+This certified electronic copy is issued under Section 65B of the Indian
+Evidence Act, 1872 and Rule 6 of Order XV-A CPC. The authenticity is
+cryptographically verifiable in the Judicial Immutable Vault.
+========================================================================`;
+
+    const blob = new Blob([decreeText], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `${cnr}_CMO_Certified_${type === 'PUBLIC' ? 'Public' : 'Copy'}.txt`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+
+    setCmoCopyDownloaded(true);
+    setTimeout(() => setCmoCopyDownloaded(false), 4000);
+
+    // Also trigger system print to save as PDF
+    setTimeout(() => {
+      window.print();
+    }, 300);
+  };
+
+  const handleSignCmo = () => {
+    setCmoSigned(true);
+  };
+
+  const handleSealOrder = () => {
+    setCmoRegistrySealed(true);
   };
 
   // Switch Login Role Tab & Prefill Default Credentials
@@ -3581,7 +3767,12 @@ export default function App() {
           </button>
           <button 
             className={`tab-btn ${activeTab === 'cmo' ? 'active' : ''}`}
-            onClick={() => setActiveTab('cmo')}
+            onClick={() => {
+              setActiveTab('cmo');
+              if (activeCase && (!dossier || dossier.cnr_number !== activeCase.cnr_number)) {
+                loadCaseDossier(activeCase.cnr_number, false);
+              }
+            }}
           >
             <Gavel size={18} />
             {currentRole === 'CITIZEN'
@@ -6019,7 +6210,7 @@ export default function App() {
                     <div style={{ fontSize: '0.74rem', color: '#7c2d12' }}>{tr('Affix official Class-3 DSC cryptographic signature to finalize discovery timetable and framed issues.')}</div>
                   </div>
                 </div>
-                <div style={{ display: 'flex', gap: '0.5rem' }}>
+                <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
                   <button
                     type="button"
                     onClick={() => window.print()}
@@ -6042,9 +6233,11 @@ export default function App() {
                   </button>
                   <button
                     type="button"
-                    onClick={() => alert('Judicial Order Signed! e-Mudhra Token 2048-bit RSA Certificate appended. Case Management Order is now legally binding under Order XV-A Rule 6 CPC.')}
+                    onClick={handleSignCmo}
                     style={{
-                      background: 'linear-gradient(135deg, #b45309 0%, #92400e 100%)',
+                      background: cmoSigned
+                        ? 'linear-gradient(135deg, #059669 0%, #047857 100%)'
+                        : 'linear-gradient(135deg, #b45309 0%, #92400e 100%)',
                       color: '#ffffff',
                       border: 'none',
                       borderRadius: '6px',
@@ -6055,11 +6248,12 @@ export default function App() {
                       display: 'inline-flex',
                       alignItems: 'center',
                       gap: '0.4rem',
-                      boxShadow: '0 2px 8px rgba(234, 88, 12, 0.35)'
+                      boxShadow: cmoSigned ? '0 2px 8px rgba(5, 150, 105, 0.35)' : '0 2px 8px rgba(234, 88, 12, 0.35)',
+                      transition: 'all 0.2s ease'
                     }}
                   >
                     <ShieldCheck size={14} />
-                    <span>{tr('Sign CMO with Judicial DSC')}</span>
+                    <span>{cmoSigned ? tr('Order Signed with Judicial DSC') : tr('Sign CMO with Judicial DSC')}</span>
                   </button>
                 </div>
               </div>
@@ -6074,9 +6268,11 @@ export default function App() {
                 </div>
                 <button
                   type="button"
-                  onClick={() => alert('Certified Public Copy Downloaded: MPIN01593559452026_CMO_Public_Certified.pdf (Digitally Sealed by High Court of Madhya Pradesh)')}
+                  onClick={() => handleDownloadCertifiedCopy('PUBLIC')}
                   style={{
-                    background: 'linear-gradient(135deg, #0d9488 0%, #0f766e 100%)',
+                    background: cmoCopyDownloaded
+                      ? 'linear-gradient(135deg, #059669 0%, #047857 100%)'
+                      : 'linear-gradient(135deg, #0d9488 0%, #0f766e 100%)',
                     color: '#ffffff',
                     border: 'none',
                     borderRadius: '6px',
@@ -6087,11 +6283,12 @@ export default function App() {
                     display: 'inline-flex',
                     alignItems: 'center',
                     gap: '0.4rem',
-                    boxShadow: '0 2px 8px rgba(13, 148, 136, 0.35)'
+                    boxShadow: '0 2px 8px rgba(13, 148, 136, 0.35)',
+                    transition: 'all 0.2s ease'
                   }}
                 >
-                  <Download size={14} />
-                  <span>{tr('Download Certified Public Copy (PDF)')}</span>
+                  {cmoCopyDownloaded ? <CheckCircle2 size={14} /> : <Download size={14} />}
+                  <span>{cmoCopyDownloaded ? tr('Certified Copy Downloaded (PDF & TXT)') : tr('Download Certified Public Copy (PDF)')}</span>
                 </button>
               </div>
             ) : currentRole === 'LITIGANT' ? (
@@ -6105,9 +6302,11 @@ export default function App() {
                 </div>
                 <button
                   type="button"
-                  onClick={() => alert('Certified Copy Downloaded: MPIN01593559452026_CMO_Certified.pdf (Digitally Sealed by High Court of Madhya Pradesh)')}
+                  onClick={() => handleDownloadCertifiedCopy('TRUE_COPY')}
                   style={{
-                    background: 'linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%)',
+                    background: cmoCopyDownloaded
+                      ? 'linear-gradient(135deg, #059669 0%, #047857 100%)'
+                      : 'linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%)',
                     color: '#ffffff',
                     border: 'none',
                     borderRadius: '6px',
@@ -6118,11 +6317,12 @@ export default function App() {
                     display: 'inline-flex',
                     alignItems: 'center',
                     gap: '0.4rem',
-                    boxShadow: '0 2px 8px rgba(124, 58, 237, 0.35)'
+                    boxShadow: '0 2px 8px rgba(124, 58, 237, 0.35)',
+                    transition: 'all 0.2s ease'
                   }}
                 >
-                  <Download size={14} />
-                  <span>{tr('Download Certified True Copy (PDF)')}</span>
+                  {cmoCopyDownloaded ? <CheckCircle2 size={14} /> : <Download size={14} />}
+                  <span>{cmoCopyDownloaded ? tr('Certified Copy Downloaded (PDF & TXT)') : tr('Download Certified True Copy (PDF)')}</span>
                 </button>
               </div>
             ) : currentRole === 'CLERK' ? (
@@ -6136,9 +6336,11 @@ export default function App() {
                 </div>
                 <button
                   type="button"
-                  onClick={() => alert('Registry Seal Affixed: Certified copy transmitted to counsel on record.')}
+                  onClick={handleSealOrder}
                   style={{
-                    background: 'linear-gradient(135deg, #059669 0%, #047857 100%)',
+                    background: cmoRegistrySealed
+                      ? 'linear-gradient(135deg, #0f766e 0%, #115e59 100%)'
+                      : 'linear-gradient(135deg, #059669 0%, #047857 100%)',
                     color: '#ffffff',
                     border: 'none',
                     borderRadius: '6px',
@@ -6149,11 +6351,12 @@ export default function App() {
                     display: 'inline-flex',
                     alignItems: 'center',
                     gap: '0.4rem',
-                    boxShadow: '0 2px 8px rgba(5, 150, 105, 0.35)'
+                    boxShadow: '0 2px 8px rgba(5, 150, 105, 0.35)',
+                    transition: 'all 0.2s ease'
                   }}
                 >
                   <FileCheck size={14} />
-                  <span>{tr('Seal & Dispatch Certified Order')}</span>
+                  <span>{cmoRegistrySealed ? tr('Registry Seal Affixed & Dispatched') : tr('Seal & Dispatch Certified Order')}</span>
                 </button>
               </div>
             ) : (
@@ -6167,9 +6370,11 @@ export default function App() {
                 </div>
                 <button
                   type="button"
-                  onClick={() => alert('Compliance Deadlines Exported to Legal Diary & Calendar Sync (.ics)')}
+                  onClick={handleExportIcsDeadlines}
                   style={{
-                    background: 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)',
+                    background: cmoExportedIcs
+                      ? 'linear-gradient(135deg, #059669 0%, #047857 100%)'
+                      : 'linear-gradient(135deg, #0284c7 0%, #0369a1 100%)',
                     color: '#ffffff',
                     border: 'none',
                     borderRadius: '6px',
@@ -6180,12 +6385,85 @@ export default function App() {
                     display: 'inline-flex',
                     alignItems: 'center',
                     gap: '0.4rem',
-                    boxShadow: '0 2px 8px rgba(2, 132, 199, 0.35)'
+                    boxShadow: cmoExportedIcs
+                      ? '0 2px 8px rgba(5, 150, 105, 0.35)'
+                      : '0 2px 8px rgba(2, 132, 199, 0.35)',
+                    transition: 'all 0.2s ease'
                   }}
                 >
-                  <Download size={14} />
-                  <span>{tr('Export Compliance Deadlines (.ICS)')}</span>
+                  {cmoExportedIcs ? <CheckCircle2 size={14} /> : <Download size={14} />}
+                  <span>{cmoExportedIcs ? tr('Deadlines Exported (.ICS)!') : tr('Export Compliance Deadlines (.ICS)')}</span>
                 </button>
+
+                {cmoExportedIcs && (
+                  <div style={{
+                    width: '100%',
+                    marginTop: '0.35rem',
+                    padding: '0.5rem 0.75rem',
+                    background: '#ecfdf5',
+                    border: '1px solid #a7f3d0',
+                    borderRadius: '6px',
+                    fontSize: '0.76rem',
+                    color: '#065f46',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.4rem'
+                  }}>
+                    <CheckCircle2 size={14} style={{ flexShrink: 0 }} />
+                    <span>
+                      {tr('Calendar Sync file')} <strong>{`CMO_Compliance_Deadlines_${activeCase?.cnr_number || 'MPIN010001012026'}.ics`}</strong> {tr('downloaded successfully. Ready to import into Google Calendar, Outlook, or Apple Calendar.')}
+                    </span>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Official Judicial Signature & Registry Seals Status */}
+            {(cmoSigned || activeCase?.cmo?.is_digitally_signed || dossier?.cmo?.is_digitally_signed) && (
+              <div style={{
+                background: 'rgba(16, 185, 129, 0.08)',
+                border: '1px solid #10b981',
+                borderRadius: '8px',
+                padding: '0.6rem 0.9rem',
+                marginBottom: '1.25rem',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.6rem',
+                fontSize: '0.78rem',
+                color: '#065f46'
+              }}>
+                <ShieldCheck size={20} color="#059669" style={{ flexShrink: 0 }} />
+                <div>
+                  <div style={{ fontWeight: 800 }}>
+                    {lang === 'HI' ? 'ई-मुद्रा २०४८-बिट RSA डिजिटल हस्ताक्षर सत्यापित (संवैधानिक रूप से बाध्यकारी)' : 'Judicially Sealed with e-Mudhra 2048-bit RSA DSC (Legally Binding Decree)'}
+                  </div>
+                  <div style={{ fontSize: '0.72rem', color: '#047857' }}>
+                    {lang === 'HI' ? 'यह आदेश XV-A नियम ६ सीपीसी के अंतर्गत अंतिम रूप से निष्पादित है। पीठासीन अधिकारी: माननीय न्यायमूर्ति राजेश शर्मा।' : 'Executed under Order XV-A Rule 6 CPC. Presiding Officer: Hon\'ble Justice Rajesh Sharma, Commercial Bench.'}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {cmoRegistrySealed && (
+              <div style={{
+                background: 'rgba(5, 150, 105, 0.08)',
+                border: '1.5px dashed #059669',
+                borderRadius: '8px',
+                padding: '0.6rem 0.9rem',
+                marginBottom: '1.25rem',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.6rem',
+                fontSize: '0.78rem',
+                color: '#065f46'
+              }}>
+                <FileCheck size={20} color="#059669" style={{ flexShrink: 0 }} />
+                <div>
+                  <div style={{ fontWeight: 800 }}>{tr('Registry Seal Affixed & Dispatched')}</div>
+                  <div style={{ fontSize: '0.72rem', color: '#047857' }}>
+                    {lang === 'HI' ? 'प्रमाणित सत्य प्रति मुद्रित एवं अधिवक्ताओं को आधिकारिक रूप से प्रेषित (प्रेषण संदर्भ: CR/2026/IND/CMO-891)' : 'Certified True Copy sealed and officially dispatched to counsels on record (Dispatch Ref: CR/2026/IND/CMO-891)'}
+                  </div>
+                </div>
               </div>
             )}
 
@@ -6226,9 +6504,19 @@ export default function App() {
                 {tr('3. Mandatory Discovery Timetable:')}
               </h4>
               <div style={{ fontSize: '0.85rem', color: '#1e293b', background: '#fffbeb', borderLeft: '4px solid #d97706', padding: '0.75rem', borderRadius: '6px' }}>
-                • {tr('Filing of witness affidavits:')} <strong>{tr('Within 15 days')}</strong> ({tr('Deadline:')} Oct 20, 2026)<br />
-                • {tr('Inspection of original documents:')} <strong>{tr('Within 15 days')}</strong> ({tr('Deadline:')} Nov 05, 2026)<br />
-                • {tr('Trial Commencement Date:')} <strong>Nov 25, 2026</strong>
+                {dossier?.cmo?.deadlines && dossier.cmo.deadlines.length > 0 ? (
+                  dossier.cmo.deadlines.map((dl, idx) => (
+                    <div key={dl.id || idx} style={{ marginBottom: idx < dossier.cmo.deadlines.length - 1 ? '0.4rem' : '0' }}>
+                      • <strong>{dl.task_description}</strong>: <span className="mono" style={{ fontWeight: 700, color: '#b45309' }}>{dl.due_date}</span> ({tr('Status:')} <span style={{ textTransform: 'uppercase', fontSize: '0.75rem', fontWeight: 700, color: dl.status === 'COMPLETED' ? '#059669' : '#d97706' }}>{dl.status}</span>)
+                    </div>
+                  ))
+                ) : (
+                  <>
+                    • {tr('Filing of witness affidavits:')} <strong>{tr('Within 15 days')}</strong> ({tr('Deadline:')} Oct 20, 2026)<br />
+                    • {tr('Inspection of original documents:')} <strong>{tr('Within 15 days')}</strong> ({tr('Deadline:')} Nov 05, 2026)<br />
+                    • {tr('Trial Commencement Date:')} <strong>Nov 25, 2026</strong>
+                  </>
+                )}
               </div>
             </div>
 

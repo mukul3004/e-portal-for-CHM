@@ -162,3 +162,26 @@ def test_notifications_dispatch(client):
     assert "unread_count" in summary
     assert "channel_breakdown" in summary
 
+def test_export_cmo_deadlines_ics(client):
+    # Fetch cases list to get an existing CNR
+    cases_resp = client.get("/api/v1/cases/?limit=5")
+    assert cases_resp.status_code == 200
+    cases_list = cases_resp.json()
+    assert len(cases_list) > 0
+    sample_cnr = cases_list[0]["cnr_number"]
+
+    # Export ICS for this case
+    ics_resp = client.get(f"/api/v1/cases/{sample_cnr}/export-ics")
+    assert ics_resp.status_code == 200
+    assert "text/calendar" in ics_resp.headers["content-type"]
+    assert f"attachment; filename=\"CMO_Compliance_Deadlines_{sample_cnr}.ics\"" in ics_resp.headers["content-disposition"]
+    
+    ics_text = ics_resp.text
+    assert "BEGIN:VCALENDAR" in ics_text
+    assert "VERSION:2.0" in ics_text
+    assert "BEGIN:VEVENT" in ics_text
+    assert "END:VEVENT" in ics_text
+    assert "END:VCALENDAR" in ics_text
+    assert sample_cnr in ics_text
+
+
