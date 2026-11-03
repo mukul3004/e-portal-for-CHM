@@ -5434,69 +5434,74 @@ export default function App() {
               </div>
 
               <div className="court-table-container">
-                <table className="court-table">
+                <table className="court-table" style={{ width: '100%', tableLayout: 'auto' }}>
                 <thead>
                   <tr>
-                    <th>{tr('16-Digit CNR')}</th>
-                    <th>{tr('Case Title')}</th>
-                    <th>{tr('Valuation')}</th>
-                    <th>{tr('Status & Winner')}</th>
-                    <th>{tr('Next Hearing / Resolution')}</th>
-                    <th>{tr('Action')}</th>
+                    <th style={{ width: '15%', whiteSpace: 'nowrap' }}>{tr('16-Digit CNR')}</th>
+                    <th style={{ width: '25%' }}>{tr('Case Title')}</th>
+                    <th style={{ width: '12%', whiteSpace: 'nowrap' }}>{tr('Valuation')}</th>
+                    <th style={{ width: '16%', whiteSpace: 'nowrap' }}>{tr('Status & Winner')}</th>
+                    <th style={{ width: '18%' }}>{tr('Next Hearing / Resolution')}</th>
+                    <th style={{ width: '14%', whiteSpace: 'nowrap' }}>{tr('Action')}</th>
                   </tr>
                 </thead>
                 <tbody>
                   {displayedCases.map((c) => (
                     <tr key={c.id} style={{ background: activeCase?.id === c.id ? '#fffbeb' : 'transparent' }}>
-                      <td className="mono" style={{ fontWeight: 700, color: '#b45309' }}>
+                      <td className="mono" style={{ fontWeight: 700, color: '#b45309', whiteSpace: 'nowrap', fontSize: '0.8rem' }}>
                         {c.cnr_number}
                       </td>
-                      <td style={{ fontWeight: 600, color: '#1e293b' }}>
+                      <td style={{ fontWeight: 600, color: '#1e293b', fontSize: '0.84rem', lineHeight: 1.35 }}>
                         {c.case_title}
                       </td>
-                      <td className="mono">
+                      <td className="mono" style={{ whiteSpace: 'nowrap', fontSize: '0.82rem' }}>
                         ₹ {parseFloat(c.claim_valuation).toLocaleString('en-IN')}
                       </td>
                       <td>
                         {(c.status === 'DISPOSED' || c.verdict) ? (
                           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.2rem' }}>
-                            <span className="badge badge-undisputed" style={{ fontSize: '0.72rem', alignSelf: 'flex-start' }}>
-                              🏆 {c.verdict?.verdict_type === 'DECREED_FOR_PLAINTIFF' ? 'DECREED (WON)' : (c.verdict?.verdict_type === 'SETTLED_VIA_ADR' ? 'ADR COMPROMISE' : 'DISMISSED')}
+                            <span className="badge badge-undisputed" style={{ fontSize: '0.68rem', alignSelf: 'flex-start', whiteSpace: 'nowrap' }}>
+                              🏆 {c.verdict?.verdict_type === 'DECREED_FOR_PLAINTIFF' ? 'DECREED (WON)' : (c.verdict?.verdict_type === 'DECREED_IN_PART' ? 'DECREED IN PART' : (c.verdict?.verdict_type === 'SETTLED_VIA_ADR' ? 'ADR COMPROMISE' : 'DISMISSED'))}
                             </span>
-                            <span style={{ fontSize: '0.78rem', fontWeight: 800, color: '#047857' }}>
+                            <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#047857', whiteSpace: 'nowrap' }}>
                               Winner: {c.verdict?.winning_party?.split(' (')[0] || 'Plaintiff'}
                             </span>
                           </div>
                         ) : (
-                          <span className="badge badge-pending">{trStat(c.status)}</span>
+                          <span className="badge badge-pending" style={{ fontSize: '0.68rem', whiteSpace: 'nowrap' }}>{trStat(c.status)}</span>
                         )}
                       </td>
                       <td>
                         {(c.status === 'DISPOSED' || c.verdict) ? (
                           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.15rem' }}>
-                            <strong style={{ fontSize: '0.85rem', color: '#047857' }}>
+                            <strong style={{ fontSize: '0.82rem', color: '#047857', whiteSpace: 'nowrap' }}>
                               ⚖️ {c.verdict?.judgment_date || 'Concluded'}
                             </strong>
-                            <span style={{ fontSize: '0.72rem', color: '#475569' }}>
+                            <span style={{ fontSize: '0.7rem', color: '#475569', lineHeight: 1.25 }}>
                               {c.verdict?.verdict_title || 'Operative Decree Pronounced'}
                             </span>
                           </div>
                         ) : (
-                          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.2rem' }}>
-                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                              <strong style={{ fontSize: '0.85rem', color: '#070d1e' }}>{c.next_hearing_formatted ? trRel(c.next_hearing_formatted) : tr('Pending')}</strong>
-                              {c.next_hearing_relative && (
-                                <span className={`hearing-pill-badge ${c.next_hearing_relative.includes('Next Week') ? 'pill-next-week' : (c.next_hearing_relative.includes('Next Month') ? 'pill-next-month' : 'pill-standard')}`} style={{ fontSize: '0.68rem', padding: '0.1rem 0.45rem' }}>
-                                  {trRel(c.next_hearing_relative)}
-                                </span>
-                              )}
-                            </div>
-                            <span style={{ fontSize: '0.72rem', color: '#71717a' }}>{c.next_hearing_purpose ? tr(c.next_hearing_purpose) : tr('Order XV-A CMH')}</span>
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+                            <strong style={{ fontSize: '0.82rem', color: '#070d1e', whiteSpace: 'nowrap' }}>
+                              {c.next_hearing_formatted ? trRel(c.next_hearing_formatted) : tr('Pending')}
+                            </strong>
+                            {c.next_hearing_relative && (
+                              <span 
+                                className={`hearing-pill-badge ${c.next_hearing_relative.includes('Next Week') ? 'pill-next-week' : (c.next_hearing_relative.includes('Next Month') ? 'pill-next-month' : 'pill-standard')}`} 
+                                style={{ fontSize: '0.67rem', padding: '0.12rem 0.48rem', whiteSpace: 'nowrap', alignSelf: 'flex-start' }}
+                              >
+                                {trRel(c.next_hearing_relative)}
+                              </span>
+                            )}
+                            <span style={{ fontSize: '0.7rem', color: '#71717a', lineHeight: 1.25 }}>
+                              {c.next_hearing_purpose ? tr(c.next_hearing_purpose) : tr('Order XV-A CMH')}
+                            </span>
                           </div>
                         )}
                       </td>
-                      <td>
-                        <div style={{ display: 'flex', gap: '0.35rem', flexWrap: 'wrap' }}>
+                      <td style={{ whiteSpace: 'nowrap' }}>
+                        <div style={{ display: 'flex', gap: '0.3rem', alignItems: 'center', flexWrap: 'nowrap' }}>
                           {(c.status === 'DISPOSED' || c.verdict) ? (
                             <button 
                               onClick={() => {
@@ -5508,18 +5513,19 @@ export default function App() {
                                 background: '#047857',
                                 color: 'white',
                                 border: 'none',
-                                padding: '0.35rem 0.65rem',
+                                padding: '0.32rem 0.55rem',
                                 borderRadius: '6px',
-                                fontSize: '0.75rem',
+                                fontSize: '0.72rem',
                                 fontWeight: 700,
                                 cursor: 'pointer',
                                 display: 'inline-flex',
                                 alignItems: 'center',
-                                gap: '0.25rem',
-                                boxShadow: '0 2px 6px rgba(4, 120, 87, 0.3)'
+                                gap: '0.2rem',
+                                whiteSpace: 'nowrap',
+                                boxShadow: '0 2px 5px rgba(4, 120, 87, 0.25)'
                               }}
                             >
-                              <Award size={12} />
+                              <Award size={11} />
                               {tr('View Verdict')}
                             </button>
                           ) : (
@@ -5533,10 +5539,11 @@ export default function App() {
                                 background: '#070d1e',
                                 color: 'white',
                                 border: 'none',
-                                padding: '0.35rem 0.65rem',
+                                padding: '0.32rem 0.55rem',
                                 borderRadius: '6px',
-                                fontSize: '0.75rem',
+                                fontSize: '0.72rem',
                                 fontWeight: 600,
+                                whiteSpace: 'nowrap',
                                 cursor: 'pointer'
                               }}
                             >
@@ -5553,18 +5560,19 @@ export default function App() {
                               background: '#d97706',
                               color: 'white',
                               border: 'none',
-                              padding: '0.35rem 0.65rem',
+                              padding: '0.32rem 0.55rem',
                               borderRadius: '6px',
-                              fontSize: '0.75rem',
+                              fontSize: '0.72rem',
                               fontWeight: 600,
                               cursor: 'pointer',
                               display: 'inline-flex',
                               alignItems: 'center',
-                              gap: '0.25rem',
-                              boxShadow: '0 2px 6px rgba(217, 119, 6, 0.3)'
+                              gap: '0.2rem',
+                              whiteSpace: 'nowrap',
+                              boxShadow: '0 2px 5px rgba(217, 119, 6, 0.25)'
                             }}
                           >
-                            <Search size={12} />
+                            <Search size={11} />
                             {tr('Dossier')}
                           </button>
                         </div>
