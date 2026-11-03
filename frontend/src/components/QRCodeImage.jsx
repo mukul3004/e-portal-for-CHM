@@ -4,6 +4,7 @@ import QRCode from 'qrcode';
 /**
  * High-fidelity, scannable 2D QR Code image component.
  * Uses lib `qrcode` to generate standard ISO/IEC 18004 compliant QR codes.
+ * Supports Canvas rendering with automatic SVG fallback.
  */
 export default function QRCodeImage({
   value,
@@ -22,30 +23,64 @@ export default function QRCodeImage({
     let isMounted = true;
     if (!payload) return;
 
-    QRCode.toDataURL(payload, {
-      width: size * 2, // Higher density for crisp rendering on retina screens
+    const qr = QRCode?.toDataURL ? QRCode : (QRCode?.default || QRCode);
+    const darkColor = color?.dark || '#000000';
+    const lightColor = color?.light || '#ffffff';
+
+    const opts = {
+      width: Math.max(size * 2, 200),
       margin: 1,
       color: {
-        dark: color.dark || '#000000',
-        light: color.light || '#ffffff'
+        dark: darkColor,
+        light: lightColor
       },
       errorCorrectionLevel: 'M'
-    })
-      .then((url) => {
+    };
+
+    if (qr && typeof qr.toDataURL === 'function') {
+      qr.toDataURL(payload, opts)
+        .then((url) => {
+          if (isMounted) {
+            setDataUrl(url);
+            setError(false);
+          }
+        })
+        .catch((err) => {
+          console.warn('Canvas QR generation failed, attempting SVG fallback:', err);
+          if (qr && typeof qr.toString === 'function') {
+            qr.toString(payload, { ...opts, type: 'svg' }, (svgErr, svgString) => {
+              if (isMounted) {
+                if (!svgErr && svgString) {
+                  setDataUrl('data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgString));
+                  setError(false);
+                } else {
+                  setError(true);
+                }
+              }
+            });
+          } else {
+            if (isMounted) setError(true);
+          }
+        });
+    } else if (qr && typeof qr.toString === 'function') {
+      qr.toString(payload, { ...opts, type: 'svg' }, (svgErr, svgString) => {
         if (isMounted) {
-          setDataUrl(url);
-          setError(false);
+          if (!svgErr && svgString) {
+            setDataUrl('data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgString));
+            setError(false);
+          } else {
+            setError(true);
+          }
         }
-      })
-      .catch((err) => {
-        console.error('Failed to generate QR Code:', err);
-        if (isMounted) setError(true);
       });
+    } else {
+      if (isMounted) setError(true);
+    }
 
     return () => {
       isMounted = false;
     };
-  }, [payload, size, color.dark, color.light]);
+  }, [payload, size, color?.dark, color?.light]);
 
   if (error || !payload) {
     return (
@@ -109,7 +144,7 @@ export default function QRCodeImage({
         display: 'block',
         borderRadius: '6px',
         boxShadow: '0 1px 4px rgba(0,0,0,0.08)',
-        background: color.light || '#ffffff',
+        background: color?.light || '#ffffff',
         ...style
       }}
     />

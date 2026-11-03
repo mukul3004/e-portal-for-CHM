@@ -17,7 +17,7 @@ export default function EChallanPaymentModal({
   challan,
   onClose,
   onPaymentSuccess,
-  apiBase = '/api'
+  apiBase = '/api/v1'
 }) {
   const [paymentTab, setPaymentTab] = useState('upi'); // 'upi' | 'netbanking' | 'card'
   const [selectedBank, setSelectedBank] = useState('State Bank of India');
@@ -27,8 +27,10 @@ export default function EChallanPaymentModal({
 
   if (!challan) return null;
 
+  const cleanApiBase = (apiBase || '/api/v1').replace(/\/+$/, '');
   const upiVpa = 'mpcybertreasury@sbi';
-  const upiPayPayload = `upi://pay?pa=${upiVpa}&pn=MP%20Judicial%20Cyber%20Treasury&am=${challan.amount}&tr=${challan.challan_number}&cu=INR&tn=Court%20Fee%20${challan.challan_number}`;
+  const amountVal = Number(challan.amount || 0).toFixed(2);
+  const upiPayPayload = `upi://pay?pa=${upiVpa}&pn=MP%20Judicial%20Cyber%20Treasury&am=${amountVal}&tr=${encodeURIComponent(challan.challan_number)}&cu=INR&tn=Court%20Fee%20${encodeURIComponent(challan.challan_number)}`;
 
   const handleCopyVpa = () => {
     navigator.clipboard.writeText(upiVpa);
@@ -40,7 +42,7 @@ export default function EChallanPaymentModal({
     setProcessing(true);
     setPaymentError(null);
     try {
-      const res = await fetch(`${apiBase}/echallan/${challan.id}/pay`, {
+      const res = await fetch(`${cleanApiBase}/echallan/${challan.id}/pay`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

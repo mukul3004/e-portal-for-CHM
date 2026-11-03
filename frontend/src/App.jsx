@@ -3,6 +3,8 @@ import './App.css';
 import QRCodeImage from './components/QRCodeImage';
 import CourtCalendarView from './components/CourtCalendarView';
 import MaterialTimePickerInput from './components/MaterialTimePicker';
+import EChallanPaymentModal from './components/EChallanPaymentModal';
+import EChallanReceiptModal from './components/EChallanReceiptModal';
 import { 
   Scale, 
   Gavel, 
@@ -569,6 +571,8 @@ export default function App() {
   const [challanCnr, setChallanCnr] = useState('');
   const [payingChallanId, setPayingChallanId] = useState(null);
   const [challanSuccessReceipt, setChallanSuccessReceipt] = useState(null);
+  const [selectedChallanForPayment, setSelectedChallanForPayment] = useState(null);
+  const [selectedChallanForReceipt, setSelectedChallanForReceipt] = useState(null);
   const [verifyChallanQuery, setVerifyChallanQuery] = useState('');
   const [verifiedChallanData, setVerifiedChallanData] = useState(null);
   const [verifyingChallan, setVerifyingChallan] = useState(false);
@@ -1434,7 +1438,7 @@ export default function App() {
         const data = await res.json();
         fetchChallans();
         setChallanSuccessReceipt(data);
-        alert(`Official e-Challan Generated: ${data.challan_number}`);
+        setSelectedChallanForPayment(data);
       }
     } catch (e) {
       console.error('Error creating challan:', e);
@@ -1454,7 +1458,7 @@ export default function App() {
         const data = await res.json();
         setChallanSuccessReceipt(data);
         fetchChallans();
-        alert(`Payment Confirmed by Cyber Treasury MP! Transaction Ref: ${data.transaction_ref}\nReceipt SHA-256: ${data.receipt_sha256}`);
+        setSelectedChallanForReceipt(data);
       }
     } catch (e) {
       console.error('Payment error:', e);
@@ -1464,13 +1468,14 @@ export default function App() {
   };
 
   // Verify e-Challan
-  const handleVerifyChallan = async () => {
-    if (!verifyChallanQuery.trim()) return;
+  const handleVerifyChallan = async (targetQuery) => {
+    const q = (targetQuery !== undefined ? targetQuery : verifyChallanQuery).trim();
+    if (!q) return;
     setVerifyingChallan(true);
     setVerifyChallanError(null);
     setVerifiedChallanData(null);
     try {
-      const res = await fetch(`${API_BASE}/echallan/verify/${encodeURIComponent(verifyChallanQuery.trim())}`);
+      const res = await fetch(`${API_BASE}/echallan/verify/${encodeURIComponent(q)}`);
       if (res.ok) {
         const data = await res.json();
         setVerifiedChallanData(data);
@@ -6836,7 +6841,14 @@ export default function App() {
               <div className="treasury-receipt-box">
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                    <QrCode size={52} color="#d97706" />
+                    <div style={{ background: '#ffffff', padding: '6px', borderRadius: '8px', border: '1px solid #fde68a', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <QRCodeImage
+                        value={`MPHC:TREASURY:${challanSuccessReceipt.challan_number}:${challanSuccessReceipt.amount}:${challanSuccessReceipt.receipt_sha256 || 'CONFIRMED'}`}
+                        size={56}
+                        alt="Receipt Verification QR"
+                        color={{ dark: '#b45309', light: '#ffffff' }}
+                      />
+                    </div>
                     <div>
                       <div style={{ fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: '#b45309', fontWeight: 800 }}>
                         {tr('Treasury Payment Confirmed!')} • MP Cyber Treasury
@@ -6845,12 +6857,21 @@ export default function App() {
                         Challan No: {challanSuccessReceipt.challan_number}
                       </h3>
                       <div style={{ fontSize: '0.8rem' }}>
-                        Amount: <strong>₹{challanSuccessReceipt.amount.toLocaleString()}</strong> • Status: <span style={{ color: '#10b981', fontWeight: 800 }}>PAID</span> • Mode: {challanSuccessReceipt.payment_mode}
+                        Amount: <strong>₹{Number(challanSuccessReceipt.amount || 0).toLocaleString()}</strong> • Status: <span style={{ color: '#10b981', fontWeight: 800 }}>PAID</span> • Mode: {challanSuccessReceipt.payment_mode || 'BHIM_UPI'}
                       </div>
                     </div>
                   </div>
 
-                  <div style={{ textAlign: 'right' }}>
+                  <div style={{ textAlign: 'right', display: 'flex', gap: '0.5rem', alignItems: 'center', flexWrap: 'wrap' }}>
+                    <button
+                      type="button"
+                      onClick={() => setSelectedChallanForReceipt(challanSuccessReceipt)}
+                      className="ctrl-btn"
+                      style={{ fontSize: '0.75rem', padding: '0.4rem 0.75rem', background: '#d97706', color: '#ffffff', borderColor: '#b45309' }}
+                    >
+                      <Eye size={13} />
+                      <span>View Official Stamped Receipt</span>
+                    </button>
                     <button
                       type="button"
                       onClick={() => window.print()}
@@ -6858,12 +6879,12 @@ export default function App() {
                       style={{ fontSize: '0.75rem', padding: '0.4rem 0.75rem' }}
                     >
                       <Printer size={13} />
-                      <span>Print Receipt</span>
+                      <span>Print</span>
                     </button>
                     <button
                       type="button"
                       onClick={() => setChallanSuccessReceipt(null)}
-                      style={{ marginLeft: '0.5rem', background: 'none', border: 'none', color: '#71717a', cursor: 'pointer', fontSize: '0.75rem' }}
+                      style={{ marginLeft: '0.25rem', background: 'none', border: 'none', color: '#71717a', cursor: 'pointer', fontSize: '0.75rem' }}
                     >
                       Dismiss
                     </button>
@@ -6951,7 +6972,7 @@ export default function App() {
                         {ch.status === 'PAID' ? (
                           <button
                             type="button"
-                            onClick={() => setChallanSuccessReceipt(ch)}
+                            onClick={() => setSelectedChallanForReceipt(ch)}
                             style={{
                               background: '#f1f5f9',
                               color: '#0f172a',
@@ -6960,16 +6981,19 @@ export default function App() {
                               padding: '0.35rem 0.7rem',
                               fontSize: '0.72rem',
                               fontWeight: 700,
-                              cursor: 'pointer'
+                              cursor: 'pointer',
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              gap: '0.3rem'
                             }}
                           >
-                            View Receipt
+                            <FileCheck size={12} />
+                            <span>View Receipt</span>
                           </button>
                         ) : (
                           <button
                             type="button"
-                            onClick={() => handlePayChallan(ch.id)}
-                            disabled={payingChallanId === ch.id}
+                            onClick={() => setSelectedChallanForPayment(ch)}
                             style={{
                               background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
                               color: '#ffffff',
@@ -6985,8 +7009,8 @@ export default function App() {
                               boxShadow: '0 2px 6px rgba(16, 185, 129, 0.3)'
                             }}
                           >
-                            <CreditCard size={12} />
-                            <span>{payingChallanId === ch.id ? 'Processing...' : 'Pay Online'}</span>
+                            <QrCode size={13} />
+                            <span>Pay Challan Online</span>
                           </button>
                         )}
                       </td>
@@ -7817,6 +7841,34 @@ export default function App() {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Official Cyber Treasury Payment Modal with UPI QR Code */}
+      {selectedChallanForPayment && (
+        <EChallanPaymentModal
+          challan={selectedChallanForPayment}
+          onClose={() => setSelectedChallanForPayment(null)}
+          apiBase={API_BASE}
+          onPaymentSuccess={(paidChallan) => {
+            setSelectedChallanForPayment(null);
+            setChallanSuccessReceipt(paidChallan);
+            setSelectedChallanForReceipt(paidChallan);
+            fetchChallans();
+          }}
+        />
+      )}
+
+      {/* Official Stamped Judicial e-Challan Receipt Modal with Scannable Verification QR */}
+      {selectedChallanForReceipt && (
+        <EChallanReceiptModal
+          challan={selectedChallanForReceipt}
+          onClose={() => setSelectedChallanForReceipt(null)}
+          onVerifyInRegistry={(challanNum) => {
+            setActiveTab('echallan');
+            setVerifyChallanQuery(challanNum);
+            handleVerifyChallan(challanNum);
+          }}
+        />
       )}
     </div>
   );
