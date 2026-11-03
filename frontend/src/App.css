@@ -136,6 +136,62 @@
   font-weight: 700;
 }
 
+/* Back & Forward Tab Navigation Buttons */
+.back-tab-nav-btn {
+  background: rgba(217, 119, 6, 0.08) !important;
+  border-radius: 8px 8px 0 0 !important;
+  color: #b45309 !important;
+  font-weight: 700 !important;
+  border-bottom: 3px solid transparent !important;
+}
+
+.back-tab-nav-btn:hover:not(:disabled) {
+  background: rgba(217, 119, 6, 0.18) !important;
+  color: #92400e !important;
+}
+
+.back-tab-nav-btn:disabled,
+.back-tab-nav-btn.disabled {
+  opacity: 0.4 !important;
+  cursor: not-allowed !important;
+  background: transparent !important;
+  color: #94a3b8 !important;
+}
+
+.dark-theme .back-tab-nav-btn {
+  background: rgba(217, 119, 6, 0.15) !important;
+  color: #f59e0b !important;
+}
+
+.dark-theme .back-tab-nav-btn:hover:not(:disabled) {
+  background: rgba(217, 119, 6, 0.28) !important;
+  color: #fbbf24 !important;
+}
+
+.dark-theme .back-tab-nav-btn:disabled,
+.dark-theme .back-tab-nav-btn.disabled {
+  color: #64748b !important;
+  background: transparent !important;
+}
+
+.forward-tab-nav-btn {
+  background: rgba(2, 132, 199, 0.08) !important;
+  border-radius: 8px 8px 0 0 !important;
+  color: #0284c7 !important;
+  font-weight: 700 !important;
+  border-bottom: 3px solid transparent !important;
+}
+
+.forward-tab-nav-btn:hover {
+  background: rgba(2, 132, 199, 0.18) !important;
+  color: #0369a1 !important;
+}
+
+.dark-theme .forward-tab-nav-btn {
+  background: rgba(2, 132, 199, 0.15) !important;
+  color: #38bdf8 !important;
+}
+
 /* 5. Judicial Cards */
 .court-card {
   background: #ffffff;

@@ -62,7 +62,9 @@ import {
   BarChart3,
   TrendingUp,
   CheckCheck,
-  Compass
+  Compass,
+  ArrowLeft,
+  ArrowRight
 } from 'lucide-react';
 import { t, tCategory, tStatus, tStance, tDeadlineStatus, tRelativeDate } from './translations';
 
@@ -327,7 +329,6 @@ const DEFAULT_OFFICERS = [
 ];
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState('search');
   const [backendOnline, setBackendOnline] = useState(false);
   const [currentRole, setCurrentRole] = useState(() => {
     try {
@@ -428,6 +429,116 @@ export default function App() {
   const trStn = (stn) => tStance(stn, lang);
   const trDStat = (st) => tDeadlineStatus(st, lang);
   const trRel = (d) => tRelativeDate(d, lang);
+
+  // Tab Navigation with Full History & Browser Back/Forward Support
+  const getInitialTab = () => {
+    try {
+      const h = window.location.hash.replace(/^#/, '');
+      const valid = ['search', 'causelist', 'calendar', 'matrix', 'cases', 'scheduler', 'cmo', 'echallan', 'analytics'];
+      if (h && valid.includes(h)) return h;
+    } catch {}
+    return 'search';
+  };
+
+  const [activeTab, setActiveTabRaw] = useState(getInitialTab);
+  const [tabHistory, setTabHistory] = useState(() => [getInitialTab()]);
+  const [forwardHistory, setForwardHistory] = useState([]);
+
+  // Wrapped tab switcher supporting history push & popstate
+  const setActiveTab = (tabOrUpdater) => {
+    setActiveTabRaw((current) => {
+      const nextTab = typeof tabOrUpdater === 'function' ? tabOrUpdater(current) : tabOrUpdater;
+      if (nextTab && nextTab !== current) {
+        setTabHistory((h) => {
+          if (h[h.length - 1] === nextTab) return h;
+          return [...h, nextTab];
+        });
+        setForwardHistory([]);
+        try {
+          window.history.pushState({ tab: nextTab }, '', `#${nextTab}`);
+        } catch {}
+      }
+      return nextTab;
+    });
+  };
+
+  const handleGoBack = () => {
+    if (tabHistory.length > 1) {
+      const prevTab = tabHistory[tabHistory.length - 2];
+      const curTab = tabHistory[tabHistory.length - 1];
+      setTabHistory((h) => h.slice(0, -1));
+      setForwardHistory((f) => [curTab, ...f]);
+      setActiveTabRaw(prevTab);
+      try {
+        window.history.pushState({ tab: prevTab }, '', `#${prevTab}`);
+      } catch {}
+    } else if (typeof window !== 'undefined' && window.history.length > 1) {
+      window.history.back();
+    }
+  };
+
+  const handleGoForward = () => {
+    if (forwardHistory.length > 0) {
+      const nextTab = forwardHistory[0];
+      setForwardHistory((f) => f.slice(1));
+      setTabHistory((h) => [...h, nextTab]);
+      setActiveTabRaw(nextTab);
+      try {
+        window.history.pushState({ tab: nextTab }, '', `#${nextTab}`);
+      } catch {}
+    } else if (typeof window !== 'undefined' && window.history.length > 1) {
+      window.history.forward();
+    }
+  };
+
+  const getTabLabel = (tabKey) => {
+    switch (tabKey) {
+      case 'search':
+        return currentRole === 'CITIZEN' ? tr('Case Search') : tr('Case Search & Dossier');
+      case 'causelist':
+        return tr('Daily Cause List');
+      case 'calendar':
+        return tr('Court Calendar');
+      case 'matrix':
+        return tr('Fact Matrix');
+      case 'cases':
+        return tr('Case Dockets');
+      case 'scheduler':
+        return tr('Live Scheduler');
+      case 'cmo':
+        return tr('CMO Order');
+      case 'echallan':
+        return tr('e-Challan & Fees');
+      case 'analytics':
+        return tr('NJDG Analytics');
+      default:
+        return tr('Previous Tab');
+    }
+  };
+
+  // Browser Native Back/Forward button event listener
+  useEffect(() => {
+    const handlePopState = (e) => {
+      const valid = ['search', 'causelist', 'calendar', 'matrix', 'cases', 'scheduler', 'cmo', 'echallan', 'analytics'];
+      const rawHash = window.location.hash.replace(/^#/, '');
+      const target = (e.state && e.state.tab) || (valid.includes(rawHash) ? rawHash : 'search');
+      setActiveTabRaw((current) => {
+        if (current !== target) {
+          setTabHistory((h) => {
+            if (h.length > 1 && h[h.length - 2] === target) {
+              const popped = h[h.length - 1];
+              setForwardHistory((f) => [popped, ...f]);
+              return h.slice(0, -1);
+            }
+            return [...h, target];
+          });
+        }
+        return target;
+      });
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
   
   // Data State
   const [cases, setCases] = useState([]);
@@ -3332,6 +3443,64 @@ export default function App() {
 
         {/* Navigation Tabs */}
         <div className="tabs-nav">
+          {/* Back Tab Button Option */}
+          <button
+            type="button"
+            onClick={handleGoBack}
+            disabled={tabHistory.length <= 1}
+            className={`tab-btn back-tab-nav-btn ${tabHistory.length <= 1 ? 'disabled' : ''}`}
+            title={
+              tabHistory.length > 1
+                ? `${lang === 'HI' ? 'पिछले टैब पर वापस जाएं:' : 'Go back to'} ${getTabLabel(tabHistory[tabHistory.length - 2])}`
+                : (lang === 'HI' ? 'कोई पिछला टैब नहीं' : 'No previous tab to go back to')
+            }
+          >
+            <ArrowLeft size={16} />
+            <span>{tr('Back')}</span>
+            {tabHistory.length > 1 && (
+              <span
+                style={{
+                  fontSize: '0.68rem',
+                  background: 'rgba(217, 119, 6, 0.22)',
+                  color: '#b45309',
+                  padding: '0.1rem 0.45rem',
+                  borderRadius: '9999px',
+                  fontWeight: 800,
+                  maxWidth: '120px',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap'
+                }}
+              >
+                {getTabLabel(tabHistory[tabHistory.length - 2])}
+              </span>
+            )}
+          </button>
+
+          {/* Forward Tab Button Option (if user navigated back) */}
+          {forwardHistory.length > 0 && (
+            <button
+              type="button"
+              onClick={handleGoForward}
+              className="tab-btn forward-tab-nav-btn"
+              title={`${lang === 'HI' ? 'आगे बढ़ें:' : 'Forward to'} ${getTabLabel(forwardHistory[0])}`}
+            >
+              <span>{tr('Forward')}</span>
+              <ArrowRight size={15} />
+            </button>
+          )}
+
+          <div
+            style={{
+              width: '1px',
+              height: '24px',
+              background: 'var(--theme-border, #D9D6CE)',
+              alignSelf: 'center',
+              margin: '0 0.25rem',
+              flexShrink: 0
+            }}
+          />
+
           <button 
             className={`tab-btn ${activeTab === 'search' ? 'active' : ''}`}
             onClick={() => {
@@ -3761,6 +3930,36 @@ export default function App() {
             )}
 
             {/* COMPLETE DOSSIER DISPLAY */}
+            {dossier && !loadingDossier && (
+              <div className="no-print" style={{ marginBottom: '1rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.75rem' }}>
+                <button
+                  type="button"
+                  onClick={() => setDossier(null)}
+                  className="ctrl-btn"
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '0.45rem',
+                    background: 'var(--theme-card-bg)',
+                    border: '1.5px solid #d97706',
+                    color: '#d97706',
+                    padding: '0.45rem 0.85rem',
+                    borderRadius: '8px',
+                    fontSize: '0.82rem',
+                    fontWeight: 800,
+                    cursor: 'pointer',
+                    boxShadow: '0 2px 6px rgba(217, 119, 6, 0.15)'
+                  }}
+                >
+                  <ArrowLeft size={15} />
+                  <span>{tr('← Back to Case Search & Results')}</span>
+                </button>
+                <span style={{ fontSize: '0.76rem', color: 'var(--theme-text-muted)' }}>
+                  Viewing complete judicial dossier for CNR: <strong style={{ color: 'var(--theme-text-primary)' }}>{dossier.cnr_number}</strong>
+                </span>
+              </div>
+            )}
+
             {dossier && !loadingDossier && (
               <div className="printable-dossier">
                 {/* Official Judicial Authentication Header for Dossier Print */}
