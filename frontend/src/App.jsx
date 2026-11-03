@@ -4665,7 +4665,14 @@ export default function App() {
                           {dossier.verdict?.winning_party || dossier.case_title?.split(' vs.')[0]}
                         </div>
                         <div style={{ fontSize: '0.8rem', color: '#15803d', marginTop: '0.35rem' }}>
-                          ✓ {tr('Commercial Claim Decreed in Full. Entitled to recover decreed debt and execution of decree.')}
+                          {dossier.verdict?.verdict_type === 'DECREED_IN_PART'
+                            ? `✓ ${tr('Claim Decreed in Part. Entitled to recover adjudicated debt and proportionate costs.')}`
+                            : dossier.verdict?.verdict_type === 'SETTLED_VIA_ADR'
+                            ? `✓ ${tr('Compromise Settlement Executed. Binding consent terms enforceable under Order XXIII Rule 3 CPC.')}`
+                            : dossier.verdict?.verdict_type === 'SUIT_DISMISSED'
+                            ? `✓ ${tr('Suit Dismissed on Merits. Defendant exonerated from liability under Order XX Rule 5 CPC.')}`
+                            : `✓ ${tr('Claim Decreed in Full. Entitled to recover decreed debt and execution of decree.')}`
+                          }
                         </div>
                       </div>
 
@@ -4677,7 +4684,12 @@ export default function App() {
                           {dossier.verdict?.losing_party || (dossier.case_title?.includes(' vs.') ? dossier.case_title.split(' vs.')[1].trim() : 'Defendant')}
                         </div>
                         <div style={{ fontSize: '0.8rem', color: '#b91c1c', marginTop: '0.35rem' }}>
-                          ⚠️ {tr('Held liable under Operative Decree. Directed to satisfy judgment debt within 60 days.')}
+                          {dossier.verdict?.verdict_type === 'SUIT_DISMISSED'
+                            ? `⚠️ ${tr('Suit instituted was dismissed on merits. Directed to satisfy awarded costs within 30 days.')}`
+                            : dossier.verdict?.verdict_type === 'SETTLED_VIA_ADR'
+                            ? `🤝 ${tr('Mutual obligations discharged pursuant to registered compromise terms.')}`
+                            : `⚠️ ${tr('Held liable under Operative Decree. Directed to satisfy judgment debt within 60 days.')}`
+                          }
                         </div>
                       </div>
                     </div>
