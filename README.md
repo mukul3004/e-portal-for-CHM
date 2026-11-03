@@ -1,7 +1,7 @@
 # e-Portal for Facilitating Case Management Hearing (CMH) of Various Types of Cases
 
 [![CI/CD Pipeline](https://github.com/mukul3004/e-portal-for-CHM/actions/workflows/ci.yml/badge.svg)](https://github.com/mukul3004/e-portal-for-CHM/actions/workflows/ci.yml)
-[![PyTest Status](https://img.shields.io/badge/PyTest-7%20Passed-brightgreen)](https://github.com/mukul3004/e-portal-for-CHM)
+[![PyTest Status](https://img.shields.io/badge/PyTest-42%20Passed-brightgreen)](https://github.com/mukul3004/e-portal-for-CHM)
 [![Vite Build](https://img.shields.io/badge/Vite%208.3-Compiled%20Clean-blue)](https://github.com/mukul3004/e-portal-for-CHM)
 [![Git Branching](https://img.shields.io/badge/Git%20Workflow-Main%20%7C%20Develop%20%7C%20Feature-orange)](https://github.com/mukul3004/e-portal-for-CHM)
 
@@ -45,6 +45,9 @@ Traditional commercial litigation in India is often plagued by procedural delays
 ### 3. Enforceable Case Management Order (CMO) Sheet
 * Summary of undisputed facts, framed judicial issues, and strict witness quotas (Plaintiff & Defendant).
 * Binding discovery and cross-examination deadlines.
+* RFC 5545 iCalendar (`.ics`) compliance deadline exports for advocate legal diaries (Google Calendar, Apple Calendar, Outlook sync).
+* Certified Section 65B Indian Evidence Act electronic copy downloads and print-to-PDF court decree formatting.
+* Judicial Class-3 DSC cryptographic e-Mudhra token signing and Court Registry sealing.
 * SHA-256 cryptographic seal and verifiable QR digital verification stub.
 
 ### 4. Comprehensive Case Dossier & 16-Digit CNR Search
