@@ -2824,7 +2824,7 @@ cryptographically verifiable in the Judicial Immutable Vault.
         <div className="mphc-masthead-inner">
           <div className="mphc-identity-col">
             <div className="mphc-emblem-box">
-              <MpHcEmblem size={50} />
+              <MpHcEmblem size={44} />
             </div>
             <div className="mphc-text-titles">
               <div className="mphc-hindi-headline">
@@ -2834,15 +2834,17 @@ cryptographically verifiable in the Judicial Immutable Vault.
                 {tr('HIGH COURT OF MADHYA PRADESH')}
               </h1>
               <div className="mphc-sub-division">
-                <span style={{ color: '#ffffff', fontWeight: 700 }}>
-                  {tr('Commercial Division (Order XV-A CPC Case Management e-Portal)')}
-                </span>
-                <span className="mphc-sub-division-separator" style={{ color: '#71717a' }}>•</span>
-                <span style={{ color: '#f59e0b', fontWeight: 600 }}>
+                <div className="mphc-sub-division-row1">
+                  <span style={{ color: '#ffffff', fontWeight: 700 }}>
+                    {tr('Commercial Division (Order XV-A CPC Case Management e-Portal)')}
+                  </span>
+                  <span className="mphc-sub-division-separator" style={{ color: '#71717a' }}>•</span>
+                </div>
+                <div className="mphc-sub-division-row2" style={{ color: '#f59e0b', fontWeight: 600 }}>
                   {activeBench === 'INDORE' && tr('Active Jurisdiction: Bench at Indore (Malwa Region)')}
                   {activeBench === 'JABALPUR' && tr('Active Jurisdiction: Principal Seat at Jabalpur')}
                   {activeBench === 'GWALIOR' && tr('Active Jurisdiction: Bench at Gwalior (Chambal Region)')}
-                </span>
+                </div>
               </div>
             </div>
           </div>
@@ -2915,10 +2917,10 @@ cryptographically verifiable in the Judicial Immutable Vault.
                 </button>
               </div>
 
-              <span className="court-badge" style={{ fontSize: '0.68rem', padding: '0.2rem 0.45rem', whiteSpace: 'nowrap' }}>
+              <span className="court-badge" style={{ fontSize: '0.68rem', padding: '0.22rem 0.65rem', whiteSpace: 'nowrap' }}>
                 {tr('Order XV-A CPC')}
               </span>
-              <span className="mphc-univ-tag" style={{ fontSize: '0.68rem', color: '#71717a', whiteSpace: 'nowrap' }}>
+              <span className="mphc-univ-tag" style={{ fontSize: '0.7rem', color: '#71717a', whiteSpace: 'nowrap', fontWeight: 600 }}>
                 {tr('SVVV (MP-14)')}
               </span>
             </div>

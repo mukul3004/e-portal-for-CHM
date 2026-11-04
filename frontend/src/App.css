@@ -1087,7 +1087,7 @@ select:focus {
   background: #1B2A41;
   border-bottom: 2px solid #B8903D;
   color: #ffffff;
-  padding: 0.65rem 1.25rem 0.45rem 1.25rem;
+  padding: 0.45rem 1.25rem;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
 }
 
@@ -1096,7 +1096,7 @@ select:focus {
   align-items: center;
   justify-content: space-between;
   flex-wrap: nowrap;
-  gap: 1rem;
+  gap: clamp(1rem, 1.8vw, 1.5rem);
   width: 100%;
 }
 
@@ -1104,14 +1104,14 @@ select:focus {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  flex-shrink: 1;
+  flex-shrink: 0;
   min-width: 0;
 }
 
 .mphc-emblem-box {
-  width: 50px;
-  height: 50px;
-  min-width: 50px;
+  width: 42px;
+  height: 42px;
+  min-width: 42px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1121,57 +1121,65 @@ select:focus {
 .mphc-text-titles {
   display: flex;
   flex-direction: column;
+  justify-content: center;
   min-width: 0;
 }
 
 .mphc-hindi-headline {
-  font-size: 0.8rem;
+  font-size: 0.76rem;
   font-weight: 800;
   color: #B8903D;
   letter-spacing: 0.02em;
-  line-height: 1.2;
+  line-height: 1.15;
+  white-space: nowrap;
 }
 
 .mphc-english-headline {
   font-family: 'Merriweather', 'Cinzel', serif;
-  font-size: clamp(1.05rem, 1.35vw, 1.25rem);
+  font-size: clamp(1.05rem, 1.25vw, 1.18rem);
   font-weight: 800;
   color: #ffffff;
   letter-spacing: 0.02em;
-  margin: 0.05rem 0;
+  margin: 0.02rem 0;
   line-height: 1.15;
   white-space: nowrap;
 }
 
 .mphc-sub-division {
-  font-size: 0.73rem;
+  font-size: 0.69rem;
   color: #d4d4d8;
   display: flex;
+  flex-direction: column;
+  gap: 0.05rem;
+  margin-top: 0.02rem;
+  line-height: 1.15;
+}
+
+.mphc-sub-division-row1 {
+  display: flex;
   align-items: center;
-  gap: 0.35rem;
-  flex-wrap: wrap;
-  margin-top: 0.1rem;
+  gap: 0.3rem;
+  white-space: nowrap;
+}
+
+.mphc-sub-division-row2 {
+  white-space: nowrap;
 }
 
 .mphc-meta-col {
   display: flex;
   flex-direction: row;
-  align-items: flex-end;
-  gap: 0.65rem;
+  align-items: center;
+  gap: clamp(1rem, 1.8vw, 1.5rem);
   flex-shrink: 0;
-  margin-left: auto;
-  align-self: flex-end;
-  margin-bottom: 2px;
 }
 
 .mphc-bench-badge-row {
   display: flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: clamp(0.75rem, 1.5vw, 1.5rem);
   flex-wrap: nowrap;
   white-space: nowrap;
-  align-self: flex-end;
-  margin-bottom: 2px;
 }
 
 .mphc-benches-ribbon {
@@ -1746,11 +1754,11 @@ body.dark-theme,
 .personal-block-btn {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.55rem;
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 8px;
-  padding: 0.28rem 0.55rem;
+  padding: 0.32rem 0.65rem;
   color: #ffffff;
   cursor: pointer;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
@@ -1773,7 +1781,7 @@ body.dark-theme,
   align-items: center;
   justify-content: center;
   font-weight: 700;
-  font-size: 0.82rem;
+  font-size: 0.85rem;
   flex-shrink: 0;
 }
 
@@ -1826,11 +1834,11 @@ body.dark-theme,
 .personal-name-row {
   display: flex;
   align-items: center;
-  gap: 0.35rem;
+  gap: 0.4rem;
 }
 
 .personal-name {
-  font-size: 0.78rem;
+  font-size: 0.8rem;
   font-weight: 700;
   color: #ffffff;
   letter-spacing: 0.01em;
@@ -4037,14 +4045,8 @@ body.dark-theme,
   padding: 1.5rem 1.65rem;
 }
 
-@media (max-width: 1240px) {
+@media (max-width: 900px) {
   .mphc-univ-tag {
-    display: none;
-  }
-}
-
-@media (max-width: 1080px) {
-  .mphc-bench-badge-row .court-badge {
     display: none;
   }
 }
