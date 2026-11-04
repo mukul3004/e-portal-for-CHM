@@ -1,9 +1,12 @@
 # Digital Transformation and Case Flow Automation in Lower Courts: A Comprehensive Review and Gap Analysis for Case Management Hearing E-Portals
 
-**Mukul Bhamgare$^1$, [Co-Author Name]$^2$, [Co-Author Name]$^3$**  
+**Mukul Bhamgare$^1$, Rashi Kashiv$^2$, Sakshi Singh$^3$, Kanishk Bairagi$^4$, Prof. Shweta Pandey$^5$**  
 *Department of Computer Science & Engineering / Information Technology*  
 *Shri Vaishnav Institute of Information Technology (SVIIT), Shri Vaishnav Vidyapeeth Vishwavidyalaya, Indore, India*  
-*Under the Guidance of: Prof. Shweta Pandey, Department of CSE/IT, SVIIT-SVVV*
+*University Roll Numbers: 23100BTCSAII14297, 23100BTCSAII14314, 23100BTCSAII14317, 23100BTCSAII14293*  
+*Email: {mukul.bhamgare, rashi.kashiv, sakshi.singh, kanishk.bairagi}@svvv.edu.in, shwetapandey@svvv.edu.in*  
+*Under the Guidance of: Prof. Shweta Pandey, Department of CSE/IT, SVIIT-SVVV*  
+*Repository: https://github.com/mukul3004/e-portal-for-CHM.git*
 
 ---
 

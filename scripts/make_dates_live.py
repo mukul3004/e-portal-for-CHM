@@ -13,40 +13,6 @@ from backend.app.models.admissions import AdmissionsChecklist
 from backend.app.models.schedule import CMHSession, SessionStatus
 from backend.app.models.order import CaseManagementOrder, DiscoveryDeadline, DeadlineStatus
 
-TODAY = date.today()
-
-# Upcoming business days (from today +1 to +10 days)
-NEXT_WEEK_DATES = [
-    TODAY + timedelta(days=1),
-    TODAY + timedelta(days=2),
-    TODAY + timedelta(days=4),
-    TODAY + timedelta(days=5),
-    TODAY + timedelta(days=6),
-    TODAY + timedelta(days=7),
-    TODAY + timedelta(days=8),
-]
-
-# Next month business days (+14 to +50 days)
-NEXT_MONTH_DATES = [
-    date(2026, 11, 9),  # Mon
-    date(2026, 11, 10), # Tue
-    date(2026, 11, 11), # Wed
-    date(2026, 11, 12), # Thu
-    date(2026, 11, 16), # Mon
-    date(2026, 11, 17), # Tue
-    date(2026, 11, 18), # Wed
-    date(2026, 11, 19), # Thu
-    date(2026, 11, 24), # Tue
-    date(2026, 11, 25), # Wed
-    date(2026, 11, 26), # Thu
-    date(2026, 12, 1),  # Tue
-    date(2026, 12, 2),  # Wed
-    date(2026, 12, 3),  # Thu
-    date(2026, 12, 8),  # Tue
-    date(2026, 12, 10), # Thu
-    date(2026, 12, 15), # Tue
-]
-
 TIME_SLOTS = [
     (time(10, 30), time(11, 15)),
     (time(11, 30), time(12, 15)),
@@ -55,11 +21,44 @@ TIME_SLOTS = [
     (time(16, 0),  time(16, 45)),
 ]
 
-def make_dates_live():
-    db = SessionLocal()
+def compute_upcoming_working_dates(start_date: date, count: int = 35):
+    """Calculates subsequent business days excluding Saturdays and Sundays."""
+    working_days = []
+    curr = start_date + timedelta(days=1)
+    while len(working_days) < count:
+        if curr.weekday() < 5:  # Monday through Friday
+            working_days.append(curr)
+        curr += timedelta(days=1)
+    return working_days
+
+def make_dates_live(db=None, base_today=None):
+    """
+    Dynamically aligns all judicial hearings, pleadings, and discovery deadlines
+    relative to today's date (or any specified base date).
+    Self-rolls automatically every day so tomorrow and future sessions are always live.
+    """
+    TODAY = base_today or date.today()
+    upcoming_dates = compute_upcoming_working_dates(TODAY, 35)
+    NEXT_WEEK_DATES = upcoming_dates[:7]
+    NEXT_MONTH_DATES = upcoming_dates[7:]
+
+    managed_db = False
+    if db is None:
+        db = SessionLocal()
+        managed_db = True
+
     try:
         cases = db.query(Case).all()
-        print(f"Total cases in DB: {len(cases)}")
+        # Sort so M/s Narmada Agro (111) and M/s Alpha Motors (129) are always the live today cases
+        cases = sorted(
+            cases,
+            key=lambda x: (
+                0 if "111" in x.cnr_number else (
+                    1 if "129" in x.cnr_number else 2
+                )
+            )
+        )
+        print(f"Total cases in DB: {len(cases)} (Rolled live to reference date: {TODAY})")
 
         judge = db.query(User).filter(User.role == RoleType.JUDGE).first()
 
@@ -259,7 +258,8 @@ def make_dates_live():
         print(f"❌ Error updating dates: {e}")
         raise
     finally:
-        db.close()
+        if managed_db:
+            db.close()
 
 if __name__ == "__main__":
     make_dates_live()

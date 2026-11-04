@@ -71,6 +71,11 @@ import { t, tCategory, tStatus, tStance, tDeadlineStatus, tRelativeDate } from '
 const BACKEND_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 const API_BASE = `${BACKEND_URL}/api/v1`;
 
+export const getTodayDateStr = (d = new Date()) => {
+  const pad = n => n.toString().padStart(2, '0');
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+};
+
 // Official Madhya Pradesh High Court Vector Emblem (Ashoka Lion Capital + Scales of Justice)
 function MpHcEmblem({ size = 70 }) {
   return (
@@ -434,6 +439,9 @@ export default function App() {
   const getInitialTab = () => {
     try {
       const h = window.location.hash.replace(/^#/, '');
+      if (h.startsWith('verify=')) return 'echallan';
+      if (h.startsWith('cnr=') || h.startsWith('case=')) return 'search';
+      if (h.startsWith('cmo=')) return 'cmo';
       const valid = ['search', 'causelist', 'calendar', 'matrix', 'cases', 'scheduler', 'cmo', 'echallan', 'analytics'];
       if (h && valid.includes(h)) return h;
     } catch {}
@@ -562,7 +570,7 @@ export default function App() {
   const [newHall, setNewHall] = useState('HALL_04');
   
   // Scheduler State
-  const [schedDate, setSchedDate] = useState('2026-11-03');
+  const [schedDate, setSchedDate] = useState(getTodayDateStr());
   const [schedStartTime, setSchedStartTime] = useState('11:30:00');
   const [schedEndTime, setSchedEndTime] = useState('11:50:00');
   const [schedHall, setSchedHall] = useState('HALL_04');
@@ -571,7 +579,7 @@ export default function App() {
   const [checkingClash, setCheckingClash] = useState(false);
 
   // Cause List (रोज़नामचा / Board) State
-  const [causeListDate, setCauseListDate] = useState('2026-10-29');
+  const [causeListDate, setCauseListDate] = useState(getTodayDateStr());
   const [causeListHall, setCauseListHall] = useState('ALL');
   const [causeListStatusFilter, setCauseListStatusFilter] = useState('ALL');
   const [causeListItems, setCauseListItems] = useState([]);
@@ -1786,11 +1794,113 @@ cryptographically verifiable in the Judicial Immutable Vault.
     }
   };
 
+  // Dynamic Live Date Presets Engine (Automatically adjusts every day)
+  const getDynamicDatePresets = () => {
+    const today = new Date();
+    const addDays = (num) => {
+      const d = new Date(today);
+      d.setDate(d.getDate() + num);
+      return d;
+    };
+
+    const d0 = today;
+    const d1 = addDays(1);
+    
+    // Pick next business days (skipping weekends if landed on Sat/Sun)
+    let d2 = addDays(2);
+    if (d2.getDay() === 0) d2 = addDays(3);
+    else if (d2.getDay() === 6) d2 = addDays(4);
+
+    const d7 = addDays(7);
+    const d14 = addDays(14);
+    const d21 = addDays(21);
+    const d28 = addDays(28);
+
+    const formatDayMonth = (d) => {
+      const day = d.getDate().toString().padStart(2, '0');
+      const month = d.toLocaleString('en-US', { month: 'short' });
+      return `${day} ${month}`;
+    };
+
+    const formatDayMonthWeekday = (d) => {
+      const dm = formatDayMonth(d);
+      const weekday = d.toLocaleString('en-US', { weekday: 'short' });
+      return `${dm} (${weekday})`;
+    };
+
+    const toHindiDate = (d, withWeekday = false) => {
+      const hindiMonths = {
+        Jan: 'जन', Feb: 'फ़र', Mar: 'मार्च', Apr: 'अप्रैल', May: 'मई', Jun: 'जून',
+        Jul: 'जुलाई', Aug: 'अगस्त', Sep: 'सितंबर', Oct: 'अक्टूबर', Nov: 'नवंबर', Dec: 'दिसंबर'
+      };
+      const hindiDays = {
+        Sun: 'रवि', Mon: 'सोम', Tue: 'मंगल', Wed: 'बुध', Thu: 'गुरु', Fri: 'शुक्र', Sat: 'शनि'
+      };
+      const hindiDigits = ['०', '१', '२', '३', '४', '५', '६', '७', '८', '९'];
+      const dayStr = d.getDate().toString().padStart(2, '0').split('').map(c => hindiDigits[c] || c).join('');
+      const monthStr = hindiMonths[d.toLocaleString('en-US', { month: 'short' })] || d.toLocaleString('en-US', { month: 'short' });
+      const weekdayStr = hindiDays[d.toLocaleString('en-US', { weekday: 'short' })] || '';
+      return withWeekday ? `${dayStr} ${monthStr} (${weekdayStr})` : `${dayStr} ${monthStr}`;
+    };
+
+    const isHi = lang === 'HI';
+
+    return {
+      todayISO: getTodayDateStr(d0),
+      todayLabel: isHi ? `आज: ${toHindiDate(d0)} (लाइव)` : `Today: ${formatDayMonth(d0)} (Live)`,
+      tomorrowISO: getTodayDateStr(d1),
+      tomorrowLabel: isHi ? `कल: ${toHindiDate(d1)}` : `Tomorrow: ${formatDayMonth(d1)}`,
+      d2ISO: getTodayDateStr(d2),
+      d2Label: isHi ? toHindiDate(d2, true) : formatDayMonthWeekday(d2),
+      d7ISO: getTodayDateStr(d7),
+      d7Label: isHi ? toHindiDate(d7, true) : formatDayMonthWeekday(d7),
+      // Scheduler presets
+      schedTodayLabel: isHi ? `आज: ${toHindiDate(d0, true)}` : `Today: ${formatDayMonthWeekday(d0)}`,
+      schedTomorrowLabel: isHi ? `कल: ${toHindiDate(d1, true)}` : `Tomorrow: ${formatDayMonthWeekday(d1)}`,
+      schedNextWeekISO: getTodayDateStr(d7),
+      schedNextWeekLabel: isHi ? `अगला सप्ताह: ${toHindiDate(d7, true)}` : `Next Week: ${formatDayMonthWeekday(d7)}`,
+      schedIn2WeeksISO: getTodayDateStr(d14),
+      schedIn2WeeksLabel: isHi ? `२ सप्ताह में: ${toHindiDate(d14, true)}` : `In 2 Weeks: ${formatDayMonthWeekday(d14)}`,
+      schedNextMonthISO: getTodayDateStr(d28),
+      schedNextMonthLabel: isHi ? `अगला माह: ${toHindiDate(d28, true)}` : `Next Month: ${formatDayMonthWeekday(d28)}`,
+    };
+  };
+
   // Load initial Cause List & Challan data
   useEffect(() => {
     fetchDailyCauseList();
     fetchChallans();
     handleCalculateFee('4500000');
+  }, []);
+
+  // Handle QR Code Deep-Links on Mount and on Hash Change (e.g. #verify=... or #cnr=...)
+  useEffect(() => {
+    const handleDeepLinks = () => {
+      try {
+        const hash = window.location.hash.replace(/^#/, '');
+        if (hash.startsWith('verify=')) {
+          const challanNo = decodeURIComponent(hash.replace('verify=', ''));
+          setActiveTab('echallan');
+          setVerifyChallanQuery(challanNo);
+          handleVerifyChallan(challanNo);
+        } else if (hash.startsWith('cnr=') || hash.startsWith('case=')) {
+          const cnrNo = decodeURIComponent(hash.replace(/^(cnr|case)=/, ''));
+          setActiveTab('search');
+          setSearchQuery(cnrNo);
+          loadCaseDossier(cnrNo);
+        } else if (hash.startsWith('cmo=')) {
+          const cnrNo = decodeURIComponent(hash.replace('cmo=', ''));
+          setActiveTab('cmo');
+          loadCaseDossier(cnrNo);
+        }
+      } catch (err) {
+        console.warn('QR code deep link parse error:', err);
+      }
+    };
+
+    handleDeepLinks();
+    window.addEventListener('hashchange', handleDeepLinks);
+    return () => window.removeEventListener('hashchange', handleDeepLinks);
   }, []);
 
   // If user is not authenticated or clicked "Logout / Switch Portal", render MP High Court Login Gateway
@@ -4167,8 +4277,8 @@ cryptographically verifiable in the Judicial Immutable Vault.
                   </div>
                   <div className="print-header-qr">
                     <QRCodeImage
-                      value={`MPHC:IND:COMM:${dossier.cnr_number}:${dossier.status}`}
-                      size={52}
+                      value={`${window.location.origin}/#cnr=${dossier.cnr_number}`}
+                      size={70}
                       alt="Registry Dossier QR"
                     />
                   </div>
@@ -4990,7 +5100,12 @@ cryptographically verifiable in the Judicial Immutable Vault.
                         {/* Official Seal Footer */}
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', borderTop: '1px dashed var(--theme-border)', paddingTop: '1.25rem', marginTop: '1rem' }}>
                           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                            <QrCode size={48} color={theme === 'dark' ? '#f4f4f5' : '#070d1e'} />
+                            <QRCodeImage
+                              value={`${window.location.origin}/#cnr=${dossier.cnr_number}`}
+                              size={72}
+                              color={{ dark: '#070d1e', light: '#ffffff' }}
+                              alt="National Judicial Digital Seal QR"
+                            />
                             <div style={{ fontSize: '0.75rem', color: 'var(--theme-text-muted)' }}>
                               <div style={{ fontWeight: 700, color: 'var(--theme-text-primary)' }}>{tr('National Judicial Digital Seal')}</div>
                               <div>{tr('QR Verification:')} <span className="mono">{dossier.cmo.qr_verification_code || 'ECOURTS-CMO-IN-MP-IND'}</span></div>
@@ -5162,18 +5277,9 @@ cryptographically verifiable in the Judicial Immutable Vault.
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', borderTop: '1px dashed #cbd5e1', paddingTop: '1.25rem', flexWrap: 'wrap', gap: '1rem' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                         <QRCodeImage
-                          value={[
-                            `🏛️ MP HIGH COURT - FINAL JUDICIAL DECREE`,
-                            `STATUS: CERTIFIED FINAL OPERATIVE ORDER`,
-                            `CNR: ${dossier.cnr_number}`,
-                            `VERDICT: ${dossier.verdict?.verdict_type}`,
-                            `WINNER: ${dossier.verdict?.winning_party}`,
-                            `DECREE AMOUNT: ₹ ${dossier.verdict?.decree_amount || 'N/A'}`,
-                            `JUDGE: ${dossier.verdict?.pronouncing_judge || "Hon'ble Justice Rajesh Sharma"}`,
-                            `SHA-256: ${dossier.verdict?.sha256_digest || 'VERIFIED'}`,
-                            `Sec. 65B Indian Evidence Act Certified True Copy`
-                          ].join('\n')}
-                          size={54}
+                          value={`${window.location.origin}/#cnr=${dossier.cnr_number}`}
+                          size={75}
+                          color={{ dark: '#070d1e', light: '#ffffff' }}
                           alt="National Judicial Decree QR Seal"
                         />
                         <div style={{ fontSize: '0.75rem', color: '#64748b' }}>
@@ -6002,46 +6108,53 @@ cryptographically verifiable in the Judicial Immutable Vault.
                 {tr('⚡ Quick Presets (Schedule for Live Demonstration):')}
               </span>
               <div className="quick-preset-bar">
-                <button 
-                  type="button" 
-                  className={`quick-preset-btn ${schedDate === '2026-10-28' ? 'active' : ''}`}
-                  onClick={() => setSchedDate('2026-10-28')}
-                >
-                  <Calendar size={13} />
-                  {tr('Next Week: 28 Oct (Wed)')}
-                </button>
-                <button 
-                  type="button" 
-                  className={`quick-preset-btn ${schedDate === '2026-11-03' ? 'active' : ''}`}
-                  onClick={() => setSchedDate('2026-11-03')}
-                >
-                  <Calendar size={13} />
-                  {tr('Next Week: 03 Nov (Tue)')}
-                </button>
-                <button 
-                  type="button" 
-                  className={`quick-preset-btn ${schedDate === '2026-11-10' ? 'active' : ''}`}
-                  onClick={() => setSchedDate('2026-11-10')}
-                >
-                  <Calendar size={13} />
-                  {tr('In 2 Weeks: 10 Nov (Tue)')}
-                </button>
-                <button 
-                  type="button" 
-                  className={`quick-preset-btn ${schedDate === '2026-11-24' ? 'active' : ''}`}
-                  onClick={() => setSchedDate('2026-11-24')}
-                >
-                  <Calendar size={13} />
-                  {tr('Next Month: 24 Nov (Tue)')}
-                </button>
-                <button 
-                  type="button" 
-                  className={`quick-preset-btn ${schedDate === '2026-12-01' ? 'active' : ''}`}
-                  onClick={() => setSchedDate('2026-12-01')}
-                >
-                  <Calendar size={13} />
-                  {tr('Next Month: 01 Dec (Tue)')}
-                </button>
+                {(() => {
+                  const presets = getDynamicDatePresets();
+                  return (
+                    <>
+                      <button 
+                        type="button" 
+                        className={`quick-preset-btn ${schedDate === presets.todayISO ? 'active' : ''}`}
+                        onClick={() => setSchedDate(presets.todayISO)}
+                      >
+                        <Calendar size={13} />
+                        {presets.schedTodayLabel}
+                      </button>
+                      <button 
+                        type="button" 
+                        className={`quick-preset-btn ${schedDate === presets.tomorrowISO ? 'active' : ''}`}
+                        onClick={() => setSchedDate(presets.tomorrowISO)}
+                      >
+                        <Calendar size={13} />
+                        {presets.schedTomorrowLabel}
+                      </button>
+                      <button 
+                        type="button" 
+                        className={`quick-preset-btn ${schedDate === presets.schedNextWeekISO ? 'active' : ''}`}
+                        onClick={() => setSchedDate(presets.schedNextWeekISO)}
+                      >
+                        <Calendar size={13} />
+                        {presets.schedNextWeekLabel}
+                      </button>
+                      <button 
+                        type="button" 
+                        className={`quick-preset-btn ${schedDate === presets.schedIn2WeeksISO ? 'active' : ''}`}
+                        onClick={() => setSchedDate(presets.schedIn2WeeksISO)}
+                      >
+                        <Calendar size={13} />
+                        {presets.schedIn2WeeksLabel}
+                      </button>
+                      <button 
+                        type="button" 
+                        className={`quick-preset-btn ${schedDate === presets.schedNextMonthISO ? 'active' : ''}`}
+                        onClick={() => setSchedDate(presets.schedNextMonthISO)}
+                      >
+                        <Calendar size={13} />
+                        {presets.schedNextMonthLabel}
+                      </button>
+                    </>
+                  );
+                })()}
               </div>
             </div>
 
@@ -6524,7 +6637,12 @@ cryptographically verifiable in the Judicial Immutable Vault.
 
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', borderTop: '1px dashed #d4d4d8', paddingTop: '1.25rem', flexWrap: 'wrap', gap: '1rem' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                <QrCode size={48} color="#070d1e" />
+                <QRCodeImage
+                  value={`${window.location.origin}/#cnr=${dossier?.cnr_number || 'MPGW010001112026'}`}
+                  size={72}
+                  color={{ dark: '#070d1e', light: '#ffffff' }}
+                  alt="Digital Judicial Seal QR"
+                />
                 <div style={{ fontSize: '0.75rem', color: '#71717a' }}>
                   <div style={{ fontWeight: 700, color: '#070d1e' }}>{tr('Digital Judicial Seal')}</div>
                   <div>SHA-256: 4a8f9b...e21c</div>
@@ -6660,74 +6778,81 @@ cryptographically verifiable in the Judicial Immutable Vault.
                 </div>
 
                 <div style={{ marginLeft: 'auto', display: 'flex', gap: '0.5rem', alignSelf: 'flex-end', flexWrap: 'wrap' }}>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setCauseListDate('2026-10-29');
-                      fetchDailyCauseList('2026-10-29', causeListHall);
-                    }}
-                    className={`tag-btn ${causeListDate === '2026-10-29' ? 'active' : ''}`}
-                    style={{
-                      fontSize: '0.74rem',
-                      padding: '0.35rem 0.65rem',
-                      background: causeListDate === '2026-10-29' ? '#d97706' : undefined,
-                      color: causeListDate === '2026-10-29' ? '#ffffff' : undefined,
-                      fontWeight: causeListDate === '2026-10-29' ? 700 : undefined
-                    }}
-                  >
-                    Today: 29 Oct (Live)
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setCauseListDate('2026-10-30');
-                      fetchDailyCauseList('2026-10-30', causeListHall);
-                    }}
-                    className={`tag-btn ${causeListDate === '2026-10-30' ? 'active' : ''}`}
-                    style={{
-                      fontSize: '0.74rem',
-                      padding: '0.35rem 0.65rem',
-                      background: causeListDate === '2026-10-30' ? '#d97706' : undefined,
-                      color: causeListDate === '2026-10-30' ? '#ffffff' : undefined,
-                      fontWeight: causeListDate === '2026-10-30' ? 700 : undefined
-                    }}
-                  >
-                    Tomorrow: 30 Oct
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setCauseListDate('2026-11-03');
-                      fetchDailyCauseList('2026-11-03', causeListHall);
-                    }}
-                    className={`tag-btn ${causeListDate === '2026-11-03' ? 'active' : ''}`}
-                    style={{
-                      fontSize: '0.74rem',
-                      padding: '0.35rem 0.65rem',
-                      background: causeListDate === '2026-11-03' ? '#d97706' : undefined,
-                      color: causeListDate === '2026-11-03' ? '#ffffff' : undefined,
-                      fontWeight: causeListDate === '2026-11-03' ? 700 : undefined
-                    }}
-                  >
-                    03 Nov (Tue)
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setCauseListDate('2026-11-10');
-                      fetchDailyCauseList('2026-11-10', causeListHall);
-                    }}
-                    className={`tag-btn ${causeListDate === '2026-11-10' ? 'active' : ''}`}
-                    style={{
-                      fontSize: '0.74rem',
-                      padding: '0.35rem 0.65rem',
-                      background: causeListDate === '2026-11-10' ? '#d97706' : undefined,
-                      color: causeListDate === '2026-11-10' ? '#ffffff' : undefined,
-                      fontWeight: causeListDate === '2026-11-10' ? 700 : undefined
-                    }}
-                  >
-                    10 Nov (Tue)
-                  </button>
+                  {(() => {
+                    const presets = getDynamicDatePresets();
+                    return (
+                      <>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setCauseListDate(presets.todayISO);
+                            fetchDailyCauseList(presets.todayISO, causeListHall);
+                          }}
+                          className={`tag-btn ${causeListDate === presets.todayISO ? 'active' : ''}`}
+                          style={{
+                            fontSize: '0.74rem',
+                            padding: '0.35rem 0.65rem',
+                            background: causeListDate === presets.todayISO ? '#d97706' : undefined,
+                            color: causeListDate === presets.todayISO ? '#ffffff' : undefined,
+                            fontWeight: causeListDate === presets.todayISO ? 700 : undefined
+                          }}
+                        >
+                          {presets.todayLabel}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setCauseListDate(presets.tomorrowISO);
+                            fetchDailyCauseList(presets.tomorrowISO, causeListHall);
+                          }}
+                          className={`tag-btn ${causeListDate === presets.tomorrowISO ? 'active' : ''}`}
+                          style={{
+                            fontSize: '0.74rem',
+                            padding: '0.35rem 0.65rem',
+                            background: causeListDate === presets.tomorrowISO ? '#d97706' : undefined,
+                            color: causeListDate === presets.tomorrowISO ? '#ffffff' : undefined,
+                            fontWeight: causeListDate === presets.tomorrowISO ? 700 : undefined
+                          }}
+                        >
+                          {presets.tomorrowLabel}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setCauseListDate(presets.d2ISO);
+                            fetchDailyCauseList(presets.d2ISO, causeListHall);
+                          }}
+                          className={`tag-btn ${causeListDate === presets.d2ISO ? 'active' : ''}`}
+                          style={{
+                            fontSize: '0.74rem',
+                            padding: '0.35rem 0.65rem',
+                            background: causeListDate === presets.d2ISO ? '#d97706' : undefined,
+                            color: causeListDate === presets.d2ISO ? '#ffffff' : undefined,
+                            fontWeight: causeListDate === presets.d2ISO ? 700 : undefined
+                          }}
+                        >
+                          {presets.d2Label}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setCauseListDate(presets.d7ISO);
+                            fetchDailyCauseList(presets.d7ISO, causeListHall);
+                          }}
+                          className={`tag-btn ${causeListDate === presets.d7ISO ? 'active' : ''}`}
+                          style={{
+                            fontSize: '0.74rem',
+                            padding: '0.35rem 0.65rem',
+                            background: causeListDate === presets.d7ISO ? '#d97706' : undefined,
+                            color: causeListDate === presets.d7ISO ? '#ffffff' : undefined,
+                            fontWeight: causeListDate === presets.d7ISO ? 700 : undefined
+                          }}
+                        >
+                          {presets.d7Label}
+                        </button>
+                      </>
+                    );
+                  })()}
                 </div>
               </div>
             </div>
@@ -7332,8 +7457,8 @@ cryptographically verifiable in the Judicial Immutable Vault.
                   <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
                     <div style={{ background: '#ffffff', padding: '6px', borderRadius: '8px', border: '1px solid #fde68a', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                       <QRCodeImage
-                        value={`MPHC:TREASURY:${challanSuccessReceipt.challan_number}:${challanSuccessReceipt.amount}:${challanSuccessReceipt.receipt_sha256 || 'CONFIRMED'}`}
-                        size={56}
+                        value={`${window.location.origin}/#verify=${challanSuccessReceipt.challan_number}`}
+                        size={75}
                         alt="Receipt Verification QR"
                         color={{ dark: '#b45309', light: '#ffffff' }}
                       />
@@ -7855,7 +7980,12 @@ cryptographically verifiable in the Judicial Immutable Vault.
 
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginTop: '1.5rem', paddingTop: '1rem', borderTop: '1px solid #e2e8f0' }}>
                   <div style={{ textAlign: 'center' }}>
-                    <QrCode size={64} />
+                    <QRCodeImage
+                      value={`${window.location.origin}/#cnr=${summonsCase?.cnr_number || 'MPIN010001012026'}`}
+                      size={80}
+                      color={{ dark: '#070d1e', light: '#ffffff' }}
+                      alt="e-Summons Digital Seal QR"
+                    />
                     <div style={{ fontSize: '0.65rem', marginTop: '0.2rem', fontFamily: 'monospace' }}>
                       e-Summons Digital Seal<br />
                       SHA256: 8a7f...e319

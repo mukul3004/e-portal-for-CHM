@@ -319,14 +319,29 @@ def get_daily_cause_list(
     [Cause List / रोज़नामचा]
     Fetches the High Court Daily Cause Board.
     If hearing_date is not specified, returns the closest upcoming scheduled sessions.
+    Automatically self-rolls demonstration hearings so today is always dynamically live.
     """
+    # 1. Automatic Dynamic Sync: Ensure today has active live hearing sessions
+    today_real = date.today()
+    live_case_session = (
+        db.query(CMHSession)
+        .join(Case, Case.id == CMHSession.case_id)
+        .filter(Case.cnr_number.like("%111%"))
+        .first()
+    )
+    if not live_case_session or live_case_session.hearing_date != today_real:
+        try:
+            from scripts.make_dates_live import make_dates_live
+            make_dates_live(db=db, base_today=today_real)
+        except Exception as e:
+            print(f"[WARN] Auto-sync live dates fallback: {e}")
+
     query = db.query(CMHSession)
     if hearing_date:
         query = query.filter(CMHSession.hearing_date == hearing_date)
     else:
-        # Default to upcoming active hearings from current date
-        today_val = date.today()
-        query = query.filter(CMHSession.hearing_date >= today_val)
+        # Default to upcoming active hearings from today onwards
+        query = query.filter(CMHSession.hearing_date >= today_real)
     if court_hall_id and court_hall_id != "ALL":
         query = query.filter(CMHSession.court_hall_id == court_hall_id)
 

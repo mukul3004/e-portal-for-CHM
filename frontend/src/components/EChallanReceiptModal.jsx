@@ -63,12 +63,12 @@ export default function EChallanReceiptModal({
 
   const paidDateFormatted = (() => {
     try {
-      return new Date(challan.paid_at || challan.created_at || '2026-10-29T10:00:00Z').toLocaleString('en-IN', {
+      return new Date(challan.paid_at || challan.created_at || new Date().toISOString()).toLocaleString('en-IN', {
         dateStyle: 'medium',
         timeStyle: 'medium'
       });
     } catch {
-      return '29 Oct 2026, 11:30:00 AM';
+      return new Date().toLocaleString('en-IN', { dateStyle: 'medium', timeStyle: 'medium' });
     }
   })();
 
@@ -525,7 +525,7 @@ Technology Act, 2000. No manual signature is required.
                 }}
               >
                 <QRCodeImage
-                  value={qrVerificationText}
+                  value={verificationUrl}
                   size={120}
                   alt="e-Challan Verification QR Code"
                   color={{ dark: '#070d1e', light: '#ffffff' }}

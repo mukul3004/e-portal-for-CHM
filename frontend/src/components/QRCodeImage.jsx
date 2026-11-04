@@ -130,11 +130,13 @@ export default function QRCodeImage({
     );
   }
 
-  return (
+  const isUrl = typeof payload === 'string' && (payload.startsWith('http://') || payload.startsWith('https://'));
+
+  const imgElement = (
     <img
       src={dataUrl}
       alt={alt}
-      title="Scannable QR Code"
+      title={isUrl ? `Scan with camera or click to open: ${payload}` : "Scannable QR Code"}
       width={size}
       height={size}
       className={className}
@@ -145,8 +147,23 @@ export default function QRCodeImage({
         borderRadius: '6px',
         boxShadow: '0 1px 4px rgba(0,0,0,0.08)',
         background: color?.light || '#ffffff',
+        cursor: isUrl ? 'pointer' : 'default',
         ...style
       }}
     />
   );
+
+  if (isUrl) {
+    return (
+      <a 
+        href={payload} 
+        style={{ display: 'inline-block', textDecoration: 'none' }} 
+        title={`Scan with smartphone camera or click to open: ${payload}`}
+      >
+        {imgElement}
+      </a>
+    );
+  }
+
+  return imgElement;
 }

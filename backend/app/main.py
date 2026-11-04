@@ -161,12 +161,31 @@ def seed_initial_cases():
     finally:
         db.close()
 
+def ensure_dates_live_on_startup():
+    """Auto-synchronizes hearings to date.today() on startup if not already rolled."""
+    from datetime import date
+    from backend.app.models.schedule import CMHSession
+    db = SessionLocal()
+    try:
+        today_real = date.today()
+        live_session = db.query(CMHSession).join(Case, Case.id == CMHSession.case_id).filter(Case.cnr_number.like("%111%")).first()
+        if (not live_session or live_session.hearing_date != today_real) and db.query(Case).count() > 0:
+            print(f"[INFO] Auto-aligning judicial hearing calendar to live date: {today_real}...")
+            from scripts.make_dates_live import make_dates_live
+            make_dates_live(db=db, base_today=today_real)
+            print("[INFO] Judicial hearing calendar successfully aligned to live date.")
+    except Exception as e:
+        print(f"[WARN] Startup date alignment check: {e}")
+    finally:
+        db.close()
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Initialize all database tables
     Base.metadata.create_all(bind=engine)
     seed_initial_users()
     seed_initial_cases()
+    ensure_dates_live_on_startup()
     yield
 
 app = FastAPI(
