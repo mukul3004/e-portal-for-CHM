@@ -1087,7 +1087,7 @@ select:focus {
   background: #1B2A41;
   border-bottom: 2px solid #B8903D;
   color: #ffffff;
-  padding: 0.65rem 1.25rem;
+  padding: 0.65rem 1.25rem 0.45rem 1.25rem;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
 }
 
@@ -1156,10 +1156,12 @@ select:focus {
 .mphc-meta-col {
   display: flex;
   flex-direction: row;
-  align-items: center;
+  align-items: flex-end;
   gap: 0.65rem;
   flex-shrink: 0;
   margin-left: auto;
+  align-self: flex-end;
+  margin-bottom: 2px;
 }
 
 .mphc-bench-badge-row {
@@ -1168,6 +1170,8 @@ select:focus {
   gap: 0.4rem;
   flex-wrap: nowrap;
   white-space: nowrap;
+  align-self: flex-end;
+  margin-bottom: 2px;
 }
 
 .mphc-benches-ribbon {
