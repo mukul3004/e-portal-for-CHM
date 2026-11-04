@@ -1437,6 +1437,13 @@ cryptographically verifiable in the Judicial Immutable Vault.
   // Book Hearing Slot
   const handleBookSlot = async () => {
     if (!activeCase) return;
+    if (currentRole === 'CITIZEN' || currentRole === 'LITIGANT') {
+      alert(lang === 'HI'
+        ? 'वैधानिक अधिकार प्रतिबंध: केवल पीठासीन न्यायाधीश अथवा न्यायालय रजिस्ट्री अधिकारी ही आधिकारिक रोज़नामचा (कॉज़ लिस्ट) में सुनवाई सत्र दर्ज कर सकते हैं। कृपया ऊपर दिए गए "Switch Identity" बटन से न्यायाधीश अथवा क्लर्क पद चुनें।'
+        : 'Statutory Access Restriction: Under CPC Order XV-A, only the Presiding Judicial Officer (Judge) or Registry Clerk has legal authority to commit hearing dates to the official cause list. Please switch to the Judge or Clerk role above.');
+      setProfileModalOpen(true);
+      return;
+    }
     try {
       const authRes = await fetch(`${API_BASE}/auth/login`, {
         method: 'POST',
@@ -4455,7 +4462,7 @@ cryptographically verifiable in the Judicial Immutable Vault.
                           className="hearing-action-btn"
                         >
                           <Calendar size={14} />
-                          {tr('Clash Check & Reschedule')}
+                          {currentRole === 'CITIZEN' ? tr('Inspect Calendar & Conflict Roster') : tr('Clash Check & Reschedule')}
                         </button>
                       </div>
                     </div>
@@ -6102,6 +6109,32 @@ cryptographically verifiable in the Judicial Immutable Vault.
               </p>
             </div>
 
+            {/* Statutory Civic Transparency Callout for Public Citizens */}
+            {currentRole === 'CITIZEN' && (
+              <div className="statutory-restriction-callout" style={{ marginBottom: '1.25rem', background: 'rgba(20, 184, 166, 0.08)', border: '1.5px solid rgba(20, 184, 166, 0.4)', borderRadius: '8px', padding: '0.85rem 1.25rem', display: 'flex', alignItems: 'flex-start', gap: '0.75rem' }}>
+                <Globe size={20} style={{ flexShrink: 0, color: '#0d9488', marginTop: '0.1rem' }} />
+                <div style={{ fontSize: '0.825rem', color: 'var(--theme-text-secondary)', lineHeight: 1.5 }}>
+                  <strong style={{ color: '#0f766e', display: 'block', marginBottom: '0.2rem' }}>
+                    {tr('Civic Transparency & Statutory Scheduling Authority (Order XV-A CPC):')}
+                  </strong>
+                  {tr('Under the Open Courts Principle (Article 145(4)), members of the public can freely inspect courtroom calendar availability and test the advocate anti-collision engine. However, the statutory authority to commit hearing dates to the official High Court cause list is reserved strictly for the Presiding Judicial Officer (Judge) and Court Registry Officer (Sheristedar). To confirm or book a slot, switch to Judge or Clerk role above.')}
+                </div>
+              </div>
+            )}
+
+            {/* Litigant Hearing Request Protocol Callout */}
+            {currentRole === 'LITIGANT' && (
+              <div className="statutory-restriction-callout" style={{ marginBottom: '1.25rem', background: 'rgba(217, 119, 6, 0.08)', border: '1.5px solid rgba(217, 119, 6, 0.4)', borderRadius: '8px', padding: '0.85rem 1.25rem', display: 'flex', alignItems: 'flex-start', gap: '0.75rem' }}>
+                <Briefcase size={20} style={{ flexShrink: 0, color: '#d97706', marginTop: '0.1rem' }} />
+                <div style={{ fontSize: '0.825rem', color: 'var(--theme-text-secondary)', lineHeight: 1.5 }}>
+                  <strong style={{ color: '#b45309', display: 'block', marginBottom: '0.2rem' }}>
+                    {tr('Litigant Hearing Request Protocol (Order XV-A CPC):')}
+                  </strong>
+                  {tr('Commercial litigants can inspect slot availability and run conflict scans. Formal listing on the official board requires judicial confirmation by the Presiding Bench or Registry Scrutiny.')}
+                </div>
+              </div>
+            )}
+
             {/* Quick Live Hearing Presets */}
             <div style={{ marginBottom: '1.25rem', background: 'var(--theme-card)', padding: '0.85rem 1rem', borderRadius: '8px', border: '1px solid var(--theme-border)' }}>
               <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--theme-text-primary)', display: 'block', marginBottom: '0.5rem' }}>
@@ -6261,23 +6294,57 @@ cryptographically verifiable in the Judicial Immutable Vault.
                 {checkingClash ? tr('Scanning Roster...') : tr('1. Scan Multi-Hall Roster for Conflicts')}
               </button>
 
-              <button 
-                onClick={handleBookSlot}
-                disabled={clashResult?.has_conflict}
-                style={{
-                  background: clashResult?.has_conflict ? '#d4d4d8' : '#d97706',
-                  color: 'white',
-                  border: 'none',
-                  padding: '0.75rem 1.5rem',
-                  borderRadius: '8px',
-                  fontWeight: 700,
-                  fontSize: '0.9rem',
-                  cursor: clashResult?.has_conflict ? 'not-allowed' : 'pointer',
-                  boxShadow: clashResult?.has_conflict ? 'none' : '0 4px 14px rgba(217, 119, 6, 0.35)'
-                }}
-              >
-                {tr('2. Confirm Slot & Generate WebRTC Room')}
-              </button>
+              {(currentRole === 'CITIZEN' || currentRole === 'LITIGANT') ? (
+                <button 
+                  type="button"
+                  onClick={() => {
+                    alert(lang === 'HI'
+                      ? 'वैधानिक अधिकार प्रतिबंध: सिविल प्रक्रिया संहिता आदेश १५-क के तहत केवल पीठासीन न्यायाधीश अथवा न्यायालय रजिस्ट्री अधिकारी ही आधिकारिक रोज़नामचे में सुनवाई दर्ज कर सकते हैं। कृपया ऊपर "Switch Identity" बटन से न्यायाधीश अथवा क्लर्क पद चुनें।'
+                      : 'Statutory Access Restriction: Under CPC Order XV-A, only the Presiding Judicial Officer (Judge) or Registry Clerk has legal authority to commit hearing dates to the official cause list. Please switch to the Judge or Clerk role above.');
+                    setProfileModalOpen(true);
+                  }}
+                  style={{
+                    background: 'var(--theme-card)',
+                    color: 'var(--theme-text-muted)',
+                    border: '1.5px dashed var(--theme-border)',
+                    padding: '0.75rem 1.5rem',
+                    borderRadius: '8px',
+                    fontWeight: 700,
+                    fontSize: '0.9rem',
+                    cursor: 'pointer',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '0.5rem',
+                    boxShadow: 'none'
+                  }}
+                  title={tr('Judicial Officer or Registry Clerk Authorization Required')}
+                >
+                  <Lock size={16} color="#d97706" />
+                  <span>{tr('2. Confirm Slot (Judicial / Clerk Authority Required)')}</span>
+                </button>
+              ) : (
+                <button 
+                  onClick={handleBookSlot}
+                  disabled={clashResult?.has_conflict}
+                  style={{
+                    background: clashResult?.has_conflict ? '#d4d4d8' : '#d97706',
+                    color: 'white',
+                    border: 'none',
+                    padding: '0.75rem 1.5rem',
+                    borderRadius: '8px',
+                    fontWeight: 700,
+                    fontSize: '0.9rem',
+                    cursor: clashResult?.has_conflict ? 'not-allowed' : 'pointer',
+                    boxShadow: clashResult?.has_conflict ? 'none' : '0 4px 14px rgba(217, 119, 6, 0.35)',
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '0.5rem'
+                  }}
+                >
+                  <CheckCircle2 size={16} />
+                  <span>{tr('2. Confirm Slot & Generate WebRTC Room')}</span>
+                </button>
+              )}
             </div>
 
             {clashResult && (

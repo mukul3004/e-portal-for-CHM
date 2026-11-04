@@ -259,6 +259,15 @@ def book_cmh_slot(
     current_user: User = Depends(require_roles(RoleType.CLERK, RoleType.JUDGE))
 ):
     """[CMH-206] Allocate conflict-free pre-trial CMH slot and generate WebRTC room."""
+    # 0. Statutory Court Sitting Check: Ensure date is an official working court day
+    day_status = CourtCalendarService.get_day_status(payload.hearing_date)
+    if not day_status["is_working_day"]:
+        next_working = CourtCalendarService.get_next_working_day(payload.hearing_date)
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Court is CLOSED on {payload.hearing_date.strftime('%d %b %Y')} ({day_status['label_en']} / {day_status['label_hi']}). Hearings cannot be scheduled on Sundays, closed Saturdays, holidays, or vacations. Next available court sitting day is {next_working.strftime('%d %b %Y')}."
+        )
+
     case = db.query(Case).filter(Case.id == payload.case_id).first()
     if not case:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Case not found.")

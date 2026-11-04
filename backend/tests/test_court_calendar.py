@@ -95,3 +95,46 @@ def test_api_calendar_check_date_endpoint(client):
     data_work = resp_work.json()
     assert data_work["is_working_day"]
     assert data_work["next_working_day"] is None
+
+
+def test_book_slot_blocks_holiday_and_sunday(client):
+    # Login Judge
+    auth_resp = client.post(
+        "/api/v1/auth/login",
+        json={"email": "judge.sharma@svvv-courts.gov.in", "password": "Judge@2026"}
+    )
+    token = auth_resp.json()["access_token"]
+    headers = {"Authorization": f"Bearer {token}"}
+
+    # Attempt to book on Sunday 8 Nov 2026
+    resp = client.post(
+        "/api/v1/schedule/book",
+        headers=headers,
+        json={
+            "case_id": "any-case-id",
+            "hearing_date": "2026-11-08",
+            "start_time": "10:30:00",
+            "end_time": "11:15:00",
+            "court_hall_id": "HALL_04"
+        }
+    )
+    assert resp.status_code == 400
+    assert "Court is CLOSED" in resp.json()["detail"]
+    assert "Sunday" in resp.json()["detail"]
+
+    # Attempt to book on Diwali (9 Nov 2026)
+    resp_diwali = client.post(
+        "/api/v1/schedule/book",
+        headers=headers,
+        json={
+            "case_id": "any-case-id",
+            "hearing_date": "2026-11-09",
+            "start_time": "10:30:00",
+            "end_time": "11:15:00",
+            "court_hall_id": "HALL_04"
+        }
+    )
+    assert resp_diwali.status_code == 400
+    assert "Court is CLOSED" in resp_diwali.json()["detail"]
+    assert "Deepawali" in resp_diwali.json()["detail"] or "Diwali" in resp_diwali.json()["detail"]
+

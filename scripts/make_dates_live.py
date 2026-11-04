@@ -12,6 +12,7 @@ from backend.app.models.case import Case, CaseStatus, Pleading, Exhibit
 from backend.app.models.admissions import AdmissionsChecklist
 from backend.app.models.schedule import CMHSession, SessionStatus
 from backend.app.models.order import CaseManagementOrder, DiscoveryDeadline, DeadlineStatus
+from backend.app.services.court_calendar import CourtCalendarService
 
 TIME_SLOTS = [
     (time(10, 30), time(11, 15)),
@@ -22,23 +23,38 @@ TIME_SLOTS = [
 ]
 
 def compute_upcoming_working_dates(start_date: date, count: int = 35):
-    """Calculates subsequent business days excluding Saturdays and Sundays."""
+    """Calculates subsequent business days strictly excluding Saturdays, Sundays, Gazetted Court Holidays, and Vacations."""
     working_days = []
     curr = start_date + timedelta(days=1)
     while len(working_days) < count:
-        if curr.weekday() < 5:  # Monday through Friday
+        st = CourtCalendarService.get_day_status(curr)
+        if st["is_working_day"]:
             working_days.append(curr)
         curr += timedelta(days=1)
     return working_days
+
+def get_prior_working_day(start_date: date) -> date:
+    """Finds the nearest working court day on or before start_date."""
+    curr = start_date
+    for _ in range(30):
+        st = CourtCalendarService.get_day_status(curr)
+        if st["is_working_day"]:
+            return curr
+        curr -= timedelta(days=1)
+    return curr
 
 def make_dates_live(db=None, base_today=None):
     """
     Dynamically aligns all judicial hearings, pleadings, and discovery deadlines
     relative to today's date (or any specified base date).
+    Strictly aligns all hearings to High Court sitting days (no holidays/vacations/Sundays).
     Self-rolls automatically every day so tomorrow and future sessions are always live.
     """
     TODAY = base_today or date.today()
-    upcoming_dates = compute_upcoming_working_dates(TODAY, 35)
+    is_today_working = CourtCalendarService.get_day_status(TODAY)["is_working_day"]
+    first_active_sitting = TODAY if is_today_working else CourtCalendarService.get_next_working_day(TODAY)
+
+    upcoming_dates = compute_upcoming_working_dates(first_active_sitting, 35)
     NEXT_WEEK_DATES = upcoming_dates[:7]
     NEXT_MONTH_DATES = upcoming_dates[7:]
 
@@ -78,16 +94,28 @@ def make_dates_live(db=None, base_today=None):
                 new_cnr = old_cnr
             c.cnr_number = new_cnr
 
+            # Clean up any duplicate/orphaned sessions for this case (ensures strict 1:1 mapping)
+            existing_sessions = db.query(CMHSession).filter(CMHSession.case_id == c.id).all()
+            if len(existing_sessions) > 1:
+                for extra in existing_sessions[1:]:
+                    db.delete(extra)
+                db.flush()
+                session = existing_sessions[0]
+            elif existing_sessions:
+                session = existing_sessions[0]
+            else:
+                session = None
+
             # 2. Update filing date & session based on status
             if c.status == CaseStatus.CMH_SCHEDULED:
                 if cmh_sched_idx == 0:
-                    hearing_date = TODAY
-                    sess_status = SessionStatus.IN_PROGRESS
+                    hearing_date = first_active_sitting
+                    sess_status = SessionStatus.IN_PROGRESS if is_today_working else SessionStatus.SCHEDULED
                     slot = TIME_SLOTS[0]
                 elif cmh_sched_idx == 1:
-                    hearing_date = TODAY
+                    hearing_date = first_active_sitting
                     sess_status = SessionStatus.SCHEDULED
-                    slot = TIME_SLOTS[0]
+                    slot = TIME_SLOTS[1]
                 elif cmh_sched_idx % 2 == 0:
                     hearing_date = NEXT_WEEK_DATES[(cmh_sched_idx // 2) % len(NEXT_WEEK_DATES)]
                     sess_status = SessionStatus.SCHEDULED
@@ -102,7 +130,6 @@ def make_dates_live(db=None, base_today=None):
                 c.filing_date = datetime.combine(TODAY - timedelta(days=filing_days_ago), time(10, 0))
 
                 # Update or create scheduled session
-                session = db.query(CMHSession).filter(CMHSession.case_id == c.id).first()
                 if session:
                     session.hearing_date = hearing_date
                     session.start_time = slot[0]
@@ -130,7 +157,6 @@ def make_dates_live(db=None, base_today=None):
                 filing_days_ago = 10 + (pre_cmh_idx % 10)
                 c.filing_date = datetime.combine(TODAY - timedelta(days=filing_days_ago), time(10, 0))
 
-                session = db.query(CMHSession).filter(CMHSession.case_id == c.id).first()
                 slot = TIME_SLOTS[(pre_cmh_idx + 1) % len(TIME_SLOTS)]
                 if session:
                     session.hearing_date = hearing_date
@@ -159,7 +185,6 @@ def make_dates_live(db=None, base_today=None):
                 filing_days_ago = 2 + (filed_idx % 8)
                 c.filing_date = datetime.combine(TODAY - timedelta(days=filing_days_ago), time(10, 0))
 
-                session = db.query(CMHSession).filter(CMHSession.case_id == c.id).first()
                 slot = TIME_SLOTS[(filed_idx + 2) % len(TIME_SLOTS)]
                 if session:
                     session.hearing_date = hearing_date
@@ -185,12 +210,11 @@ def make_dates_live(db=None, base_today=None):
             elif c.status == CaseStatus.CMO_ISSUED:
                 # CMH was conducted in Sep/Oct 2026; CMO issued recently
                 cmo_date = TODAY - timedelta(days=4 + (cmo_idx % 14))
-                cmh_past_date = cmo_date - timedelta(days=2)
+                cmh_past_date = get_prior_working_day(cmo_date - timedelta(days=2))
                 filing_past_date = cmh_past_date - timedelta(days=45)
 
                 c.filing_date = datetime.combine(filing_past_date, time(10, 0))
 
-                session = db.query(CMHSession).filter(CMHSession.case_id == c.id).first()
                 if session:
                     session.hearing_date = cmh_past_date
                     session.status = SessionStatus.CONCLUDED
@@ -213,12 +237,11 @@ def make_dates_live(db=None, base_today=None):
                 # Disposed cases: historic earlier in 2026
                 disp_days_ago = 30 + (disposed_idx % 60)
                 disp_date = TODAY - timedelta(days=disp_days_ago)
-                cmh_date = disp_date - timedelta(days=15)
+                cmh_date = get_prior_working_day(disp_date - timedelta(days=15))
                 filing_date = cmh_date - timedelta(days=50)
 
                 c.filing_date = datetime.combine(filing_date, time(10, 0))
 
-                session = db.query(CMHSession).filter(CMHSession.case_id == c.id).first()
                 if session:
                     session.hearing_date = cmh_date
                     session.status = SessionStatus.CONCLUDED

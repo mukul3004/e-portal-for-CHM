@@ -477,26 +477,50 @@ export default function CourtCalendarView({
                     <span>{tr('Open in Daily Cause List')}</span>
                   </button>
 
-                  <button
-                    type="button"
-                    onClick={() => onNavigateToScheduler && onNavigateToScheduler(selectedDay.date)}
-                    style={{
-                      background: selectedDay.is_working_day ? '#070d1e' : '#d97706',
-                      color: 'white',
-                      border: 'none',
-                      borderRadius: '6px',
-                      padding: '0.45rem 0.85rem',
-                      fontSize: '0.8rem',
-                      fontWeight: 700,
-                      cursor: 'pointer',
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: '0.4rem'
-                    }}
-                  >
-                    <Clock size={13} />
-                    <span>{tr('Schedule Hearing on this Date')}</span>
-                  </button>
+                  {selectedDay.is_working_day ? (
+                    <button
+                      type="button"
+                      onClick={() => onNavigateToScheduler && onNavigateToScheduler(selectedDay.date)}
+                      style={{
+                        background: '#070d1e',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '6px',
+                        padding: '0.45rem 0.85rem',
+                        fontSize: '0.8rem',
+                        fontWeight: 700,
+                        cursor: 'pointer',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '0.4rem'
+                      }}
+                    >
+                      <Clock size={13} />
+                      <span>{tr('Schedule Hearing on this Date')}</span>
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      disabled
+                      style={{
+                        background: 'rgba(100, 116, 139, 0.12)',
+                        color: 'var(--theme-text-muted, #94a3b8)',
+                        border: '1px solid rgba(100, 116, 139, 0.25)',
+                        borderRadius: '6px',
+                        padding: '0.45rem 0.85rem',
+                        fontSize: '0.8rem',
+                        fontWeight: 600,
+                        cursor: 'not-allowed',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '0.4rem'
+                      }}
+                      title={tr('Hearings cannot be scheduled on non-working days or holidays.')}
+                    >
+                      <Clock size={13} />
+                      <span>{tr('Court Closed (No Sittings)')}</span>
+                    </button>
+                  )}
                 </div>
               </div>
 

@@ -15,6 +15,7 @@ from backend.app.models.case import Case, CaseType, CaseStatus, Pleading, Pleadi
 from backend.app.models.admissions import AdmissionsChecklist, AdmissionItem, StanceType, ItemResolutionStatus
 from backend.app.models.schedule import CMHSession, SessionStatus
 from backend.app.models.order import CaseManagementOrder, DiscoveryDeadline, DeadlineStatus
+from backend.app.services.court_calendar import CourtCalendarService
 
 BASE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 LOCAL_DATA_PATH = os.path.join(BASE_DIR, "data", "CMH_eportal_dataset.xlsx")
@@ -269,6 +270,11 @@ def seed_cases():
             else:
                 cmh_date = base_today + timedelta(days=7)
                 session_status = SessionStatus.SCHEDULED
+
+            # Enforce High Court sitting calendar rules (no hearings on Sundays, closed Saturdays, or gazetted holidays)
+            st = CourtCalendarService.get_day_status(cmh_date)
+            if not st["is_working_day"]:
+                cmh_date = CourtCalendarService.get_next_working_day(cmh_date)
 
             cmh_session = CMHSession(
                 id=str(uuid.uuid4()),
