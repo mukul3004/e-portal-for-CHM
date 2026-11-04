@@ -35,3 +35,6 @@ htmlcov/
 .vscode/
 *.swp
 .DS_Store
+
+# Documentation (kept locally)
+docs/

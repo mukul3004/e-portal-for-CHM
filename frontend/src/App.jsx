@@ -5,6 +5,7 @@ import CourtCalendarView from './components/CourtCalendarView';
 import MaterialTimePickerInput from './components/MaterialTimePicker';
 import EChallanPaymentModal from './components/EChallanPaymentModal';
 import EChallanReceiptModal from './components/EChallanReceiptModal';
+import VirtualCourtroomModal from './components/VirtualCourtroomModal';
 import { 
   Scale, 
   Gavel, 
@@ -8313,220 +8314,16 @@ cryptographically verifiable in the Judicial Immutable Vault.
         </div>
       )}
 
-      {/* 7. WEBRTC VIRTUAL COURTROOM MODAL */}
+      {/* 7. WEBRTC & JITSI VIRTUAL COURTROOM MODAL */}
       {activeCourtroomSession && (
-        <div className="courtroom-overlay">
-          <div className="courtroom-modal">
-            {/* Courtroom Top Header */}
-            <div className="courtroom-header">
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem' }}>
-                <MpHcEmblem size={34} />
-                <div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                    <span style={{ fontWeight: 800, color: '#d97706', fontSize: '0.9rem' }}>
-                      Commercial Courtroom Hall 04 • High Court of MP
-                    </span>
-                    <span className="courtroom-rec-pill">
-                      <span className="rec-dot"></span>
-                      <span>ORDER XV-A LIVE RECORDING</span>
-                    </span>
-                  </div>
-                  <div style={{ fontSize: '0.78rem', color: '#a1a1aa' }}>
-                    {activeCourtroomSession.case?.case_title || 'Commercial Hearing'} • CNR: <strong className="mono" style={{ color: '#ffffff' }}>{activeCourtroomSession.case?.cnr_number}</strong> • Room: <strong className="mono" style={{ color: '#f59e0b' }}>{activeCourtroomSession.webrtc_room_id}</strong>
-                  </div>
-                </div>
-              </div>
-
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-                <button
-                  type="button"
-                  onClick={() => setCourtroomViewMode(courtroomViewMode === 'grid' ? 'exhibits' : 'grid')}
-                  className="ctrl-btn"
-                  style={{ fontSize: '0.75rem', padding: '0.35rem 0.75rem' }}
-                >
-                  <Monitor size={14} />
-                  <span>{courtroomViewMode === 'grid' ? 'Show Exhibit Evidence' : 'Show Quad Video Grid'}</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setActiveCourtroomSession(null)}
-                  className="ctrl-btn active-danger"
-                  style={{ fontSize: '0.75rem', padding: '0.35rem 0.75rem' }}
-                >
-                  <X size={14} />
-                  <span>{tr('Leave Courtroom')}</span>
-                </button>
-              </div>
-            </div>
-
-            {/* 4-Tile Video Grid Body */}
-            <div className="courtroom-body">
-              {/* Tile 1: Hon'ble Presiding Judge */}
-              <div className="courtroom-tile judge-bench">
-                <div className="tile-avatar-halo" style={{ borderColor: '#d97706', background: 'rgba(217, 119, 6, 0.15)' }}>
-                  ⚖️
-                </div>
-                <div style={{ textAlign: 'center' }}>
-                  <div style={{ fontWeight: 800, fontSize: '1rem', color: '#ffffff' }}>
-                    {activeCourtroomSession.judge_name || "Hon'ble Justice Rajesh Sharma"}
-                  </div>
-                  <div style={{ fontSize: '0.75rem', color: '#f59e0b', fontWeight: 700 }}>
-                    Presiding Judicial Officer (Bench at Indore)
-                  </div>
-                </div>
-                <div className="tile-info-bar">
-                  <span style={{ fontSize: '0.72rem', color: '#cbd5e1', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
-                    <Gavel size={12} color="#d97706" /> Order XV-A Judicial Authority
-                  </span>
-                  <span style={{ fontSize: '0.7rem', color: '#34d399', fontWeight: 700 }}>● Live HD</span>
-                </div>
-              </div>
-
-              {/* Tile 2: Plaintiff Counsel */}
-              <div className="courtroom-tile active-speaker">
-                <div className="tile-avatar-halo" style={{ borderColor: '#0284c7' }}>
-                  👨‍⚖️
-                </div>
-                <div style={{ textAlign: 'center' }}>
-                  <div style={{ fontWeight: 800, fontSize: '0.95rem', color: '#ffffff' }}>
-                    {activeCourtroomSession.plaintiff_counsel?.name || 'Adv. Himanshu Bawaniya'}
-                  </div>
-                  <div style={{ fontSize: '0.75rem', color: '#38bdf8', fontWeight: 600 }}>
-                    Legal Counsel for Plaintiff ({activeCourtroomSession.plaintiff_counsel?.bar_council_id || 'MP/14297/2026'})
-                  </div>
-                </div>
-                <div className="tile-info-bar">
-                  <span style={{ fontSize: '0.72rem', color: '#94a3b8' }}>Averments Submitted</span>
-                  <span style={{ fontSize: '0.7rem', color: '#10b981', fontWeight: 700 }}>🔊 Speaking</span>
-                </div>
-              </div>
-
-              {/* Tile 3: Defendant Counsel */}
-              <div className="courtroom-tile">
-                <div className="tile-avatar-halo" style={{ borderColor: '#7c3aed' }}>
-                  👩‍⚖️
-                </div>
-                <div style={{ textAlign: 'center' }}>
-                  <div style={{ fontWeight: 800, fontSize: '0.95rem', color: '#ffffff' }}>
-                    {activeCourtroomSession.defendant_counsel?.name || 'Adv. Priya Verma'}
-                  </div>
-                  <div style={{ fontSize: '0.75rem', color: '#a78bfa', fontWeight: 600 }}>
-                    Legal Counsel for Defendant ({activeCourtroomSession.defendant_counsel?.bar_council_id || 'MP/11054/2026'})
-                  </div>
-                </div>
-                <div className="tile-info-bar">
-                  <span style={{ fontSize: '0.72rem', color: '#94a3b8' }}>Written Statement Filed</span>
-                  <span style={{ fontSize: '0.7rem', color: '#94a3b8' }}>Connected</span>
-                </div>
-              </div>
-
-              {/* Tile 4: Court Evidence Screen / Admissions Matrix */}
-              <div className="courtroom-tile" style={{ padding: '1rem', background: '#121214', alignItems: 'stretch', justifyContent: 'flex-start' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #334155', paddingBottom: '0.5rem', marginBottom: '0.75rem' }}>
-                  <div style={{ fontSize: '0.8rem', fontWeight: 800, color: '#d97706', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                    <ShieldCheck size={14} />
-                    <span>Cryptographic Evidence & Admissions Screen</span>
-                  </div>
-                  <span style={{ fontSize: '0.68rem', color: '#94a3b8', background: '#334155', padding: '0.15rem 0.45rem', borderRadius: '4px' }}>
-                    SHA-256 Verified
-                  </span>
-                </div>
-
-                <div style={{ flex: 1, overflowY: 'auto', fontSize: '0.78rem', color: '#d4d4d8' }}>
-                  <div style={{ background: '#1e293b', border: '1px solid #334155', borderRadius: '6px', padding: '0.65rem', marginBottom: '0.5rem' }}>
-                    <div style={{ fontWeight: 700, color: '#ffffff', marginBottom: '0.2rem' }}>
-                      Exhibit P-1: Commercial Service Agreement
-                    </div>
-                    <div style={{ fontSize: '0.7rem', color: '#a1a1aa' }}>
-                      Hash: <code className="mono" style={{ color: '#f59e0b' }}>8a4e...710d</code> (Tamper-Proof)
-                    </div>
-                    <div style={{ marginTop: '0.35rem', color: '#10b981', fontWeight: 700, fontSize: '0.72rem' }}>
-                      ✓ Defendant Stance: ADMITTED AS TO CONTENTS
-                    </div>
-                  </div>
-
-                  <div style={{ background: '#1e293b', border: '1px solid #334155', borderRadius: '6px', padding: '0.65rem', marginBottom: '0.5rem' }}>
-                    <div style={{ fontWeight: 700, color: '#ffffff', marginBottom: '0.2rem' }}>
-                      Exhibit P-2: Invoices & GST Electronic Tax Records
-                    </div>
-                    <div style={{ fontSize: '0.7rem', color: '#a1a1aa' }}>
-                      Hash: <code className="mono" style={{ color: '#f59e0b' }}>3f9c...44a1</code> (65B IT Act Certified)
-                    </div>
-                    <div style={{ marginTop: '0.35rem', color: '#ef4444', fontWeight: 700, fontSize: '0.72rem' }}>
-                      ✗ Defendant Stance: DENIED AS TO VALUATION
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Bottom Courtroom Action Controls Bar */}
-            <div className="courtroom-controls">
-              <div style={{ display: 'flex', gap: '0.5rem' }}>
-                <button
-                  type="button"
-                  onClick={() => setIsMicMuted(!isMicMuted)}
-                  className={`ctrl-btn ${isMicMuted ? 'active-danger' : ''}`}
-                >
-                  {isMicMuted ? <MicOff size={15} /> : <Mic size={15} />}
-                  <span>{isMicMuted ? tr('Unmute Audio') : tr('Mute Audio')}</span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => setIsVideoOff(!isVideoOff)}
-                  className={`ctrl-btn ${isVideoOff ? 'active-danger' : ''}`}
-                >
-                  {isVideoOff ? <VideoOff size={15} /> : <Video size={15} />}
-                  <span>{isVideoOff ? tr('Start Video') : tr('Stop Video')}</span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => setIsSharingScreen(!isSharingScreen)}
-                  className={`ctrl-btn ${isSharingScreen ? 'active-danger' : ''}`}
-                >
-                  <Monitor size={15} />
-                  <span>{isSharingScreen ? 'Stop Sharing' : tr('Share Exhibits')}</span>
-                </button>
-              </div>
-
-              <div style={{ display: 'flex', gap: '0.5rem' }}>
-                {currentRole === 'JUDGE' && (
-                  <>
-                    <button
-                      type="button"
-                      onClick={() => handleUpdateSessionStatus(activeCourtroomSession.session_id, 'IN_PROGRESS')}
-                      className="ctrl-btn"
-                      style={{ background: '#059669', borderColor: '#047857', color: '#ffffff' }}
-                    >
-                      <span>Mark In Session</span>
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        handleUpdateSessionStatus(activeCourtroomSession.session_id, 'CONCLUDED');
-                        alert('Hearing Concluded. Next step: Sign Case Management Order under Order XV-A Rule 6.');
-                      }}
-                      className="ctrl-btn"
-                      style={{ background: '#d97706', borderColor: '#b45309', color: '#ffffff' }}
-                    >
-                      <CheckCircle2 size={15} />
-                      <span>{tr('Mark Hearing Concluded')}</span>
-                    </button>
-                  </>
-                )}
-                <button
-                  type="button"
-                  onClick={() => setActiveCourtroomSession(null)}
-                  className="ctrl-btn"
-                >
-                  <span>Close Window</span>
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
+        <VirtualCourtroomModal
+          session={activeCourtroomSession}
+          currentRole={currentRole}
+          currentOfficer={currentOfficer}
+          onClose={() => setActiveCourtroomSession(null)}
+          handleUpdateSessionStatus={handleUpdateSessionStatus}
+          tr={tr}
+        />
       )}
 
       {/* Official Cyber Treasury Payment Modal with UPI QR Code */}
