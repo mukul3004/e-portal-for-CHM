@@ -1095,8 +1095,8 @@ select:focus {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  flex-wrap: nowrap;
-  gap: 1.25rem;
+  flex-wrap: wrap;
+  gap: 1rem 1.5rem;
   width: 100%;
 }
 
@@ -1104,8 +1104,8 @@ select:focus {
   display: flex;
   align-items: center;
   gap: 1rem;
-  flex-shrink: 1;
-  min-width: 0;
+  flex: 1 1 auto;
+  min-width: 280px;
 }
 
 .mphc-emblem-box {
@@ -1134,13 +1134,12 @@ select:focus {
 
 .mphc-english-headline {
   font-family: 'Merriweather', 'Cinzel', serif;
-  font-size: 1.35rem;
+  font-size: clamp(1.15rem, 1.8vw, 1.35rem);
   font-weight: 800;
   color: #ffffff;
   letter-spacing: 0.02em;
   margin: 0.1rem 0;
   line-height: 1.2;
-  white-space: nowrap;
 }
 
 .mphc-sub-division {
@@ -1155,11 +1154,20 @@ select:focus {
 
 .mphc-meta-col {
   display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 1rem;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 0.45rem;
   flex-shrink: 0;
   margin-left: auto;
+}
+
+.mphc-bench-badge-row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  flex-wrap: wrap;
 }
 
 .mphc-benches-ribbon {

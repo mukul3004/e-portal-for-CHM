@@ -2887,7 +2887,7 @@ cryptographically verifiable in the Judicial Immutable Vault.
             </div>
 
             {/* Bottom Row: Bench Selector Ribbon & Statutory Badge */}
-            <div className="mphc-bench-badge-row" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
+            <div className="mphc-bench-badge-row" style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '0.5rem', flexWrap: 'wrap' }}>
               <div className="mphc-benches-ribbon" title={lang === 'HI' ? 'उच्च न्यायालय खंडपीठ बदलें' : 'Switch High Court Bench Jurisdiction'}>
                 <span style={{ fontSize: '0.7rem', color: '#a1a1aa', fontWeight: 700, paddingLeft: '0.2rem' }}>
                   {tr('Bench:')}
