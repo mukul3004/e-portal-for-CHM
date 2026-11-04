@@ -2824,7 +2824,7 @@ cryptographically verifiable in the Judicial Immutable Vault.
         <div className="mphc-masthead-inner">
           <div className="mphc-identity-col">
             <div className="mphc-emblem-box">
-              <MpHcEmblem size={70} />
+              <MpHcEmblem size={50} />
             </div>
             <div className="mphc-text-titles">
               <div className="mphc-hindi-headline">
@@ -2887,7 +2887,7 @@ cryptographically verifiable in the Judicial Immutable Vault.
             </div>
 
             {/* Bottom Row: Bench Selector Ribbon & Statutory Badge */}
-            <div className="mphc-bench-badge-row" style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '0.5rem', flexWrap: 'wrap' }}>
+            <div className="mphc-bench-badge-row">
               <div className="mphc-benches-ribbon" title={lang === 'HI' ? 'उच्च न्यायालय खंडपीठ बदलें' : 'Switch High Court Bench Jurisdiction'}>
                 <span style={{ fontSize: '0.7rem', color: '#a1a1aa', fontWeight: 700, paddingLeft: '0.2rem' }}>
                   {tr('Bench:')}
@@ -2918,7 +2918,7 @@ cryptographically verifiable in the Judicial Immutable Vault.
               <span className="court-badge" style={{ fontSize: '0.68rem', padding: '0.2rem 0.45rem', whiteSpace: 'nowrap' }}>
                 {tr('Order XV-A CPC')}
               </span>
-              <span style={{ fontSize: '0.68rem', color: '#71717a', whiteSpace: 'nowrap' }}>
+              <span className="mphc-univ-tag" style={{ fontSize: '0.68rem', color: '#71717a', whiteSpace: 'nowrap' }}>
                 {tr('SVVV (MP-14)')}
               </span>
             </div>

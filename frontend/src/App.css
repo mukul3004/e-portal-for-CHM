@@ -1087,7 +1087,7 @@ select:focus {
   background: #1B2A41;
   border-bottom: 2px solid #B8903D;
   color: #ffffff;
-  padding: 0.85rem 1.5rem;
+  padding: 0.65rem 1.25rem;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
 }
 
@@ -1095,23 +1095,23 @@ select:focus {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 1rem 1.5rem;
+  flex-wrap: nowrap;
+  gap: 1rem;
   width: 100%;
 }
 
 .mphc-identity-col {
   display: flex;
   align-items: center;
-  gap: 1rem;
-  flex: 1 1 auto;
-  min-width: 280px;
+  gap: 0.75rem;
+  flex-shrink: 1;
+  min-width: 0;
 }
 
 .mphc-emblem-box {
-  width: 56px;
-  height: 56px;
-  min-width: 56px;
+  width: 50px;
+  height: 50px;
+  min-width: 50px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1125,39 +1125,39 @@ select:focus {
 }
 
 .mphc-hindi-headline {
-  font-size: 0.88rem;
+  font-size: 0.8rem;
   font-weight: 800;
   color: #B8903D;
   letter-spacing: 0.02em;
-  line-height: 1.25;
+  line-height: 1.2;
 }
 
 .mphc-english-headline {
   font-family: 'Merriweather', 'Cinzel', serif;
-  font-size: clamp(1.15rem, 1.8vw, 1.35rem);
+  font-size: clamp(1.05rem, 1.35vw, 1.25rem);
   font-weight: 800;
   color: #ffffff;
   letter-spacing: 0.02em;
-  margin: 0.1rem 0;
-  line-height: 1.2;
+  margin: 0.05rem 0;
+  line-height: 1.15;
+  white-space: nowrap;
 }
 
 .mphc-sub-division {
-  font-size: 0.78rem;
+  font-size: 0.73rem;
   color: #d4d4d8;
   display: flex;
   align-items: center;
-  gap: 0.45rem;
+  gap: 0.35rem;
   flex-wrap: wrap;
-  margin-top: 0.15rem;
+  margin-top: 0.1rem;
 }
 
 .mphc-meta-col {
   display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  justify-content: center;
-  gap: 0.45rem;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.65rem;
   flex-shrink: 0;
   margin-left: auto;
 }
@@ -1165,29 +1165,29 @@ select:focus {
 .mphc-bench-badge-row {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
-  gap: 0.5rem;
-  flex-wrap: wrap;
+  gap: 0.4rem;
+  flex-wrap: nowrap;
+  white-space: nowrap;
 }
 
 .mphc-benches-ribbon {
   display: flex;
   align-items: center;
-  gap: 0.35rem;
+  gap: 0.25rem;
   background: rgba(255, 255, 255, 0.06);
   border: 1px solid rgba(255, 255, 255, 0.15);
-  border-radius: 8px;
-  padding: 0.25rem 0.4rem;
+  border-radius: 7px;
+  padding: 0.2rem 0.35rem;
 }
 
 .bench-pill {
   background: transparent;
   border: none;
   color: #d4d4d8;
-  font-size: 0.72rem;
+  font-size: 0.69rem;
   font-weight: 600;
-  padding: 0.25rem 0.6rem;
-  border-radius: 6px;
+  padding: 0.18rem 0.48rem;
+  border-radius: 5px;
   cursor: pointer;
   transition: all 0.15s ease;
 }
@@ -1742,11 +1742,11 @@ body.dark-theme,
 .personal-block-btn {
   display: flex;
   align-items: center;
-  gap: 0.65rem;
+  gap: 0.5rem;
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 9px;
-  padding: 0.35rem 0.75rem;
+  border-radius: 8px;
+  padding: 0.28rem 0.55rem;
   color: #ffffff;
   cursor: pointer;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
@@ -1762,14 +1762,14 @@ body.dark-theme,
 
 .personal-avatar-box {
   position: relative;
-  width: 36px;
-  height: 36px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 700;
-  font-size: 0.9rem;
+  font-size: 0.82rem;
   flex-shrink: 0;
 }
 
@@ -1805,8 +1805,8 @@ body.dark-theme,
   position: absolute;
   bottom: -1px;
   right: -1px;
-  width: 9px;
-  height: 9px;
+  width: 8px;
+  height: 8px;
   background: #22c55e;
   border: 2px solid #070d1e;
   border-radius: 50%;
@@ -1816,17 +1816,17 @@ body.dark-theme,
 .personal-details {
   display: flex;
   flex-direction: column;
-  gap: 0.15rem;
+  gap: 0.1rem;
 }
 
 .personal-name-row {
   display: flex;
   align-items: center;
-  gap: 0.4rem;
+  gap: 0.35rem;
 }
 
 .personal-name {
-  font-size: 0.82rem;
+  font-size: 0.78rem;
   font-weight: 700;
   color: #ffffff;
   letter-spacing: 0.01em;
@@ -1834,12 +1834,12 @@ body.dark-theme,
 }
 
 .personal-badge-role {
-  font-size: 0.68rem;
+  font-size: 0.62rem;
   font-weight: 800;
-  padding: 0.15rem 0.55rem;
-  border-radius: 5px;
+  padding: 0.1rem 0.42rem;
+  border-radius: 4px;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.04em;
   white-space: nowrap;
   display: inline-flex;
   align-items: center;
@@ -4031,6 +4031,18 @@ body.dark-theme,
 
 .efiling-form-card {
   padding: 1.5rem 1.65rem;
+}
+
+@media (max-width: 1240px) {
+  .mphc-univ-tag {
+    display: none;
+  }
+}
+
+@media (max-width: 1080px) {
+  .mphc-bench-badge-row .court-badge {
+    display: none;
+  }
 }
 
 /* =========================================================
